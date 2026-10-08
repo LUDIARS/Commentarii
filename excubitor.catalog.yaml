@@ -1,0 +1,20 @@
+# Excubitor catalog fragment -- Commentarii (サービス所有 catalog)。
+services:
+  - code: commentarii
+    name: Commentarii (Strategy guide maker and generic auto player (Utility AI + BT))
+    tier: personal
+    project_code: commentarii
+    component: backend
+    port: 4410
+    repo: LUDIARS/Commentarii
+    runtime: node
+    cwd: ${ARS_ROOT}/Commentarii
+    command: npm run dev
+    autostart: false
+    restart_policy: "no"
+    health:
+      type: http
+      url: http://localhost:4410/health
+      interval_sec: 30
+    provides:
+      COMMENTARII_URL: http://${host}:${port}
