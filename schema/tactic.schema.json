@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tactic.schema.json",
+  "title": "Tactic: when -> do -> expect, because, with measured metrics",
+  "description": "knowledge is propagated: it must equal the strictest knowledge among the values the tactic references (validate V10).",
+  "type": "object",
+  "required": ["id", "name", "when", "do", "expect", "because", "knowledge", "confidence", "superseded_by"],
+  "properties": {
+    "id": { "$ref": "id.schema.json#/$defs/tacticId" },
+    "name": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "when": { "$ref": "#/$defs/condition" },
+    "do": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/action" } },
+    "expect": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "within_sec": { "type": "number", "exclusiveMinimum": 0 },
+        "entity_state": { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "because": { "type": "array", "minItems": 1, "items": { "$ref": "id.schema.json#/$defs/valueRef" } },
+    "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+    "confidence": { "enum": ["authored", "derived", "learned"] },
+    "metrics": { "$ref": "#/$defs/metrics" },
+    "superseded_by": {
+      "oneOf": [
+        { "$ref": "id.schema.json#/$defs/tacticId" },
+        { "type": "null" }
+      ]
+    },
+    "draft": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "condition": {
+      "type": "object",
+      "minProperties": 1,
+      "oneOf": [
+        {
+          "required": ["all"],
+          "properties": { "all": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["any"],
+          "properties": { "any": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["not"],
+          "properties": { "not": { "$ref": "#/$defs/condition" } },
+          "additionalProperties": false
+        },
+        {
+          "description": "Leaf predicate. Keys are adapter-level facts (entity, visible, distance_lt, self, ...).",
+          "not": { "anyOf": [{ "required": ["all"] }, { "required": ["any"] }, { "required": ["not"] }] }
+        }
+      ]
+    },
+    "action": {
+      "type": "object",
+      "properties": {
+        "move_to": { "type": "string", "minLength": 1 },
+        "attack": { "type": "string", "minLength": 1 },
+        "use_item": { "type": "string", "minLength": 1 },
+        "use_skill": { "type": "string", "minLength": 1 },
+        "wait": { "type": "number", "minimum": 0 },
+        "interact": { "type": "string", "minLength": 1 },
+        "custom": { "type": "string", "minLength": 1 },
+        "target": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        { "required": ["move_to"] },
+        { "required": ["attack"] },
+        { "required": ["use_item"] },
+        { "required": ["use_skill"] },
+        { "required": ["wait"] },
+        { "required": ["interact"] },
+        { "required": ["custom"] }
+      ]
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["runs", "success"],
+      "properties": {
+        "runs": { "type": "integer", "minimum": 0 },
+        "success": { "type": "number", "minimum": 0, "maximum": 1 },
+        "time_sec": {
+          "type": "object",
+          "properties": { "p50": { "type": "number", "minimum": 0 }, "p90": { "type": "number", "minimum": 0 } },
+          "additionalProperties": false
+        },
+        "resource": { "type": "object", "additionalProperties": { "type": "number" } },
+        "risk": { "type": "object", "additionalProperties": { "type": "number" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

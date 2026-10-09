@@ -1,0 +1,16 @@
+{
+  "id": "rule:bestia:dodge-window",
+  "name": { "ja": "弾を避け始める猶予", "en": "Dodge look-ahead window" },
+  "expression": "clamp(closing_time, 0, 0.45)",
+  "result_unit": "s",
+  "variables": {
+    "closing_time": {
+      "description": { "ja": "弾が自分に最接近するまでの時間" },
+      "unit": "s",
+      "range": [0, 5],
+      "example": 0.3
+    }
+  },
+  "knowledge": "discoverable",
+  "source": { "kind": "master", "ref": "Bestia src/behavior.cpp decide()" }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "guide-bundle",
+  "description": "攻略本バンドルの正本モデル: 共通 JSON Schema、値・知識境界・ID・式評価の純関数、バンドルのローダ (BundleSource ポート + fs アダプタ)、参照索引、masked を除いた player view。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)schema/[^/]+\\.schema\\.json$" },
+    { "pathPattern": "(^|/)src/domain/.+\\.ts$" },
+    { "pathPattern": "(^|/)src/schema/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)src/bundle/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)src/adapters/fs/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)tests/domain/.+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/schema/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/bundle/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/support/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)samples/.+\\.json$" }
+  ],
+  "cardTemplate": "Summarise the \"guide-bundle\" domain: schema → load (schema-validated, masked separated) → index / player view.",
+  "specRefs": ["spec/architecture/design.md §1 §4 §5"],
+  "rationale": "バンドルの形と第一原則 (masked 分離) を担う層。validate / render / report はこの層の上に乗るだけで、ファイル I/O はアダプタに閉じる。"
+}

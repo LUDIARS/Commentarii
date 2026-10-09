@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "entity.schema.json",
+  "title": "Entity (enemies / items / skills / actors)",
+  "description": "Common fields plus kind-specific additions selected by the ID kind. Masked values live in the sibling <slug>.masked.json (entity.masked.schema.json).",
+  "type": "object",
+  "required": ["id", "name"],
+  "properties": {
+    "id": { "$ref": "id.schema.json#/$defs/entityId" },
+    "name": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "lexicon": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/lexiconId" } },
+    "render_signature": {
+      "type": "object",
+      "properties": {
+        "mesh": { "$ref": "id.schema.json#/$defs/anyId" },
+        "sprite": { "$ref": "id.schema.json#/$defs/anyId" },
+        "material": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/anyId" } }
+      },
+      "additionalProperties": false
+    },
+    "stats": { "$ref": "value.schema.json#/$defs/statMap" },
+    "tags": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/slug" } }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "id": { "pattern": "^enemy:" } }, "required": ["id"] },
+      "then": { "$ref": "#/$defs/enemy" }
+    },
+    {
+      "if": { "properties": { "id": { "pattern": "^item:" } }, "required": ["id"] },
+      "then": { "$ref": "#/$defs/item" }
+    },
+    {
+      "if": { "properties": { "id": { "pattern": "^skill:" } }, "required": ["id"] },
+      "then": { "$ref": "#/$defs/skill" }
+    },
+    {
+      "if": { "properties": { "id": { "pattern": "^actor:" } }, "required": ["id"] },
+      "then": { "$ref": "#/$defs/actor" }
+    }
+  ],
+  "unevaluatedProperties": false,
+  "$defs": {
+    "enemy": {
+      "properties": {
+        "behavior": { "$ref": "id.schema.json#/$defs/stateRef" },
+        "weak_to": { "type": "array", "items": { "$ref": "value.schema.json#/$defs/idValue" } },
+        "drops": { "type": "array", "items": { "$ref": "value.schema.json#/$defs/idValue" } }
+      }
+    },
+    "item": {
+      "properties": {
+        "category": { "$ref": "value.schema.json#/$defs/stringValue" },
+        "effect": { "$ref": "value.schema.json#/$defs/textValue" }
+      }
+    },
+    "skill": {
+      "properties": {
+        "rules": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/ruleId" } },
+        "effect": { "$ref": "value.schema.json#/$defs/textValue" }
+      }
+    },
+    "actor": {
+      "properties": {
+        "behavior": { "$ref": "id.schema.json#/$defs/stateRef" },
+        "skills": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/skillId" } }
+      }
+    }
+  }
+}

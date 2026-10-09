@@ -1,0 +1,15 @@
+{
+  "id": "stage:bestia:dome-arena",
+  "name": { "ja": "ドームアリーナ", "en": "Dome Arena" },
+  "objectives": [
+    { "value": { "ja": "最後の 1 体まで生き残る", "en": "Be the last monster standing" }, "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia spec/feature/battle.md" } }
+  ],
+  "clear_conditions": [
+    { "value": { "ja": "他の全モンスターが倒れる", "en": "Every other monster is eliminated" }, "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia src/world.cpp World::reset" } }
+  ],
+  "spawns": [
+    { "entity": "enemy:bestia:bazooka-beetle", "count": { "value": 1, "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia src/world.cpp roster" } }, "at": "node:mid-ring" },
+    { "entity": "enemy:bestia:wire-spider", "count": { "value": 1, "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia src/world.cpp roster" } }, "at": "node:mid-ring" },
+    { "entity": "enemy:bestia:bomber-dragonfly", "count": { "value": 1, "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia src/world.cpp roster" } }, "at": "node:mid-ring" }
+  ]
+}

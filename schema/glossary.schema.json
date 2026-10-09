@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glossary.schema.json",
+  "title": "Glossary: human words to IDs, UI elements to values, glyph table",
+  "type": "object",
+  "required": ["terms"],
+  "properties": {
+    "terms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["text", "lang", "ref"],
+        "properties": {
+          "text": { "type": "string", "minLength": 1 },
+          "lang": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+          "ref": { "$ref": "id.schema.json#/$defs/glossaryRef" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "ui": {
+      "description": "Which screen element shows which value. This table is the ground for promoting a value to shown.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["element", "shows"],
+        "properties": {
+          "element": { "type": "string", "minLength": 1 },
+          "shows": { "$ref": "id.schema.json#/$defs/valueRef" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "glyphs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["glyph", "means"],
+        "properties": {
+          "glyph": { "type": "string", "minLength": 1 },
+          "means": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

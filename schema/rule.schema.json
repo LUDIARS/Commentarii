@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rule.schema.json",
+  "title": "Rule: expression + variable definitions + value ranges",
+  "description": "The expression language is arithmetic (+ - * /, parentheses) plus min, max, floor, ceil, abs, clamp. Every variable has a range and an example used for the check calculation.",
+  "type": "object",
+  "required": ["id", "name", "expression", "variables", "knowledge", "source"],
+  "properties": {
+    "id": { "$ref": "id.schema.json#/$defs/ruleId" },
+    "name": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "expression": { "type": "string", "minLength": 1 },
+    "result_unit": { "type": "string", "minLength": 1 },
+    "variables": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z_][a-z0-9_]*$" },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["range", "example"],
+        "properties": {
+          "description": { "$ref": "id.schema.json#/$defs/localizedText" },
+          "unit": { "type": "string", "minLength": 1 },
+          "range": {
+            "type": "array",
+            "prefixItems": [{ "type": "number" }, { "type": "number" }],
+            "items": false,
+            "minItems": 2
+          },
+          "example": { "type": "number" },
+          "ref": { "$ref": "id.schema.json#/$defs/valueRef" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+    "source": { "$ref": "value.schema.json#/$defs/source" },
+    "draft": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

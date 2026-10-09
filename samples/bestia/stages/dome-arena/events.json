@@ -1,0 +1,10 @@
+{
+  "stage": "stage:bestia:dome-arena",
+  "events": [
+    {
+      "id": "battle-start",
+      "trigger": { "kind": "time", "at_sec": { "value": 0, "unit": "s", "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia src/world.cpp World::reset" } } },
+      "description": { "value": { "ja": "全モンスターが同時に動き出す" }, "knowledge": "shown", "source": { "kind": "llm-draft", "ref": "sample: drafted from spec/feature/battle.md" }, "draft": true }
+    }
+  ]
+}

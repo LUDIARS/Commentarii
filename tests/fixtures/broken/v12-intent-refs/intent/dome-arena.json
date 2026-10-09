@@ -1,0 +1,36 @@
+{
+  "stage": "stage:bestia:dome-arena",
+  "intended": [
+    {
+      "id": "intent:bestia:dome-arena:fight-center",
+      "kind": "route",
+      "path": [
+        "node:mid-ring",
+        "node:center"
+      ],
+      "knowledge": "shown",
+      "note": "中央に寄って乱戦になってほしい"
+    },
+    {
+      "id": "intent:bestia:dome-arena:learn-kite",
+      "kind": "teach",
+      "tactic": "tactic:bestia:no-such-tactic",
+      "note": "射程差で下がることを覚えてほしい"
+    },
+    {
+      "id": "intent:bestia:dome-arena:time",
+      "kind": "time",
+      "range_sec": [
+        60,
+        180
+      ]
+    },
+    {
+      "id": "intent:bestia:dome-arena:no-ring-out",
+      "kind": "forbid",
+      "area": "node:outside",
+      "note": "リング外に居座って時間を稼がせない"
+    }
+  ],
+  "allowed_divergences": []
+}

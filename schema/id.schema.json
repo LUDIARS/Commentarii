@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "id.schema.json",
+  "title": "Guide bundle identifiers",
+  "description": "ID is <kind>:<game-id>:<slug> (intent IDs add the stage slug). Ludus dictionary entries are referenced as lexicon:<id>. Map nodes are local to their stage (node:<slug>).",
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]*$" },
+    "anyId": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*(:[a-z0-9][a-z0-9_-]*)*$" },
+    "enemyId": { "type": "string", "pattern": "^enemy:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "itemId": { "type": "string", "pattern": "^item:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "skillId": { "type": "string", "pattern": "^skill:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "actorId": { "type": "string", "pattern": "^actor:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "entityId": { "type": "string", "pattern": "^(enemy|item|skill|actor):[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "stageId": { "type": "string", "pattern": "^stage:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "ruleId": { "type": "string", "pattern": "^rule:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "stateId": { "type": "string", "pattern": "^state:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "stateRef": { "type": "string", "pattern": "^state:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*(#[a-z0-9][a-z0-9_-]*)?$" },
+    "tacticId": { "type": "string", "pattern": "^tactic:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "intentId": { "type": "string", "pattern": "^intent:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "nodeId": { "type": "string", "pattern": "^node:[a-z0-9][a-z0-9_-]*$" },
+    "runId": { "type": "string", "pattern": "^run:[a-z0-9][a-z0-9_-]*$" },
+    "lexiconId": { "type": "string", "pattern": "^lexicon:[a-z0-9][a-z0-9_.-]*$" },
+    "valueRef": {
+      "description": "An ID, optionally followed by a dotted field path into that record (enemy:g:x.stats.hp).",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*(#[a-z0-9][a-z0-9_-]*)?(\\.[a-z0-9_]+)*$"
+    },
+    "glossaryRef": {
+      "anyOf": [
+        { "$ref": "#/$defs/anyId" },
+        { "$ref": "#/$defs/lexiconId" }
+      ]
+    },
+    "localizedText": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    }
+  }
+}

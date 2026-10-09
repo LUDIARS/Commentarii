@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "intent.schema.json",
+  "title": "Designer intent for one stage, and the divergences already accepted",
+  "type": "object",
+  "required": ["stage", "intended", "allowed_divergences"],
+  "properties": {
+    "stage": { "$ref": "id.schema.json#/$defs/stageId" },
+    "intended": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/route" },
+          { "$ref": "#/$defs/teach" },
+          { "$ref": "#/$defs/time" },
+          { "$ref": "#/$defs/forbid" }
+        ]
+      }
+    },
+    "allowed_divergences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["run", "summary", "decided_by"],
+        "properties": {
+          "run": { "$ref": "id.schema.json#/$defs/runId" },
+          "summary": { "type": "string", "minLength": 1 },
+          "decided_by": { "type": "string", "minLength": 1 },
+          "tactic": { "$ref": "id.schema.json#/$defs/tacticId" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "common": {
+      "properties": {
+        "id": { "$ref": "id.schema.json#/$defs/intentId" },
+        "note": { "type": "string", "minLength": 1 },
+        "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" }
+      }
+    },
+    "route": {
+      "type": "object",
+      "$ref": "#/$defs/common",
+      "required": ["id", "kind", "path"],
+      "properties": {
+        "kind": { "const": "route" },
+        "path": { "type": "array", "minItems": 2, "items": { "$ref": "id.schema.json#/$defs/nodeId" } }
+      },
+      "unevaluatedProperties": false
+    },
+    "teach": {
+      "type": "object",
+      "$ref": "#/$defs/common",
+      "required": ["id", "kind", "tactic"],
+      "properties": {
+        "kind": { "const": "teach" },
+        "tactic": { "$ref": "id.schema.json#/$defs/tacticId" }
+      },
+      "unevaluatedProperties": false
+    },
+    "time": {
+      "type": "object",
+      "$ref": "#/$defs/common",
+      "required": ["id", "kind", "range_sec"],
+      "properties": {
+        "kind": { "const": "time" },
+        "range_sec": {
+          "type": "array",
+          "prefixItems": [{ "type": "number", "minimum": 0 }, { "type": "number", "minimum": 0 }],
+          "items": false,
+          "minItems": 2
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "forbid": {
+      "type": "object",
+      "$ref": "#/$defs/common",
+      "required": ["id", "kind", "area"],
+      "properties": {
+        "kind": { "const": "forbid" },
+        "area": { "$ref": "id.schema.json#/$defs/nodeId" }
+      },
+      "unevaluatedProperties": false
+    }
+  }
+}

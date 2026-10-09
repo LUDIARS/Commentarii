@@ -1,0 +1,18 @@
+{
+  "terms": [
+    { "text": "バズーカビートル", "lang": "ja", "ref": "enemy:bestia:bazooka-beetle" },
+    { "text": "BAZOOKA BEETLE", "lang": "en", "ref": "enemy:bestia:bazooka-beetle" },
+    { "text": "ワイヤースパイダー", "lang": "ja", "ref": "enemy:bestia:wire-spider" },
+    { "text": "WIRE SPIDER", "lang": "en", "ref": "enemy:bestia:wire-spider" },
+    { "text": "ボマードラゴンフライ", "lang": "ja", "ref": "enemy:bestia:bomber-dragonfly" },
+    { "text": "BOMBER DRAGONFLY", "lang": "en", "ref": "enemy:bestia:bomber-dragonfly" }
+  ],
+  "ui": [
+    { "element": "モンスターの体格 (描画サイズ)", "shows": "enemy:bestia:bazooka-beetle.stats.radius" },
+    { "element": "モンスターの体格 (描画サイズ)", "shows": "enemy:bestia:wire-spider.stats.radius" },
+    { "element": "モンスターの体格 (描画サイズ)", "shows": "enemy:bestia:bomber-dragonfly.stats.radius" }
+  ],
+  "glyphs": [
+    { "glyph": "R TO RESTART", "means": "決着表示 (勝者名 / DRAW)" }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "observation.schema.json",
+  "title": "Overlay observation: one line of observations/runs/<run-id>.jsonl (design 4.4)",
+  "description": "Overlay data. Never merged into the canonical bundle; loaders skip observations/.",
+  "type": "object",
+  "required": ["t", "tick", "kind", "source", "mode", "purpose"],
+  "properties": {
+    "t": { "type": "number", "minimum": 0 },
+    "tick": { "type": "integer", "minimum": 0 },
+    "kind": { "type": "string", "minLength": 1 },
+    "tactic": { "$ref": "id.schema.json#/$defs/tacticId" },
+    "entity": { "$ref": "id.schema.json#/$defs/entityId" },
+    "expected": { "type": "object" },
+    "observed": { "type": "object" },
+    "source": { "enum": ["game-api", "render-tap", "pixels"] },
+    "mode": { "enum": ["player", "omniscient"] },
+    "purpose": { "enum": ["efficiency", "coverage"] }
+  },
+  "additionalProperties": false
+}

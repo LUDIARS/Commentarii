@@ -2,5 +2,33 @@
   "name": "commentarii",
   "version": "0.1.0",
   "private": true,
-  "type": "module"
+  "description": "Strategy guide maker (schema, validate, render, knowledge report) and generic auto player",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "bin": {
+    "guide": "dist/cli/main.js"
+  },
+  "imports": {
+    "#contract-runtime": {
+      "types": "./contract-runtime.d.mts",
+      "default": "./contract-runtime.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/run-tests.mjs",
+    "dev": "node dist/health/main.js",
+    "guide": "node dist/cli/main.js"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.1",
+    "typescript": "~5.9.3"
+  }
 }

@@ -1,0 +1,18 @@
+{
+  "name": "service-bootstrap",
+  "description": "Excubitor 導入契約: excubitor.bootstrap.json、scripts/site の setup / export / import (データを持たないので明示した空の形式)、npm run dev の /health 最小 HTTP、テストランナーと契約ランタイム。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)excubitor\\.(bootstrap\\.json|catalog\\.yaml)$" },
+    { "pathPattern": "(^|/)scripts/.+\\.mjs$" },
+    { "pathPattern": "(^|/)src/health/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)tests/health/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/scripts/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)contract-runtime\\.(mjs|d\\.mts)$" },
+    { "pathPattern": "(^|/)augur\\.(contracts|inject)\\.json$" }
+  ],
+  "cardTemplate": "Summarise the \"service-bootstrap\" domain: setup / data export-import / health server for Excubitor.",
+  "specRefs": ["Castra .agents/skills/service-bootstrap/SKILL.md", "spec/tasks/2026-10-09-stage-1-schema-validate-render.md 成果物 7"],
+  "rationale": "サービスとしての受入条件とテスト基盤。攻略本の中身には依存しない。"
+}

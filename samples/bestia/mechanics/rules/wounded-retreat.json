@@ -1,0 +1,17 @@
+{
+  "id": "rule:bestia:wounded-retreat",
+  "name": { "ja": "瀕死で後退する体力", "en": "Wounded retreat threshold" },
+  "expression": "max_health * 0.25",
+  "result_unit": "hp",
+  "variables": {
+    "max_health": {
+      "description": { "ja": "最大体力" },
+      "unit": "hp",
+      "range": [100, 250],
+      "example": 180,
+      "ref": "enemy:bestia:bazooka-beetle.stats.health"
+    }
+  },
+  "knowledge": "discoverable",
+  "source": { "kind": "master", "ref": "Bestia src/behavior.cpp Task::Wounded" }
+}

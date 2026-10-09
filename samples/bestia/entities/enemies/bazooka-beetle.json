@@ -1,0 +1,12 @@
+{
+  "id": "enemy:bestia:bazooka-beetle",
+  "name": { "ja": "バズーカビートル", "en": "Bazooka Beetle" },
+  "stats": {
+    "health": { "value": 180, "unit": "hp", "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp archetype[0]" } },
+    "radius": { "value": 1.6, "unit": "m", "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia src/world.cpp archetype[0]" } },
+    "speed": { "value": 7, "unit": "m/s", "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp archetype[0]" } },
+    "range": { "value": 23, "unit": "m", "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp archetype[0]" } },
+    "cooldown": { "value": 0.24, "unit": "s", "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp archetype[0]" } }
+  },
+  "behavior": "state:bestia:battle-ai"
+}
