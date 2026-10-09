@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { openBundleDir } from '../../src/adapters/fs/open-bundle-dir.ts';
+import { openReplayFile } from '../../src/adapters/fs/replay-open-file.ts';
 import type { CliIo } from '../../src/cli/cli-io.ts';
 import { runCli } from '../../src/cli/run-cli.ts';
 import { SAMPLE_DIR } from '../support/bundles.ts';
@@ -24,6 +25,7 @@ function capture(): Captured {
       writeFiles: async (outDir, files) => {
         written.set(outDir, files);
       },
+      openReplay: openReplayFile,
     },
     stdout: () => out,
     stderr: () => err,

@@ -2,12 +2,14 @@
 // tests pass in-memory ones.
 
 import type { LoadResult } from '../bundle/bundle.ts';
+import type { ReplayLoad } from '../replay/parse-replay.ts';
 
 export interface CliIo {
   stdout(text: string): void;
   stderr(text: string): void;
   openBundle(directory: string): Promise<LoadResult>;
   writeFiles(outDir: string, files: ReadonlyMap<string, string>): Promise<void>;
+  openReplay(path: string): Promise<ReplayLoad>;
 }
 
 export const EXIT_OK = 0;

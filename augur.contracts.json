@@ -65,6 +65,42 @@
       "module": "src/contracts/health-response.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-8",
+      "criterion": "C-8 parseReplay(text, schema): run を返すのは issue が 0 件のときだけで、run は header で始まり footer で終わり、tick は狭義単調増加、player モードの run にはどの行にも knowledge: masked が無い",
+      "symbol": "parseReplay",
+      "file": "src/replay/parse-replay.ts",
+      "module": "src/contracts/parse-replay.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-9",
+      "criterion": "C-9 checkTickRecord(header, previous, record): player モードで記録行のどこかに knowledge: masked があれば必ず masked-in-player の問題を返し、omniscient モードでは masked-in-player を返さない",
+      "symbol": "checkTickRecord",
+      "file": "src/replay/tick-invariants.ts",
+      "module": "src/contracts/check-tick-record.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-10",
+      "criterion": "C-10 playReplay(run, decider, options): ok は first_mismatch が null のときだけ true。一致なら until 以下の全ティックを照合し、不一致なら first_mismatch は until 以下のティックで、記録行動はそのティックの記録と同じで再生行動と異なる",
+      "symbol": "playReplay",
+      "file": "src/replay/play-replay.ts",
+      "module": "src/contracts/play-replay.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-11",
+      "criterion": "C-11 diffReplays(a, b, options): 最初の分岐より前の共通ティックは行動も選択候補も一致し、分岐ティックでは行動・選択候補・ティックの有無のいずれかが異なる。分岐が無ければ行動差分は 0 件、表示件数は limit 以下かつ件数以下",
+      "symbol": "diffReplays",
+      "file": "src/replay/diff-replays.ts",
+      "module": "src/contracts/diff-replays.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }

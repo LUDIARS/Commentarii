@@ -2,18 +2,20 @@
 
 import { parseArgs } from 'node:util';
 import type { RenderKnowledge } from '../render/render-bundle.ts';
+import { parseReplayCommand, REPLAY_USAGE, type ReplayCommand } from '../replay/replay-command.ts';
 
 export type Command =
   | { readonly name: 'validate'; readonly bundleDir: string; readonly json: boolean }
   | { readonly name: 'render'; readonly bundleDir: string; readonly outDir: string; readonly knowledge: RenderKnowledge }
   | { readonly name: 'report-knowledge'; readonly bundleDir: string; readonly json: boolean }
+  | ReplayCommand
   | { readonly name: 'help' };
 
 export const USAGE = `usage:
   guide validate <bundle-dir> [--json]
   guide render <bundle-dir> --out <dir> [--knowledge player|full]
   guide report knowledge <bundle-dir> [--json]
-`;
+${REPLAY_USAGE}`;
 
 export class UsageError extends Error {
   override readonly name = 'UsageError';
@@ -48,6 +50,7 @@ export function parseCommand(argv: readonly string[]): Command {
       const { values, positionals } = parseArgs({ args: options, allowPositionals: true, options: { json: { type: 'boolean' } } });
       return { name: 'report-knowledge', bundleDir: single(positionals, 'report knowledge'), json: values.json === true };
     }
+    if (name === 'replay') return parseReplayCommand(rest);
   } catch (cause) {
     if (cause instanceof UsageError) throw cause;
     throw new UsageError((cause as Error).message);
