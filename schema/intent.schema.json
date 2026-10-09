@@ -28,8 +28,35 @@
           "run": { "$ref": "id.schema.json#/$defs/runId" },
           "summary": { "type": "string", "minLength": 1 },
           "decided_by": { "type": "string", "minLength": 1 },
-          "tactic": { "$ref": "id.schema.json#/$defs/tacticId" }
+          "tactic": { "$ref": "id.schema.json#/$defs/tacticId" },
+          "intent": { "description": "The intended item the divergence was found against (guide verify intent --accept).", "$ref": "id.schema.json#/$defs/intentId" },
+          "reason": { "$ref": "#/$defs/divergenceReason" },
+          "divergence": { "description": "ID in observations/divergences.json.", "$ref": "#/$defs/divergenceId" },
+          "signature": { "$ref": "#/$defs/signature" }
         },
+        "additionalProperties": false
+      }
+    },
+    "design_stance": {
+      "description": "Design 8.5: open keeps many solutions, refined narrows them on purpose, mixed is both. Reports judge against it; absent = unspecified.",
+      "enum": ["open", "refined", "mixed"]
+    },
+    "illusory_by_design": {
+      "description": "Design 8.5: solutions meant to look possible but fail (e.g. a bait). Kept apart from the illusory findings.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rationale", "decided_by"],
+        "properties": {
+          "tactics": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/tacticId" } },
+          "route": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/nodeId" } },
+          "rationale": { "type": "string", "minLength": 1 },
+          "decided_by": { "type": "string", "minLength": 1 }
+        },
+        "anyOf": [
+          { "required": ["tactics"], "properties": { "tactics": { "minItems": 1 } } },
+          { "required": ["route"], "properties": { "route": { "minItems": 1 } } }
+        ],
         "additionalProperties": false
       }
     },
@@ -46,6 +73,18 @@
     "properties": { "draft": { "const": true } }
   },
   "$defs": {
+    "divergenceReason": { "enum": ["alt-route", "shortcut", "teach-skipped", "over-time", "forbid-entered"] },
+    "divergenceId": { "type": "string", "pattern": "^div-[0-9a-f]{12}$" },
+    "signature": {
+      "description": "Tactic sequence + map node route of the runs a divergence groups (spec/feature/intent-verify.md 4.1).",
+      "type": "object",
+      "required": ["tactics", "route"],
+      "properties": {
+        "tactics": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/tacticId" } },
+        "route": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/nodeId" } }
+      },
+      "additionalProperties": false
+    },
     "common": {
       "properties": {
         "id": { "$ref": "id.schema.json#/$defs/intentId" },

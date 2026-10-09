@@ -16,6 +16,7 @@ import { readPromptTemplate } from '../adapters/llm/read-prompt-template.ts';
 import { createSchemaRegistry } from '../schema/schema-registry.ts';
 import { fsScanSource } from '../audit/fs-scan-source.ts';
 import { createFsLearnIo } from '../learn/io/fs-learn-io.ts';
+import { createFsVerifyIo } from '../adapters/fs/verify-io-fs.ts';
 import { PLAYER_SALT_ENV } from '../import/plays/player-salt.ts';
 import { runCli } from './run-cli.ts';
 
@@ -50,6 +51,7 @@ try {
       playerSaltFromEnv: () => process.env[PLAYER_SALT_ENV],
       now: () => new Date(),
     },
+    verifyIo: createFsVerifyIo(),
   });
 } catch (cause) {
   process.stderr.write(`guide: ${(cause as Error).message}\n`);

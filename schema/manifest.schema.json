@@ -30,7 +30,25 @@
       "properties": { "policy": { "$ref": "#/$defs/policy" } },
       "additionalProperties": false
     },
-    "audit": { "$ref": "#/$defs/audit" }
+    "audit": { "$ref": "#/$defs/audit" },
+    "feasibility": {
+      "description": "Feasibility band thresholds (design 8.5, spec/feature/intent-verify.md 6.3). Every field is optional; absent ones take the defaults.",
+      "type": "object",
+      "properties": {
+        "thresholds": {
+          "type": "object",
+          "properties": {
+            "feasible_success": { "$ref": "#/$defs/ratio" },
+            "min_runs": { "type": "integer", "minimum": 1 },
+            "illusory_weight": { "type": "number", "minimum": 1 },
+            "stall_after_sec": { "type": "number", "minimum": 0 },
+            "stall_weight": { "type": "number", "minimum": 0 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
   },
   "additionalProperties": false,
   "$defs": {

@@ -6,5 +6,6 @@
     { "id": "intent:bestia:dome-arena:time", "kind": "time", "range_sec": [60, 180] },
     { "id": "intent:bestia:dome-arena:no-ring-out", "kind": "forbid", "area": "node:outside", "note": "リング外に居座って時間を稼がせない" }
   ],
-  "allowed_divergences": []
+  "allowed_divergences": [],
+  "design_stance": "open"
 }

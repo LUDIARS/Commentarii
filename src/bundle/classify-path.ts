@@ -52,9 +52,10 @@ const PATTERNS: readonly { readonly pattern: RegExp; readonly kind: FileKind; re
 
 /**
  * Overlay, schema references, the import inputs (master data, mapping) and the engine's
- * personas (read by the engine, not part of the guide itself) kept next to the bundle.
+ * personas (read by the engine, not part of the guide itself) and the feasibility bands derived by
+ * guide verify intent (stage 5) kept next to the bundle.
  */
-const IGNORED_PREFIXES = ['observations/', 'schema/', 'masters/', 'personas/'];
+const IGNORED_PREFIXES = ['observations/', 'schema/', 'masters/', 'personas/', 'feasibility/'];
 
 export function classifyPath(relativePath: string): PathClass {
   if (IGNORED_PREFIXES.some((prefix) => relativePath.startsWith(prefix))) return { type: 'ignored' };

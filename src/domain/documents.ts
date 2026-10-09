@@ -30,6 +30,8 @@ export interface Manifest {
   readonly coordinates: { readonly system: 'grid' | 'world-xy' | 'world-xyz'; readonly unit: string };
   readonly lexicon?: { readonly version: string };
   readonly learning?: { readonly policy: unknown };
+  /** Feasibility band thresholds (spec/feature/intent-verify.md 6.3); defaults when absent. */
+  readonly feasibility?: { readonly thresholds?: Readonly<Record<string, number>> };
 }
 
 export interface Glossary {
@@ -200,17 +202,42 @@ export type IntendedItem =
   | (IntentCommon & { readonly kind: 'time'; readonly range_sec: readonly [number, number] })
   | (IntentCommon & { readonly kind: 'forbid'; readonly area: string });
 
+export type DivergenceReason = 'alt-route' | 'shortcut' | 'teach-skipped' | 'over-time' | 'forbid-entered';
+
+/** Tactic sequence + map node route of the runs a divergence groups (spec/feature/intent-verify.md 4.1). */
+export interface DivergenceSignature {
+  readonly tactics: readonly string[];
+  readonly route: readonly string[];
+}
+
 export interface AllowedDivergence {
   readonly run: string;
   readonly summary: string;
   readonly decided_by: string;
   readonly tactic?: string;
+  /** Set by guide verify intent --accept. */
+  readonly intent?: string;
+  readonly reason?: DivergenceReason;
+  readonly divergence?: string;
+  readonly signature?: DivergenceSignature;
+}
+
+export type DesignStance = 'open' | 'refined' | 'mixed';
+
+/** A solution meant to look possible but fail (design 8.5). */
+export interface IllusoryByDesign {
+  readonly tactics?: readonly string[];
+  readonly route?: readonly string[];
+  readonly rationale: string;
+  readonly decided_by: string;
 }
 
 export interface Intent {
   readonly stage: string;
   readonly intended: readonly IntendedItem[];
   readonly allowed_divergences: readonly AllowedDivergence[];
+  readonly design_stance?: DesignStance;
+  readonly illusory_by_design?: readonly IllusoryByDesign[];
   /** Set on intents drafted by `guide intent import` (source.kind = llm-draft, draft: true). */
   readonly source?: Source;
   readonly draft?: boolean;

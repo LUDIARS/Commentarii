@@ -1,0 +1,19 @@
+{
+  "name": "intent-verify",
+  "description": "意図ズレ検証 (段階 5) と行動可能性の帯・良い遊びの 2 軸 (5P)、経路・死亡ヒートマップ (5H): guide verify intent (coverage / 人間 run と intent の突き合わせ、一致・面白いズレ・望ましくないズレ・不可能の分類、observations/divergences.json の人間判定欄、--accept による allowed_divergences への移動)、feasibility/<stage>.json (feasible / extreme / illusory / impossible、breadth / confusion depth、design_stance)、guide report feasibility、SVG 描画 (格子 / navgraph / zones、散布図) と render への埋め込み。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)src/verify/.+\.ts$" },
+    { "pathPattern": "(^|/)src/render/heatmap/[^/]+\.ts$" },
+    { "pathPattern": "(^|/)tests/verify/[^/]+\.test\.ts$" },
+    { "pathPattern": "(^|/)tests/fixtures/verify/.+$" },
+    { "pathPattern": "(^|/)spec/feature/intent-verify\.md$" }
+  ],
+  "cardTemplate": "Summarise the \"intent-verify\" domain: replays (coverage / human, omniscient excluded) -> stage traces -> intent classes and divergences (allowed ones not reported again, --accept the only canonical write) -> solution clusters, feasibility bands (illusory = visible via tacticCandidates on the player world + no success) and the two axes -> report, divergences.json, feasibility/, heatmap SVGs.",
+  "specRefs": [
+    "spec/architecture/design.md §8.3 §8.5 §11 §14.E §14.H",
+    "spec/feature/intent-verify.md"
+  ],
+  "rationale": "「面白い」は人間が決める (§8.3): ツールは候補と判定欄を出すだけで、正本 intent/ を書くのは --accept だけ。帯と 2 軸は player の run だけで決め、omniscient は数えない (原則 2)。収束は事実として出し、洗練化を推奨しない (§8.5)。描画は依存ライブラリを足さず文字列で組む。fs アダプタ (src/adapters/fs/verify-io-fs.ts) とテスト補助 (tests/support/verify.ts) は guide-bundle の所属パターンに含まれる。"
+}

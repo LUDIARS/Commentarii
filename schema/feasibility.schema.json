@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "feasibility.schema.json",
+  "title": "Feasibility bands and the two good-play axes of one stage (feasibility/<stage-slug>.json)",
+  "description": "Written by guide verify intent from player-mode coverage and human runs (design 8.5, spec/feature/intent-verify.md 6-7). Derived data: the bundle loader ignores feasibility/. Omniscient runs never count; they are only tallied in runs.ignored_omniscient.",
+  "type": "object",
+  "required": ["stage", "design_stance", "thresholds", "runs", "solutions", "axes"],
+  "properties": {
+    "stage": { "$ref": "id.schema.json#/$defs/stageId" },
+    "design_stance": { "enum": ["open", "refined", "mixed", "unspecified"] },
+    "thresholds": {
+      "type": "object",
+      "required": ["feasible_success", "min_runs", "illusory_weight", "stall_after_sec", "stall_weight"],
+      "properties": {
+        "feasible_success": { "type": "number", "minimum": 0, "maximum": 1 },
+        "min_runs": { "type": "integer", "minimum": 1 },
+        "illusory_weight": { "type": "number", "minimum": 1 },
+        "stall_after_sec": { "type": "number", "minimum": 0 },
+        "stall_weight": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "runs": {
+      "type": "object",
+      "required": ["counted", "ignored_omniscient"],
+      "properties": {
+        "counted": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/runId" } },
+        "ignored_omniscient": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/runId" } }
+      },
+      "additionalProperties": false
+    },
+    "solutions": { "type": "array", "items": { "$ref": "#/$defs/solution" } },
+    "axes": { "type": "array", "items": { "$ref": "#/$defs/axes" } }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "band": { "enum": ["feasible", "extreme", "illusory", "impossible"] },
+    "personaBand": {
+      "type": "object",
+      "required": ["persona", "attempts", "successes", "success_rate", "band"],
+      "properties": {
+        "persona": { "$ref": "id.schema.json#/$defs/slug" },
+        "attempts": { "type": "integer", "minimum": 0 },
+        "successes": { "type": "integer", "minimum": 0 },
+        "success_rate": { "anyOf": [{ "type": "number", "minimum": 0, "maximum": 1 }, { "type": "null" }] },
+        "band": { "$ref": "#/$defs/band" }
+      },
+      "additionalProperties": false
+    },
+    "solution": {
+      "type": "object",
+      "required": ["id", "tactics", "route", "band", "visible", "intended", "personas", "evidence_runs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^sol:[a-z0-9][a-z0-9_-]*:[1-9][0-9]*$" },
+        "tactics": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/tacticId" } },
+        "route": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/nodeId" } },
+        "band": { "$ref": "#/$defs/band" },
+        "visible": { "description": "Generated as a candidate from the player export (shown / discoverable) alone.", "type": "boolean" },
+        "by_design": {
+          "type": "object",
+          "required": ["rationale", "decided_by"],
+          "properties": { "rationale": { "type": "string", "minLength": 1 }, "decided_by": { "type": "string", "minLength": 1 } },
+          "additionalProperties": false
+        },
+        "intended": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/intentId" } },
+        "personas": { "type": "array", "items": { "$ref": "#/$defs/personaBand" } },
+        "evidence_runs": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/runId" } }
+      },
+      "additionalProperties": false
+    },
+    "axes": {
+      "type": "object",
+      "required": ["persona", "breadth", "confusion_depth", "convergence", "runs"],
+      "properties": {
+        "persona": { "$ref": "id.schema.json#/$defs/slug" },
+        "breadth": { "type": "integer", "minimum": 0 },
+        "confusion_depth": { "type": "number", "minimum": 0 },
+        "convergence": { "description": "breadth is 1 and the stage did not declare design_stance refined. A fact, not a verdict.", "type": "boolean" },
+        "runs": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

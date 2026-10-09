@@ -9,6 +9,7 @@ import type { RenderKnowledge } from '../render/render-bundle.ts';
 import { parseReplayCommand, REPLAY_USAGE, type ReplayCommand } from '../replay/replay-command.ts';
 import { IMPORT_USAGE, parseImportCommand, type ImportCommand } from './parse-import-command.ts';
 import { LEARN_USAGE, parseLearnCommand, type LearnCommand } from '../learn/cli/learn-command.ts';
+import { parseReportFeasibilityCommand, parseVerifyCommand, VERIFY_USAGE, type VerifyCommand } from '../verify/cli/verify-command.ts';
 import { UsageError } from './usage-error.ts';
 
 export { UsageError };
@@ -24,13 +25,14 @@ export type Command =
   | AutoplayCommand
   | LearnCommand
   | PlaysCommand
+  | VerifyCommand
   | { readonly name: 'help' };
 
 export const USAGE = `usage:
   guide validate <bundle-dir> [--json]
   guide render <bundle-dir> --out <dir> [--knowledge player|full]
   guide report knowledge <bundle-dir> [--json]
-${EXPORT_USAGE}${AUTOPLAY_USAGE}${REPLAY_USAGE}${IMPORT_USAGE}${PLAYS_USAGE}${AUDIT_USAGE}${LEARN_USAGE}`;
+${EXPORT_USAGE}${AUTOPLAY_USAGE}${REPLAY_USAGE}${IMPORT_USAGE}${PLAYS_USAGE}${AUDIT_USAGE}${LEARN_USAGE}${VERIFY_USAGE}`;
 
 function single(positionals: readonly string[], what: string): string {
   if (positionals.length !== 1 || positionals[0] === undefined) throw new UsageError(`${what} needs exactly one <bundle-dir>`);
@@ -56,10 +58,11 @@ export function parseCommand(argv: readonly string[]): Command {
       return { name: 'render', bundleDir: single(positionals, 'render'), outDir: values.out, knowledge: values.knowledge };
     }
     if (name === 'report' && rest[0] === 'plays') return parseReportPlaysCommand(rest.slice(1));
+    if (name === 'report' && rest[0] === 'feasibility') return parseReportFeasibilityCommand(rest.slice(1));
     if (name === 'import' && rest[0] === 'plays') return parseImportPlaysCommand(rest.slice(1));
     if (name === 'report') {
       const [topic, ...options] = rest;
-      if (topic !== 'knowledge') throw new UsageError('report supports: report knowledge | report plays');
+      if (topic !== 'knowledge') throw new UsageError('report supports: report knowledge | report plays | report feasibility');
       const { values, positionals } = parseArgs({ args: options, allowPositionals: true, options: { json: { type: 'boolean' } } });
       return { name: 'report-knowledge', bundleDir: single(positionals, 'report knowledge'), json: values.json === true };
     }
@@ -70,6 +73,7 @@ export function parseCommand(argv: readonly string[]): Command {
     if (name === 'run') return parseRunCommand(rest);
     if (name === 'bench') return parseBenchCommand(rest);
     if (name === 'learn') return parseLearnCommand(rest);
+    if (name === 'verify') return parseVerifyCommand(rest);
   } catch (cause) {
     if (cause instanceof UsageError) throw cause;
     throw new UsageError((cause as Error).message);

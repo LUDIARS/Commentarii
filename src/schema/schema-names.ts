@@ -24,6 +24,9 @@ export const DOCUMENT_SCHEMAS = [
   // Human play logs (design 14.D): the import plays mapping and the extracted candidates overlay.
   'plays-mapping',
   'human-candidates',
+  // Intent verification (stage 5): observations/divergences.json and feasibility/<stage>.json, never canonical.
+  'divergences',
+  'feasibility',
 ] as const;
 
 export type DocumentSchemaName = (typeof DOCUMENT_SCHEMAS)[number];

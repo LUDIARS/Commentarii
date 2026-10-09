@@ -290,6 +290,69 @@
       "module": "src/contracts/hash-identifier.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-50",
+      "criterion": "C-50 classifyIntents(input): omniscient の run は足跡にもズレにも現れず、許容済み (allowed_divergences) に一致するズレは再報告されず、不可能は route / teach で対象 run があり再現 0 本のときだけで、未許容の望ましくないズレがある意図は望ましくないズレ、未許容のズレがある意図は一致にならない",
+      "symbol": "classifyIntents",
+      "file": "src/verify/intent/classify-intents.ts",
+      "module": "src/contracts/classify-intents.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-51",
+      "criterion": "C-51 mergeDivergences(store, gameId, found): 既存の項目は消えず人間の欄 (decision / decided_by / note) と根拠 run を保ち、見つかったズレは全て入り、新しい項目は pending で、ID は一意、並びは pending → allow → reject",
+      "symbol": "mergeDivergences",
+      "file": "src/verify/intent/divergence-store.ts",
+      "module": "src/contracts/merge-divergences.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-52",
+      "criterion": "C-52 acceptDivergence(input): 対象ステージの intent で変わるのは allowed_divergences への最大 1 件の追加だけで、その項目はズレ ID と判定者を持ち、ストアの対象項目は判定者による allow になり、他の項目は変わらず、定石は返さない (昇格は報告のみ)",
+      "symbol": "acceptDivergence",
+      "file": "src/verify/intent/accept-divergence.ts",
+      "module": "src/contracts/accept-divergence.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-53",
+      "criterion": "C-53 assignBands(input): 成功のある解法は feasible か extreme で、illusory は player 書き出しから候補生成される (visible) かつ成功 0 のときだけ、impossible は visible でなく成功 0 のときだけ、feasible は min_runs 以上試行した全ペルソナで成功率が feasible_success 以上のときだけ、by_design は illusory にだけ付く",
+      "symbol": "assignBands",
+      "file": "src/verify/feasibility/assign-bands.ts",
+      "module": "src/contracts/assign-bands.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-54",
+      "criterion": "C-54 buildFeasibility(input): omniscient の run は数えられず根拠にもならず、breadth はそのペルソナが成功した illusory / impossible でない解法の数で、convergence は breadth が 1 かつ design_stance が refined でないときだけ真、confusion_depth は負にならない",
+      "symbol": "buildFeasibility",
+      "file": "src/verify/feasibility/build-feasibility.ts",
+      "module": "src/contracts/build-feasibility.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-55",
+      "criterion": "C-55 drawHeatmap(input): SVG は well-formed で、入力の群ごとに 1 パネル、地図上の forbid 領域ごとに各パネルへ forbid 要素、地図上に 2 ノード以上ある route 意図ごとに各パネルへ intent-route 要素、地図ノード間の移動ごとに run-path 要素を持つ",
+      "symbol": "drawHeatmap",
+      "file": "src/render/heatmap/draw-heatmap.ts",
+      "module": "src/contracts/draw-heatmap.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-56",
+      "criterion": "C-56 clusterSolutions(stageSlug, traces, intended): 全足跡はちょうど 1 つの解法に入り、解法の中の足跡は解法と同じ定石列で経路が解法の経路の前方一致、ID は一意な sol:<stage-slug>:<n>、想定解は全てどれかの解法に名前が載る",
+      "symbol": "clusterSolutions",
+      "file": "src/verify/feasibility/cluster-solutions.ts",
+      "module": "src/contracts/cluster-solutions.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }
