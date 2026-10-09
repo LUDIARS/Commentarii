@@ -31,6 +31,13 @@
       "additionalProperties": false
     },
     "audit": { "$ref": "#/$defs/audit" },
+    "observation": {
+      "description": "Observation boundary (spec/feature/observation-boundary.md): the game-specific observation fields a player frame may carry, each with its knowledge and where it comes from. Undeclared fields are refused in player mode.",
+      "type": "object",
+      "required": ["fields"],
+      "properties": { "fields": { "$ref": "observation-fields.schema.json#/$defs/fields" } },
+      "additionalProperties": false
+    },
     "feasibility": {
       "description": "Feasibility band thresholds (design 8.5, spec/feature/intent-verify.md 6.3). Every field is optional; absent ones take the defaults.",
       "type": "object",

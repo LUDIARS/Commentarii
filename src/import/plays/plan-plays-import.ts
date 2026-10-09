@@ -70,9 +70,11 @@ export function planPlaysImport(request: PlaysImportRequest): PlaysImport {
     const built = buildHumanRun({ group, mapping, context: request.context, identify: request.identify, salt: request.salt, now: request.now, tally });
     return { path: humanRunPath(built.playerHash, built.run.header.run_id), playerHash: built.playerHash, run: built.run, text: serializeReplayRun(built.run) };
   });
-  for (const file of runs) assertLoads(file, request.replaySchema);
+  // The raw identifier check names the leak precisely, so it goes before the replay checks
+  // (an undeclared extra column carrying the identifier also fails the boundary registry).
   const raw = new Set(groups.flatMap((group) => [group.player, group.run]));
   assertNoRawIdentifiers(new Map(runs.map((file) => [file.path, file.text])), raw);
+  for (const file of runs) assertLoads(file, request.replaySchema);
   const mapped = mappedColumns(mapping);
   return {
     runs: [...runs].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0)),

@@ -31,6 +31,10 @@
         "purpose": { "enum": ["efficiency", "coverage", "human"] },
         "source": { "description": "human: a human play imported by guide import plays (design 14.D). Left out for engine runs.", "enum": ["human"] },
         "persona": { "$ref": "id.schema.json#/$defs/slug" },
+        "observation_fields": {
+          "description": "The game's observation field declarations the run was recorded under (manifest observation.fields, spec/feature/observation-boundary.md). Absent in older recordings: the base registry alone applies.",
+          "$ref": "observation-fields.schema.json#/$defs/fields"
+        },
         "started_at": { "type": "string", "format": "date-time" }
       },
       "additionalProperties": false

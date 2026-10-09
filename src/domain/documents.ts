@@ -30,6 +30,8 @@ export interface Manifest {
   readonly coordinates: { readonly system: 'grid' | 'world-xy' | 'world-xyz'; readonly unit: string };
   readonly lexicon?: { readonly version: string };
   readonly learning?: { readonly policy: unknown };
+  /** Game-declared observation fields (spec/feature/observation-boundary.md). */
+  readonly observation?: { readonly fields: readonly { readonly path: string; readonly knowledge: Knowledge; readonly origin: string }[] };
   /** Feasibility band thresholds (spec/feature/intent-verify.md 6.3); defaults when absent. */
   readonly feasibility?: { readonly thresholds?: Readonly<Record<string, number>> };
 }

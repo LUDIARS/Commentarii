@@ -6,7 +6,7 @@
 import type { TacticMetrics } from '../../domain/documents.ts';
 import type { JsonPatchOperation } from '../patch/json-patch.ts';
 
-export type ProposalKind = 'rewrite' | 'promotion' | 'entity-draft';
+export type ProposalKind = 'rewrite' | 'promotion' | 'entity-draft' | 'human-tactic';
 export type ProposalStatus = 'auto' | 'pending';
 
 export interface FilePatch {
@@ -35,7 +35,30 @@ export interface PromotionDetail {
   readonly requires: { readonly player_runs: number; readonly agreement: number };
 }
 
-export interface Proposal {
+export interface HumanTacticDetail {
+  readonly stage: string;
+  readonly occurrences: number;
+  readonly runs: number;
+  readonly players: number;
+  readonly success_rate?: number;
+}
+
+/**
+ * What a proposal was measured and judged against (spec/feature/learning.md §4.2): the game and
+ * guide version, the condition it compares under and the units of its metrics. Part of the
+ * content hash, so an approval does not carry over to another version or condition.
+ */
+export interface ProposalBasis {
+  readonly game_id: string;
+  readonly manifest_version: string;
+  readonly builds: readonly string[];
+  /** The `when` both sides of a comparison were measured under (rewrite / human-tactic). */
+  readonly condition?: unknown;
+  readonly units: Readonly<Record<string, string>>;
+}
+
+/** A proposal as the generators make it, before consolidate seals it with its basis and hash. */
+export interface ProposalDraft {
   /** Stable within one consolidate: <kind>:<subject>. */
   readonly id: string;
   readonly kind: ProposalKind;
@@ -47,4 +70,13 @@ export interface Proposal {
   readonly evidence: readonly string[];
   readonly rewrite?: RewriteDetail;
   readonly promotion?: PromotionDetail;
+  readonly human?: HumanTacticDetail;
+  /** The condition the proposal compares under (folded into the basis). */
+  readonly condition?: unknown;
+}
+
+export interface Proposal extends Omit<ProposalDraft, 'condition'> {
+  readonly basis: ProposalBasis;
+  /** sha256 over everything an approver judges (approval/proposal-hash.ts). */
+  readonly content_hash: string;
 }

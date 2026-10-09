@@ -1,7 +1,8 @@
-// C-32 planConsolidation(input): without --apply nothing changes; only auto proposals are
-// applied; a proposal is auto only for a tactic rewrite under auto_apply that no intent
-// `teach` refers to; promotions and draft entities always wait for a person; applying never
-// removes a file and keeps the old tactic with superseded_by set.
+// C-32 planConsolidation(input): without --apply nothing changes; only auto proposals and
+// pending ones with a matching approval (same content hash and guide version) are applied; a
+// proposal is auto only for a non-relax tactic rewrite under auto_apply that no intent `teach`
+// refers to; promotions, draft entities and human tactics always wait for a person; applying
+// never removes a file and keeps the old tactic with superseded_by set.
 
 import type { Consolidation, ConsolidationInput } from '../learn/consolidate/plan-consolidation.ts';
 
@@ -18,8 +19,16 @@ export default {
       if (proposal.kind !== 'rewrite' && proposal.status !== 'pending') return `${proposal.id} is a ${proposal.kind} but not pending`;
       if (proposal.status === 'auto' && !input.policy.rewrite.auto_apply) return `${proposal.id} is auto while auto_apply is false`;
       if (proposal.status === 'auto' && proposal.rewrite !== undefined && taught.has(proposal.rewrite.of)) return `${proposal.id} replaces a taught tactic automatically`;
+      if (proposal.status === 'auto' && proposal.rewrite?.mutation === 'relax') return `${proposal.id} relaxes the condition but is auto`;
     }
-    for (const id of result.applied) if (byId.get(id)?.status !== 'auto') return `${id} was applied without being auto`;
+    const approvals = input.approvals ?? [];
+    for (const id of result.approved) {
+      const proposal = byId.get(id);
+      const approval = approvals.filter((entry) => entry.proposal === id).at(-1);
+      if (proposal === undefined || approval === undefined) return `${id} is approved without an approval`;
+      if (approval.content_hash !== proposal.content_hash || approval.manifest_version !== proposal.basis.manifest_version) return `${id} is approved by a stale approval`;
+    }
+    for (const id of result.applied) if (byId.get(id)?.status !== 'auto' && !result.approved.includes(id)) return `${id} was applied without being auto or approved`;
     const allowed = new Set(result.applied.flatMap((id) => byId.get(id)?.files.map((file) => file.path) ?? []));
     for (const change of result.changes) {
       if (change.after === undefined) return `${change.path} would be removed`;

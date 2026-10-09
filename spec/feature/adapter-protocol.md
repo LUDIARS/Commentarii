@@ -29,7 +29,7 @@ interface GameAdapter {
 | 場所 | 意味 |
 |---|---|
 | `self.hp.value` | HP バーの比 (0〜1)。`knowledge` は通常 `shown` |
-| `self.resources.<name>` | 資源の量 (数値か `{value, knowledge}`) |
+| `self.resources.<name>` | 資源の量 (数値か `{value, knowledge}`)。player では manifest `observation.fields` に宣言したものだけ |
 | `extra.reach` | 自分の基本攻撃が届く距離 (shown) |
 | `extra.ready_skills` | 今使えるスキル ID の配列 |
 | `extra.items` | 所持アイテム ID → 個数 |
@@ -39,12 +39,26 @@ interface GameAdapter {
 
 - `player`: `knowledge: masked` の値を観測のどこにも入れない (段 1 のゲーム内 API アダプタは mode を見て落とす)。
   ドライバは全観測を検査し、1 つでもあれば decider に渡す前に止め、run を `abort` (`stopped: masked-in-player`、pointer のみ記録) にする。
+  観測項目の許可表 ([observation-boundary.md](observation-boundary.md)) に無い場所 (宣言の無い `extra.<key>` など) も同じく止める
+  (宣言の無い値は masked、原則 1)。ゲーム固有の項目は manifest `observation.fields` で宣言する。
 - `omniscient`: 検算・デバッグ専用。masked を含んでよいが、スコア・昇格根拠には使わない (原則 2)。
 
 ## 2. プロセス分離プロトコル (JSON Lines)
 
 ネイティブゲームは別プロセスから始める (§7.3)。ゲームが `guide run --adapter stdio ...` を子プロセスとして起動し、その
 stdin / stdout をつなぐ。
+
+### 起動主体・方向・mode (Astra レビュー P1-7 で統一、2026-10-09)
+
+| 項目 | 決まり |
+|---|---|
+| 起動主体 | **ゲーム**。ゲームが自分の起動オプション (Bestia なら `--commentarii-adapter=stdio --commentarii-mode=player|omniscient`) を受けて、`guide run --adapter stdio --mode <同じ mode> ...` を子プロセスとして起動する |
+| mode を決める側 | ゲームの起動オプション。ゲームはその mode で観測を出し分け、`hello` で **宣言** する。エンジンは自分の `--mode` と比べ、違えば `bye {reason: mode-mismatch}` で止める。エンジンからゲームへ mode を送る行は無い |
+| ゲーム → エンジン | `hello` (最初に 1 回) → `observation` (毎ティック) → `bye` (ゲームが終わったとき) |
+| エンジン → ゲーム | `action` (観測 1 つにちょうど 1 回) → `bye` (エンジンが先に止めたとき) |
+| player の観測の中身 | [observation-boundary.md](observation-boundary.md) の許可表に従う。表に無い場所はエンジンが masked と同じ扱いで止める |
+
+描画タップ (段 2) はこのプロトコルとは別の流れで、[render-tap-contract.md](render-tap-contract.md) に従う (`--frames` で受け、行動は `--act` で別経路)。
 
 - 1 行 1 JSON オブジェクト、UTF-8、改行は LF (エンジンは読み込みで末尾の CR を捨てる)。空行は無視。
 - エンジンの stdout はプロトコル専用。エンジンの診断・run の結果は stderr に出す。

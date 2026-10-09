@@ -13,4 +13,9 @@ export class RecordingError extends Error {
   get isMaskedInPlayer(): boolean {
     return this.problems.some((problem) => problem.code === 'masked-in-player');
   }
+
+  /** True when a player observation holds a place outside the field registry (an undeclared value is masked, principle 1). */
+  get isUnregisteredInPlayer(): boolean {
+    return this.problems.some((problem) => problem.code === 'unregistered-in-player');
+  }
 }

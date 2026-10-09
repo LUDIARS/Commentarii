@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "observation-fields.schema.json",
+  "title": "Observation field declarations (spec/feature/observation-boundary.md)",
+  "description": "Game-specific places a player Observation frame may carry, each with its knowledge and where the player perceives it. Used by manifest observation.fields and the replay header observation_fields. Base fields (tick, self.pos, entities[].pos, extra.reach ...) are fixed by Commentarii and cannot be declared.",
+  "$defs": {
+    "fields": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/field" }
+    },
+    "field": {
+      "type": "object",
+      "required": ["path", "knowledge", "origin"],
+      "properties": {
+        "path": {
+          "description": "self.resources.<name> | extra.<key> | events.<kind>.<field>",
+          "type": "string",
+          "pattern": "^(self\\.resources\\.[a-z][a-z0-9_]*|extra\\.[A-Za-z0-9_-]+|events\\.[A-Za-z0-9_:-]+\\.[A-Za-z0-9_-]+)$"
+        },
+        "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+        "origin": { "description": "Where the player perceives it (HUD gauge, damage number, ...).", "type": "string", "pattern": "\\S" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

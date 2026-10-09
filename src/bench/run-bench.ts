@@ -47,7 +47,7 @@ export async function runBench(options: BenchOptions): Promise<BenchReport> {
       ...(options.simConfig ? { config: options.simConfig } : {}),
     });
     const decider = createUtilityBtDecider({ bundle, persona: options.persona }, seed);
-    const report = await runDriver({ adapter, decider, mode: options.mode, maxTicks: options.ticks });
+    const report = await runDriver({ adapter, decider, mode: options.mode, observationFields: options.bundle.manifest?.doc.observation?.fields ?? [], maxTicks: options.ticks });
     const stats = adapter.stats();
     runs.push({ seed, result: report.result, ticks: report.ticks, time_sec: stats.time_sec, damage_taken: stats.damage_taken, chosen: report.chosen });
   }

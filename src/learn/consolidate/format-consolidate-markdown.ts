@@ -31,7 +31,13 @@ function detail(proposal: Proposal): string[] {
     lines.push(`- 値: ${promotion.ref} = ${promotion.value} (masked → discoverable)`);
     lines.push(`- player run ${promotion.player_runs} 本 / 一致率 ${promotion.agreement} (必要: ${promotion.requires.player_runs} 本 / ${promotion.requires.agreement})`);
   }
+  if (proposal.human !== undefined) {
+    const { human } = proposal;
+    lines.push(`- 人間の別解: ${human.stage} / ${human.occurrences} 回 / run ${human.runs} 本 / プレイヤー ${human.players} 人 / 成功率 ${human.success_rate ?? '-'}`);
+  }
   lines.push(`- 根拠 run: ${proposal.evidence.join(', ') || '-'}`);
+  lines.push(`- 判定の前提: 攻略本 ${proposal.basis.manifest_version} / ビルド ${proposal.basis.builds.join(', ') || '-'}${proposal.basis.condition === undefined ? '' : ` / 条件 ${json(proposal.basis.condition)}`}`);
+  lines.push(`- 内容ハッシュ (承認はこれに紐付く): ${proposal.content_hash}`);
   for (const file of proposal.files) lines.push(`- ${file.create ? '新規' : '変更'} ${file.path}: ${json(file.patch)}`);
   return lines;
 }
@@ -44,7 +50,15 @@ function section(title: string, proposals: readonly Proposal[], state: (proposal
 
 export function formatConsolidateMarkdown(consolidation: Consolidation): string {
   const applied = new Set(consolidation.applied);
-  const state = (proposal: Proposal): string => (applied.has(proposal.id) ? '反映済み' : proposal.status === 'auto' ? '自動反映可 (--apply で反映)' : '承認待ち');
+  const approved = new Set(consolidation.approved);
+  const stale = new Map(consolidation.stale.map((entry) => [entry.proposal, entry.why]));
+  const state = (proposal: Proposal): string => {
+    if (applied.has(proposal.id)) return '反映済み';
+    if (proposal.status === 'auto') return '自動反映可 (--apply で反映)';
+    if (approved.has(proposal.id)) return '承認済み (--apply で反映)';
+    if (stale.has(proposal.id)) return `承認失効: ${stale.get(proposal.id) ?? ''} (再承認が必要)`;
+    return '承認待ち (guide learn approve)';
+  };
   const of = (kind: Proposal['kind']): Proposal[] => consolidation.proposals.filter((proposal) => proposal.kind === kind);
   return [
     '# learn consolidate\n',
@@ -54,5 +68,6 @@ export function formatConsolidateMarkdown(consolidation: Consolidation): string 
     section('定石の書き換え', of('rewrite'), state),
     section('境界の昇格候補 (人間承認)', of('promotion'), state),
     section('未知 entity の雛形 (人間承認)', of('entity-draft'), state),
+    section('人間プレイの別解 (人間承認)', of('human-tactic'), state),
   ].join('\n');
 }

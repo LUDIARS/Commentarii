@@ -13,7 +13,7 @@ import { pointerSegment, type JsonPatchOperation } from '../patch/json-patch.ts'
 import type { LearningPolicy } from '../policy/learning-policy.ts';
 import { resolveQuantity, type CanonicalValue } from '../values/resolve-quantity.ts';
 import { summarizeAgreement } from '../values/value-agreement.ts';
-import type { Proposal } from './proposal.ts';
+import type { ProposalDraft } from './proposal.ts';
 
 function promotedValue(canonical: CanonicalValue, runs: readonly string[], agreement: number): GuideValue<number> {
   const { value } = canonical;
@@ -31,7 +31,7 @@ function entityPatch(bundle: Bundle, canonical: CanonicalValue, entity: string, 
   return { path: open.path, patch: open.doc.stats === undefined ? [{ op: 'add', path: '/stats', value: {} }, add] : [add] };
 }
 
-function proposalOf(bundle: Bundle, overlay: Overlay, policy: LearningPolicy, entry: OverlayValue): Proposal | undefined {
+function proposalOf(bundle: Bundle, overlay: Overlay, policy: LearningPolicy, entry: OverlayValue): ProposalDraft | undefined {
   const canonical = resolveQuantity(bundle, entry.entity, entry.quantity);
   if (canonical === undefined || !canonical.masked) return undefined;
   const player = new Set(overlay.runs.player);
@@ -57,6 +57,6 @@ function proposalOf(bundle: Bundle, overlay: Overlay, policy: LearningPolicy, en
   };
 }
 
-export function promotionProposals(bundle: Bundle, overlay: Overlay, policy: LearningPolicy): Proposal[] {
-  return overlay.values.map((entry) => proposalOf(bundle, overlay, policy, entry)).filter((proposal): proposal is Proposal => proposal !== undefined);
+export function promotionProposals(bundle: Bundle, overlay: Overlay, policy: LearningPolicy): ProposalDraft[] {
+  return overlay.values.map((entry) => proposalOf(bundle, overlay, policy, entry)).filter((proposal): proposal is ProposalDraft => proposal !== undefined);
 }

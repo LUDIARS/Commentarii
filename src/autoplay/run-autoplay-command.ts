@@ -77,7 +77,8 @@ async function runOnce(command: RunCommand, io: AutoplayIo, engineIo: EngineIo):
           sink: createObservationSink(await engineIo.createReplayWriter(command.observePath), command.mode),
           acted: () => decider.lastOutcome?.acted,
         });
-  const report = await runDriver({ adapter, decider, mode: command.mode, maxTicks: command.ticks, ...(record ? { record } : {}), ...(reflect ? { reflect } : {}) });
+  const observationFields = bundle.manifest?.doc.observation?.fields ?? [];
+  const report = await runDriver({ adapter, decider, mode: command.mode, observationFields, maxTicks: command.ticks, ...(record ? { record } : {}), ...(reflect ? { reflect } : {}) });
   const out = command.adapter === 'stdio' ? io.stderr : io.stdout;
   const adapterId = command.adapter === 'sim' ? SIM_ADAPTER_ID : 'stdio';
   out(`${JSON.stringify({ run_id: id, adapter: adapterId, persona: persona.slug, mode: command.mode, purpose: command.purpose, seed: command.seed, ...report, ...(command.recordPath ? { record: command.recordPath } : {}), ...(command.observePath ? { observe: command.observePath } : {}) }, null, 2)}\n`);

@@ -61,6 +61,7 @@ async function execute(command: Command, io: CliIo): Promise<number> {
       return runAutoplayCommand(command, io);
     case 'learn-ingest':
     case 'learn-consolidate':
+    case 'learn-approve':
       return runLearnCommand(command, io);
     case 'import-plays':
     case 'report-plays':

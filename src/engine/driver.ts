@@ -2,10 +2,14 @@
 // tick limit is reached, optionally recording a replay and reflecting into the overlay. The adapter only observes and acts; this loop is
 // the engine's. In player mode every observation is checked for masked values before the
 // decider sees it, independently of the adapter's own duty (principle 2): one masked value
-// stops the run (result abort) and nothing of that observation is decided on or recorded.
+// stops the run (result abort) and nothing of that observation is decided on or recorded. A place
+// outside the observation field registry counts as masked (undeclared = masked, principle 1;
+// spec/feature/observation-boundary.md).
 
 import type { GameAdapter } from '../adapter/game-adapter.ts';
 import type { Decider } from '../replay/decider.ts';
+import { observationBoundaryProblems } from '../observation/check-observation-boundary.ts';
+import type { ObservationFieldDeclaration } from '../observation/observation-fields.ts';
 import { findMaskedPointers } from '../replay/find-masked-pointers.ts';
 import type { ObservationFrame, ObservationMode } from '../replay/observation-frame.ts';
 import type { ReplayAction } from '../replay/replay-action.ts';
@@ -28,6 +32,8 @@ export interface DriverOptions {
   readonly adapter: GameAdapter;
   readonly decider: Decider;
   readonly mode: ObservationMode;
+  /** The game's observation field declarations (manifest observation.fields); none = base registry only. */
+  readonly observationFields?: readonly ObservationFieldDeclaration[];
   readonly maxTicks: number;
   /** When given, the run is recorded (header, one line per tick, footer) through RecordingSink. */
   readonly record?: DriverRecording;
@@ -71,9 +77,10 @@ function engineSummary(stop: DriverStop): Readonly<Record<string, unknown>> {
 }
 
 /** Why the frame cannot be decided on, or undefined when it can. */
-function refusal(frame: ObservationFrame, mode: ObservationMode): DriverStop | undefined {
+function refusal(frame: ObservationFrame, mode: ObservationMode, fields: readonly ObservationFieldDeclaration[]): DriverStop | undefined {
   if (frame.mode !== mode) return { reason: 'mode-mismatch', expected: mode, got: frame.mode };
-  const masked = mode === 'player' ? findMaskedPointers(frame) : [];
+  // An unregistered place is masked by principle 1, so it stops the run the same way.
+  const masked = mode === 'player' ? [...findMaskedPointers(frame), ...observationBoundaryProblems(frame, fields).map((problem) => problem.pointer)] : [];
   return masked.length > 0 ? { reason: 'masked-in-player', tick: frame.tick, pointers: masked } : undefined;
 }
 
@@ -91,7 +98,8 @@ export async function runDriver(options: DriverOptions): Promise<DriverReport> {
     const record = options.record;
     if (record !== undefined) {
       const now = record.now ?? (() => new Date());
-      const header = { ...record.header, game_id: hello.game_id, adapter_id: hello.adapter_id, mode, started_at: now().toISOString() };
+      const fields = options.observationFields === undefined ? {} : { observation_fields: options.observationFields };
+      const header = { ...record.header, game_id: hello.game_id, adapter_id: hello.adapter_id, mode, ...fields, started_at: now().toISOString() };
       recording = await openRecording({ header, decider, writer: record.writer, now });
     }
     if (hello.mode !== mode) stop = { reason: 'mode-mismatch', expected: mode, got: hello.mode };
@@ -102,7 +110,7 @@ export async function runDriver(options: DriverOptions): Promise<DriverReport> {
         end = observed.end;
         break;
       }
-      const refused = refusal(observed.frame, mode);
+      const refused = refusal(observed.frame, mode, options.observationFields ?? []);
       if (refused !== undefined) {
         stop = refused;
         break;

@@ -225,6 +225,11 @@ CLI `guide` が正本の操作口。Web 画面はファイルを書くだけで�
 - 攻略本の `render_signature` で draw → entity を引く。マスターデータ取り込み時にアセット表から埋め、埋まらない分は観測で `draft` 雛形を起こす。
 - 位置は world と画面の両方を出す。地図照合は world、「狙えるか」は画面。
 - 限界: 描かれていない状態 (内部 HP、クールダウン、画面外) は取れない。HP バー・数字は UI スプライト/グリフから読む (`glossary` のグリフ表)。足りない分は「不明」として定石側で扱う。カリング後しか見えないのは「人間と同じ条件」と一致する (原則 2)。
+- **描画に出したもの ≠ 人間に見えたもの** (Astra レビュー P0-2 / P1-7、2026-10-09): 遮蔽 (壁の裏で深度テストに落ちた draw)、透明、UI の clip 外・非表示、
+  影・反射・深度 pass、アセット ID そのものは、提出されても人間には見えない (見えても名前は分からない)。raw tap と player 観測を分け、
+  観測者 (`player-camera`)、観測に入れてよい pass (scene / ui)、可視性の根拠 (遮蔽クエリ)、外見からの識別可否 (同じ外見の別種は名付けない、
+  頂点数 + インデックス数の指紋は識別不能) を契約 `render-tap/1` で固定する。根拠を示せない draw は「不明」として観測に入れない。
+  画素を読み戻さないので、GPU と同期した厳密な可視性は約束しない。契約は `spec/feature/render-tap-contract.md` + `schema/render-frame.schema.json` + golden で、Pictor / Bestia はこれに合わせる。
 
 ### 7.2 Observation スキーマ (共通)
 
@@ -237,6 +242,11 @@ CLI `guide` が正本の操作口。Web 画面はファイルを書くだけで�
 ```
 
 `knowledge` が `masked` の値は `player` モードの観測に現れない (段 1 のアダプタが `mode` を見て落とす。落とし忘れはエンジンのテストで担保)。
+
+**観測の場所にも境界を持たせる** (Astra レビュー P0-1、2026-10-09): ラベルの無い値は masked (原則 1) なので、player の観測が持てる場所を
+許可表で固定する。基本項目 (tick・自位置・見えている entity など、境界不要のメタデータと構造上見えているもの) と、manifest
+`observation.fields` で `knowledge` と出所を宣言したゲーム固有項目 (`self.resources.*` / `extra.*` / `events.<kind>.*`) だけを通し、
+表に無い場所は中身を問わず拒否する。ドライバ・記録器・読み込み・人間ログ取り込みが同じ判定を使う。詳細 `spec/feature/observation-boundary.md`。
 
 ### 7.3 ゲームアダプタ契約
 
@@ -273,7 +283,11 @@ observe → match (entity と状態機械の照合、未知は記録) → decide
 
 - `learn ingest` が、同じ `when` に対する `learned` 変種のうち、`rewrite.min_runs` 以上の試行で合成指標 (`metric_weights`) が既存より `min_gain` 以上良いものを「書き換え候補」にする。`player` モードの実測だけを数える。
 - オーバーレイには即時反映 (次のプレイから使う)。
-- `learn consolidate` が正本の書き換え提案 (旧 → 新、実測比較、根拠 run) を作る。`auto_apply: true` かつ意図ズレに触れない (`intent` の `forbid` / `teach` に関わらない) 候補は自動反映。それ以外は承認待ち。
+- `learn consolidate` が正本の書き換え提案 (旧 → 新、実測比較、根拠 run) を作る。`auto_apply: true` かつ意図ズレに触れない候補は自動反映。それ以外は承認待ち。
+  「意図に触れる」は teach / forbid だけでなく route / time / design_stance / illusory_by_design / 許容ズレの全種類で判定し、`when` を緩めた
+  変種 (`relax`) は同じ条件での効率比較ではないので自動反映しない (Astra レビュー P1-5、2026-10-09)。
+- 承認は提案の内容ハッシュ・承認者・根拠・攻略本の版に紐付ける (`guide learn approve`)。提案の内容 (根拠 run、パッチ、条件、単位、版) が
+  変われば承認は失効し、再承認まで正本は変わらない。詳細 `spec/feature/learning.md` §4。
 - 旧定石は `superseded_by` を付けて残す。
 
 ### 8.3 意図ズレの検証 (レベルデザインのプレイヤー行動可能性)
@@ -411,6 +425,8 @@ neco 指示 (2026-10-09): 攻略本には「人間がやってやれそうなこ
 - ゲームのテレメトリを `guide import plays --from <path> --map <mapping>` で Observation 形式に変換し、`observations/human/<player-hash>/` に置く (個人は匿名化したハッシュのみ、固有名は入れない)。
 - 人間の実走は `learned` 定石の候補源 (人間が見つけた別解) と、意図ズレの比較対象 (人間 vs オートプレイヤーで到達率・時間・経路を並べる) になる。
 - 人間の観測は `mode: player` として扱うが、昇格根拠に使うかは manifest で選ぶ (既定は使う)。
+  - 現状 (2026-10-09): 人間 run は別解候補 → `human-tactic` 提案 → 承認 → 正本 `tactics/` の経路と、意図ズレの比較に使う。
+    境界の昇格根拠に数えるには人間 run から値の推定を作る段が要り、未実装 (manifest の選択肢はその段と同時に置く)。
 
 ### E. プレイヤー・ペルソナ
 

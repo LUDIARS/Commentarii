@@ -71,6 +71,23 @@ test('learn ingest writes only the overlay; consolidate changes nothing without 
     assert.match(dry.stdout(), /承認待ち/);
     assert.deepEqual(await canonicalTexts(directory), before);
 
+    // The sample stage has a time range and an open design_stance: the rewrite waits for a person.
+    const unapproved = capture();
+    assert.equal(await runCli(['learn', 'consolidate', '--game', directory, '--apply', '--json'], unapproved.io), 0, unapproved.stderr());
+    assert.deepEqual((JSON.parse(unapproved.stdout()) as { applied: string[] }).applied, []);
+    assert.deepEqual(await canonicalTexts(directory), before);
+
+    const refused = capture();
+    assert.equal(await runCli(['learn', 'approve', '--game', directory, '--proposal', 'rewrite:tactic:bestia:none', '--by', 'neco', '--reason', 'x'], refused.io), 1);
+    assert.match(refused.stderr(), /no proposal rewrite:tactic:bestia:none/);
+
+    const approval = capture();
+    assert.equal(await runCli(['learn', 'approve', '--game', directory, '--proposal', `rewrite:${CLOSE}`, '--by', 'neco', '--reason', 'faster under the same condition; time range still met'], approval.io), 0, approval.stderr());
+    const approvals = JSON.parse(await readFile(join(directory, 'observations', 'approvals.json'), 'utf8')) as { approvals: { proposal: string; content_hash: string }[] };
+    assert.deepEqual(approvals.approvals.map((entry) => entry.proposal), [`rewrite:${CLOSE}`]);
+    assert.match(approvals.approvals[0]?.content_hash ?? '', /^sha256:/);
+    assert.deepEqual(await canonicalTexts(directory), before, 'approving writes observations/ only');
+
     const apply = capture();
     assert.equal(await runCli(['learn', 'consolidate', '--game', directory, '--apply', '--json'], apply.io), 0, apply.stderr());
     const report = JSON.parse(apply.stdout()) as { applied: string[]; written: string[] };

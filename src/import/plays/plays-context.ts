@@ -4,6 +4,7 @@
 
 import type { Bundle } from '../../bundle/bundle.ts';
 import type { Tactic } from '../../domain/documents.ts';
+import type { ObservationFieldDeclaration } from '../../observation/observation-fields.ts';
 import { ImportError } from '../import-error.ts';
 
 export interface PlaysContext {
@@ -13,6 +14,8 @@ export interface PlaysContext {
   /** Stage ID -> node IDs of its map. */
   readonly stages: ReadonlyMap<string, ReadonlySet<string>>;
   readonly tactics: readonly Tactic[];
+  /** manifest observation.fields (spec/feature/observation-boundary.md). */
+  readonly observationFields: readonly ObservationFieldDeclaration[];
 }
 
 export function playsContextOf(bundle: Bundle, bundleDir: string): PlaysContext {
@@ -29,5 +32,6 @@ export function playsContextOf(bundle: Bundle, bundleDir: string): PlaysContext 
     entityIds: new Set(bundle.entities.map(({ doc }) => doc.id)),
     stages,
     tactics: bundle.tactics.map(({ doc }) => doc),
+    observationFields: manifest.observation?.fields ?? [],
   };
 }

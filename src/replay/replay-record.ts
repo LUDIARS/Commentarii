@@ -1,6 +1,7 @@
 // Lines of replay/<run-id>.jsonl (design 14.A, schema/replay.schema.json):
 // one header, then one tick line per engine tick, then one footer.
 
+import type { ObservationFieldDeclaration } from '../observation/observation-fields.ts';
 import type { ObservationFrame, ObservationMode, ObservationPurpose } from './observation-frame.ts';
 import type { ReplayAction } from './replay-action.ts';
 
@@ -17,6 +18,12 @@ export interface ReplayHeader {
   /** human: imported from a human play log (design 14.D); absent for engine runs. */
   readonly source?: 'human';
   readonly persona?: string;
+  /**
+   * The game's observation field declarations the run was recorded under (manifest
+   * observation.fields, spec/feature/observation-boundary.md). Absent in recordings made before
+   * the boundary registry: those are checked against the base registry only.
+   */
+  readonly observation_fields?: readonly ObservationFieldDeclaration[];
   /** ISO 8601 (UTC). */
   readonly started_at: string;
 }

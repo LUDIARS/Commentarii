@@ -353,6 +353,78 @@
       "module": "src/contracts/cluster-solutions.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-60",
+      "criterion": "C-60 observationBoundaryProblems(frame, declarations): omniscient の観測は検査されず、player の観測では基本項目と masked でない宣言の外にある extra / resources / イベント項目が全て報告される (未登録は既定拒否)",
+      "symbol": "observationBoundaryProblems",
+      "file": "src/observation/check-observation-boundary.ts",
+      "module": "src/contracts/observation-boundary.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-61",
+      "criterion": "C-61 classifyDraw(draw, pass, frame): visible は scene / ui pass で、不透明かつ viewport 上にあり、scene は遮蔽クエリ通過、ui は hidden でなく clip 内のときだけ。shadow / reflection / depth / post の draw と遮蔽の根拠が無い scene draw は visible にならない",
+      "symbol": "classifyDraw",
+      "file": "src/render-tap/classify-draw.ts",
+      "module": "src/contracts/classify-draw.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-62",
+      "criterion": "C-62 identifyAppearance(draw, index): entity は asset-name か content-hash の draw で外見が 1 entity にだけ対応するときだけ名付けられ、count-hash は識別されず、同じ外見の別種は ambiguous になる",
+      "symbol": "identifyAppearance",
+      "file": "src/render-tap/identify-appearance.ts",
+      "module": "src/contracts/identify-appearance.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-63",
+      "criterion": "C-63 selectPlayerDraws(frame, signatures): 見えた個体は遮蔽クエリを通過した不透明な scene draw からだけ出て、外見が一意なときだけ entity を持ち、全ての draw は見えた / UI / 除外 / 不明のどれかに数えられる",
+      "symbol": "selectPlayerDraws",
+      "file": "src/render-tap/select-player-draws.ts",
+      "module": "src/contracts/select-player-draws.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-64",
+      "criterion": "C-64 approvalState(proposal, approvals): 最新の承認が提案の現在の内容ハッシュと攻略本の版に一致するときだけ approved、どちらかが違えば stale、承認が無ければ none",
+      "symbol": "approvalState",
+      "file": "src/learn/approval/approvals.ts",
+      "module": "src/contracts/approval-state.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-65",
+      "criterion": "C-65 intentTouch(intents, tactics, measuredNodes, change): 定石のステージに掛かる意図で、teach の参照・forbid 領域・時間変化のある time・置換を伴う open / mixed の design_stance・illusory_by_design・許容ズレの参照は必ず「意図に触れる」と報告される",
+      "symbol": "intentTouch",
+      "file": "src/learn/consolidate/intent-touch.ts",
+      "module": "src/contracts/intent-touch.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-66",
+      "criterion": "C-66 sealProposal(draft, context): 封をした提案はパッチ・根拠・判定を保ち、basis はゲーム・版・ビルド・条件・単位を持ち、内容ハッシュは status / reason に依らずファイルの変更で変わる",
+      "symbol": "sealProposal",
+      "file": "src/learn/approval/seal-proposal.ts",
+      "module": "src/contracts/seal-proposal.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-67",
+      "criterion": "C-67 humanTacticProposals(bundle, candidates): 人間の別解の提案は全て承認待ちで、tactics/ に draft でない learned 定石を 1 つ作り、候補の run を根拠に持ち、既存の定石 ID には提案しない",
+      "symbol": "humanTacticProposals",
+      "file": "src/learn/consolidate/human-tactic-proposals.ts",
+      "module": "src/contracts/human-tactic-proposals.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }
