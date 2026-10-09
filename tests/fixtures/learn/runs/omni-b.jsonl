@@ -1,0 +1,1 @@
+{"t": 0.5, "tick": 5, "kind": "value-estimate", "entity": "enemy:bestia:bazooka-beetle", "observed": {"quantity": "hp", "value": 181, "basis": "damage-dealt", "hits": 7, "instance": 2}, "source": "game-api", "mode": "omniscient", "purpose": "efficiency"}

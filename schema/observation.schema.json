@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "observation.schema.json",
   "title": "Overlay observation: one line of observations/runs/<run-id>.jsonl (design 4.4)",
-  "description": "Overlay data. Never merged into the canonical bundle; loaders skip observations/.",
+  "description": "Overlay data. Never merged into the canonical bundle; loaders skip observations/. Kinds written by reflect (spec/feature/learning.md): mismatch, unknown-entity, tactic-outcome, value-estimate.",
   "type": "object",
   "required": ["t", "tick", "kind", "source", "mode", "purpose"],
   "properties": {
@@ -13,6 +13,16 @@
     "entity": { "$ref": "id.schema.json#/$defs/entityId" },
     "expected": { "type": "object" },
     "observed": { "type": "object" },
+    "variant": {
+      "description": "tactic-outcome / mismatch lines of an exploration variant (stage 4): the tactic it was derived from and how.",
+      "type": "object",
+      "required": ["of", "mutation"],
+      "properties": {
+        "of": { "$ref": "id.schema.json#/$defs/tacticId" },
+        "mutation": { "enum": ["reorder", "relax", "substitute"] }
+      },
+      "additionalProperties": false
+    },
     "source": { "enum": ["game-api", "render-tap", "pixels"] },
     "mode": { "enum": ["player", "omniscient"] },
     "purpose": { "enum": ["efficiency", "coverage"] }

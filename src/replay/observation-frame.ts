@@ -5,8 +5,10 @@
 import type { Knowledge } from '../domain/knowledge.ts';
 
 export type ObservationMode = 'player' | 'omniscient';
-export type ObservationPurpose = 'efficiency' | 'coverage';
-export type ObservationSource = 'game-api' | 'render-tap' | 'pixels';
+/** human: a human play imported by guide import plays (design 14.D). */
+export type ObservationPurpose = 'efficiency' | 'coverage' | 'human';
+/** telemetry: converted from a human play log (design 14.D). */
+export type ObservationSource = 'game-api' | 'render-tap' | 'pixels' | 'telemetry';
 
 /** A value read from the game together with its knowledge boundary. */
 export interface ObservedValue {

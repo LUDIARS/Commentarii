@@ -8,9 +8,9 @@
   "properties": {
     "tick": { "type": "integer", "minimum": 0 },
     "t": { "type": "number", "minimum": 0 },
-    "source": { "enum": ["game-api", "render-tap", "pixels"] },
+    "source": { "description": "telemetry: converted from a human play log (guide import plays, design 14.D).", "enum": ["game-api", "render-tap", "pixels", "telemetry"] },
     "mode": { "enum": ["player", "omniscient"] },
-    "purpose": { "enum": ["efficiency", "coverage"] },
+    "purpose": { "description": "human: a human play imported by guide import plays (design 14.D).", "enum": ["efficiency", "coverage", "human"] },
     "self": {
       "type": "object",
       "properties": {

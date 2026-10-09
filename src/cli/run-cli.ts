@@ -3,6 +3,8 @@
 import { runAuditMask } from '../audit/run-audit-mask.ts';
 import { runAutoplayCommand } from '../autoplay/run-autoplay-command.ts';
 import { runExportCommand } from '../export/run-export-command.ts';
+import { runLearnCommand } from '../learn/cli/run-learn-command.ts';
+import { runPlaysCommand } from '../import/plays/run-plays-command.ts';
 import { buildKnowledgeReport } from '../report/build-knowledge-report.ts';
 import { formatKnowledgeMarkdown } from '../report/format-knowledge-markdown.ts';
 import { renderBundle } from '../render/render-bundle.ts';
@@ -53,6 +55,12 @@ async function execute(command: Command, io: CliIo): Promise<number> {
     case 'run':
     case 'bench':
       return runAutoplayCommand(command, io);
+    case 'learn-ingest':
+    case 'learn-consolidate':
+      return runLearnCommand(command, io);
+    case 'import-plays':
+    case 'report-plays':
+      return runPlaysCommand(command, io);
   }
 }
 

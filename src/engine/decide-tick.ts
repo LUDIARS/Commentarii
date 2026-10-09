@@ -51,6 +51,8 @@ export interface TickOutcome {
   readonly state: EngineState;
   /** The candidate that acted (undefined when the engine idled). */
   readonly chosen: string | undefined;
+  /** The plan that acted this tick, after its step (reflect measures tactics from it). */
+  readonly acted?: RunningPlan;
   /** Better-scored candidates whose tree could not act this tick. */
   readonly skipped: readonly string[];
   readonly exploring: boolean;
@@ -132,6 +134,7 @@ export function decideTick(input: TickInput): TickOutcome {
   let chosen: string | undefined;
   let action: ReplayAction = IDLE_ACTION;
   let nextRunning: RunningPlan | undefined;
+  let acted: RunningPlan | undefined;
   const skipped: string[] = [];
   for (const { candidate } of rank(scored)) {
     const plan = planFor(candidate, running, perceived.t);
@@ -144,6 +147,7 @@ export function decideTick(input: TickInput): TickOutcome {
     action = result.action;
     memory = markTried(memory, candidate.id);
     const stepped: RunningPlan = { ...plan, candidate: { ...plan.candidate, continuing: false }, memory: result.memory };
+    acted = stepped;
     if (result.status === 'running') nextRunning = stepped;
     else memory = retire(memory, stepped);
     break;
@@ -157,6 +161,7 @@ export function decideTick(input: TickInput): TickOutcome {
     action: misplayed ? IDLE_ACTION : action,
     state: { memory, recent, ...(nextRunning ? { running: nextRunning } : {}) },
     chosen,
+    ...(acted ? { acted } : {}),
     skipped,
     exploring,
     misplayed,

@@ -33,3 +33,29 @@
 - ビルドとテストはフォアグラウンドで待つ。
 - 完了 = コミット → Revisor local PR 提出 (`node E:/Document/Ars/command-runner.mjs rv:submit --repo <worktree>`) → **PR 番号と検証結果を報告してから** 終了指示を待つ。マージはしない。ブロック所見は直して再提出する。
 - 不明点は推測で埋めず、報告に「仮定」として書く。
+
+## 実装記録 (段階 4D run)
+
+仕様は `spec/feature/human-plays.md`。受け入れ条件は Augur 契約 C-40〜C-43。
+
+### 変更した境界
+
+- 新規: `src/import/plays/` (取り込み・匿名化・identify・候補抽出・report)、`src/adapters/fs/plays-read-runs.ts`、`schema/plays-mapping.schema.json`、`schema/human-candidates.schema.json`、`src/contracts/*` の C-40〜C-43、`tests/import/plays/`、`tests/fixtures/plays/`。
+- 語彙の拡張 (後方互換): リプレイ / 観測の `purpose` に `human`、観測の `source` に `telemetry`、header に任意の `source: "human"`。既存の run はそのまま読める。
+- 共有ファイルは最小行: `src/cli/{parse-command,run-cli,cli-io,main}.ts` (コマンドの振り分けと `playsIo` ポート)、`augur.contracts.json` (C-40〜C-43 の追加のみ)、`src/schema/schema-names.ts` (スキーマ 2 件の登録)、`src/adapters/fs/replay-open-file.ts` (`replaySchema` を export)。
+- `src/learn/`・`src/engine/reflect/`・`observations/overlay.json` には触れていない。エンジンからは `matchCondition` と `hpRatio` を読み取り専用で再利用した。
+
+### 復旧方法
+
+段階 4D のコミットを revert すれば元に戻る。取り込みが書くのはバンドルの `observations/human/` だけなので、取り込み結果を消すにはそのディレクトリを削除する (正本は変わらない)。
+
+### 実施した検証
+
+- `npm install --include=dev && npm run typecheck && npm test`: 245 件すべて成功。
+- `npm run build` 後の実 CLI (`dist/cli/main.js`) で、salt 無しの失敗、JSONL 取り込み、`report plays`、`run --record` したオートプレイヤー run との並置、取り込み後の `validate` (OK) を一時ディレクトリで確認。
+- `augur contracts report --acceptance`: C-1〜C-22・C-40〜C-43 すべて covered・違反 0。
+
+### 未実施
+
+- 実ゲームのテレメトリでの取り込み (フィクスチャは架空)。サービスの起動・起動テスト (常駐サービスの変更なし)。
+- 人間の観測を昇格根拠に使うかの manifest 設定 (§14.D) は段階 4 の consolidate 側の判断として残した。

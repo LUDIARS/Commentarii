@@ -1,0 +1,65 @@
+{
+  "id": "enemy:bestia:wire-spider",
+  "name": {
+    "ja": "ワイヤースパイダー",
+    "en": "Wire Spider"
+  },
+  "stats": {
+    "health": {
+      "value": 100,
+      "unit": "hp",
+      "knowledge": "discoverable",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[1]"
+      }
+    },
+    "radius": {
+      "value": 1.5,
+      "unit": "m",
+      "knowledge": "shown",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[1]"
+      }
+    },
+    "speed": {
+      "value": 8,
+      "unit": "m/s",
+      "knowledge": "discoverable",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[1]"
+      }
+    },
+    "range": {
+      "value": 19,
+      "unit": "m",
+      "knowledge": "discoverable",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[1]"
+      }
+    },
+    "cooldown": {
+      "value": 0.8,
+      "unit": "s",
+      "knowledge": "discoverable",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[1]"
+      }
+    }
+  },
+  "behavior": "state:bestia:battle-ai",
+  "weak_to": [
+    {
+      "value": "attr:bestia:fire",
+      "knowledge": "discoverable",
+      "source": {
+        "kind": "human",
+        "ref": "sample: hand-written archetype note"
+      }
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "overlay.schema.json",
+  "title": "Overlay: observations/overlay.json, what guide learn ingest concluded from player runs (design 8.1)",
+  "description": "Written only by guide learn ingest, never merged into the canonical bundle (loaders skip observations/). Only player-mode runs are counted; omniscient runs are listed as ignored and contribute nothing (principle 2). The engine reads it at start-up: measured metrics win over the bundle's, rewrites become learned tactics, weights scale the persona's.",
+  "type": "object",
+  "required": ["game_id", "runs", "tactics", "values", "unknown_entities", "mismatches", "rewrites", "weights"],
+  "properties": {
+    "game_id": { "$ref": "id.schema.json#/$defs/slug" },
+    "runs": {
+      "type": "object",
+      "required": ["player", "ignored_omniscient"],
+      "properties": {
+        "player": { "type": "array", "uniqueItems": true, "items": { "$ref": "id.schema.json#/$defs/runId" } },
+        "ignored_omniscient": { "type": "array", "uniqueItems": true, "items": { "$ref": "id.schema.json#/$defs/runId" } }
+      },
+      "additionalProperties": false
+    },
+    "tactics": { "type": "array", "items": { "$ref": "#/$defs/tacticEntry" } },
+    "values": { "type": "array", "items": { "$ref": "#/$defs/valueEntry" } },
+    "unknown_entities": { "type": "array", "items": { "$ref": "#/$defs/unknownEntry" } },
+    "mismatches": { "type": "array", "items": { "$ref": "#/$defs/mismatchEntry" } },
+    "rewrites": { "type": "array", "items": { "$ref": "#/$defs/rewriteEntry" } },
+    "weights": {
+      "description": "Multipliers of the persona's consideration weights (fine-tuning, bounded).",
+      "type": "object",
+      "propertyNames": { "enum": ["distance", "hp", "time", "resource", "confidence", "metrics", "intent", "exploration"] },
+      "additionalProperties": { "type": "number", "minimum": 0.5, "maximum": 1.5 }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "variant": {
+      "type": "object",
+      "required": ["of", "mutation"],
+      "properties": {
+        "of": { "$ref": "id.schema.json#/$defs/tacticId" },
+        "mutation": { "enum": ["reorder", "relax", "substitute"] }
+      },
+      "additionalProperties": false
+    },
+    "sample": {
+      "description": "One judged run of a tactic (an episode whose expect was met or broken).",
+      "type": "object",
+      "required": ["run", "outcome", "time_sec", "damage_taken", "resource"],
+      "properties": {
+        "run": { "$ref": "id.schema.json#/$defs/runId" },
+        "outcome": { "enum": ["success", "failure"] },
+        "time_sec": { "type": "number", "minimum": 0 },
+        "damage_taken": { "type": "number", "minimum": 0 },
+        "resource": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 } }
+      },
+      "additionalProperties": false
+    },
+    "tacticEntry": {
+      "type": "object",
+      "required": ["tactic", "samples", "metrics", "nodes"],
+      "properties": {
+        "tactic": { "$ref": "id.schema.json#/$defs/tacticId" },
+        "variant": { "$ref": "#/$defs/variant" },
+        "samples": { "type": "array", "items": { "$ref": "#/$defs/sample" } },
+        "metrics": { "$ref": "tactic.schema.json#/$defs/metrics" },
+        "nodes": { "type": "array", "uniqueItems": true, "items": { "$ref": "id.schema.json#/$defs/nodeId" } }
+      },
+      "additionalProperties": false
+    },
+    "estimate": {
+      "type": "object",
+      "required": ["run", "value"],
+      "properties": {
+        "run": { "$ref": "id.schema.json#/$defs/runId" },
+        "value": { "type": "number" },
+        "hits": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "valueEntry": {
+      "type": "object",
+      "required": ["entity", "quantity", "estimates"],
+      "properties": {
+        "entity": { "$ref": "id.schema.json#/$defs/entityId" },
+        "quantity": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "estimates": { "type": "array", "items": { "$ref": "#/$defs/estimate" } }
+      },
+      "additionalProperties": false
+    },
+    "unknownEntry": {
+      "type": "object",
+      "required": ["key", "runs", "sightings", "draft"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "entity": { "$ref": "id.schema.json#/$defs/entityId" },
+        "signature": { "$ref": "entity.schema.json#/properties/render_signature" },
+        "runs": { "type": "array", "uniqueItems": true, "items": { "$ref": "id.schema.json#/$defs/runId" } },
+        "sightings": { "type": "integer", "minimum": 1 },
+        "draft": {
+          "description": "Template of the entity file (design 7.1: drafted from observation, never applied automatically).",
+          "type": "object",
+          "required": ["path", "draft", "source", "doc"],
+          "properties": {
+            "path": { "type": "string", "pattern": "^entities/(enemies|items|skills|actors)/[a-z0-9][a-z0-9_-]*\\.json$" },
+            "draft": { "const": true },
+            "source": { "$ref": "value.schema.json#/$defs/source" },
+            "doc": { "type": "object" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "mismatchEntry": {
+      "type": "object",
+      "required": ["tactic", "count", "runs"],
+      "properties": {
+        "tactic": { "$ref": "id.schema.json#/$defs/tacticId" },
+        "count": { "type": "integer", "minimum": 1 },
+        "runs": { "type": "array", "uniqueItems": true, "items": { "$ref": "id.schema.json#/$defs/runId" } }
+      },
+      "additionalProperties": false
+    },
+    "rewriteEntry": {
+      "description": "An efficient variant that met learning.policy.rewrite (min_runs, min_gain): used by the engine from the next play on, proposed to the canonical bundle by guide learn consolidate.",
+      "type": "object",
+      "required": ["tactic", "of", "mutation", "gain", "runs", "evidence"],
+      "properties": {
+        "tactic": { "$ref": "tactic.schema.json" },
+        "of": { "$ref": "id.schema.json#/$defs/tacticId" },
+        "mutation": { "enum": ["reorder", "relax", "substitute"] },
+        "gain": { "type": "number" },
+        "runs": { "type": "integer", "minimum": 1 },
+        "evidence": { "type": "array", "uniqueItems": true, "items": { "$ref": "id.schema.json#/$defs/runId" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

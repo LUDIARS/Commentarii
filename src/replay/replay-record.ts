@@ -14,6 +14,8 @@ export interface ReplayHeader {
   readonly adapter_id: string;
   readonly mode: ObservationMode;
   readonly purpose: ObservationPurpose;
+  /** human: imported from a human play log (design 14.D); absent for engine runs. */
+  readonly source?: 'human';
   readonly persona?: string;
   /** ISO 8601 (UTC). */
   readonly started_at: string;

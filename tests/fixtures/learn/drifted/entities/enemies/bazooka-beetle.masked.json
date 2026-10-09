@@ -1,0 +1,31 @@
+{
+  "id": "enemy:bestia:bazooka-beetle",
+  "stats": {
+    "health": {
+      "value": 180,
+      "unit": "hp",
+      "knowledge": "masked",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[0]"
+      }
+    },
+    "body_mass": {
+      "value": 18,
+      "unit": "kg",
+      "knowledge": "masked",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[0]"
+      }
+    },
+    "aim_lead_divisor": {
+      "value": 32,
+      "knowledge": "masked",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/behavior.cpp decide()"
+      }
+    }
+  }
+}

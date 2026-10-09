@@ -30,7 +30,7 @@ test('player mode never proposes the masked sample tactic (nor a variant of it)'
   assert.ok(!player.some((id) => id.includes(SIDESTEP)));
   const omniscient = ids(bundle, 'omniscient');
   assert.ok(omniscient.includes(SIDESTEP), 'omniscient (checking / debugging) may use masked tactics');
-  assert.ok(omniscient.includes(`variant:${SIDESTEP}`));
+  assert.ok(omniscient.includes(`variant:${SIDESTEP}--reorder`));
 });
 
 test('player mode drops a masked tactic even when it reaches the engine outside the player view', async () => {

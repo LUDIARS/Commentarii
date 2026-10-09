@@ -7,7 +7,7 @@ import { readReplaySchemaDocuments } from './replay-schema-documents.ts';
 
 let schema: Promise<ReplaySchema> | undefined;
 
-function replaySchema(): Promise<ReplaySchema> {
+export function replaySchema(): Promise<ReplaySchema> {
   // Compiled once per process: `replay diff` opens two files with the same schema.
   schema ??= readReplaySchemaDocuments().then(createReplaySchema);
   return schema;

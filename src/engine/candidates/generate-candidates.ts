@@ -1,7 +1,8 @@
-// All candidates of one tick: tactics whose `when` holds + generic actions + exploration, plus
-// the plan already running (kept even when its `when` no longer holds: a started tactic runs
-// to its end unless its expectation breaks or something clearly better comes up). Sorted by
-// ID so the decision log and tie-breaking do not depend on generation order.
+// All candidates of one tick: tactics whose `when` holds + generic actions + exploration (map
+// nodes and tactic variants), plus the plan already running (kept even when its `when` no
+// longer holds: a started tactic runs to its end unless its expectation breaks or something
+// clearly better comes up). Sorted by ID so the decision log and tie-breaking do not depend
+// on generation order.
 
 import type { ObservationFrame } from '../../replay/observation-frame.ts';
 import type { Persona } from '../persona/persona.ts';
@@ -11,6 +12,7 @@ import { exploreCandidates } from './explore-candidates.ts';
 import { genericCandidates } from './generic-candidates.ts';
 import type { RunMemory } from './run-memory.ts';
 import { tacticCandidates } from './tactic-candidates.ts';
+import { variantCandidates } from './variant-candidates.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:49ae8bde */
 import augurContract_be9fda07 from '../../contracts/generate-candidates.contract.ts'; /* augur-inject:contract-predicate:a66c9057 */
 
@@ -27,7 +29,12 @@ export function generateCandidates(input: GenerationInput): Candidate[] {
   const { world, persona, observation, memory, running } = input;
   const stage = world.stages.get(observation.stage.id);
   const tactics = tacticCandidates(world, persona, observation, memory);
-  const fresh = [...tactics, ...genericCandidates(observation, stage, memory), ...exploreCandidates(observation, stage, memory, tactics)];
+  const fresh = [
+    ...tactics,
+    ...genericCandidates(observation, stage, memory),
+    ...exploreCandidates(observation, stage, memory),
+    ...variantCandidates(world, persona, observation, memory),
+  ];
   const byId = new Map<string, Candidate>();
   for (const candidate of fresh) if (!byId.has(candidate.id)) byId.set(candidate.id, candidate);
   if (running !== undefined) byId.set(running.id, { ...running, continuing: true });

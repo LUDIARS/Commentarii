@@ -68,7 +68,7 @@
 | 汎用: 目標接近 | `generic:approach` | 最寄りの敵を `$target` に束縛し、射程 (`extra.reach`、無ければ 10) 内なら攻撃・外なら接近 (Selector)。敵が見えなければ意図の `route` の未訪問ノードへ |
 | 汎用: 資源確保 | `generic:gather` | 地図の `resource` 注記ノードのうち最寄りへ移動 |
 | 探索: 未訪問 | `explore:<node>` | 現在ノードの未訪問の隣接ノード (無ければ最寄りの未訪問ノード) へ移動 |
-| 探索: 変種 | `variant:<定石 ID>` | 成り立った定石の手順を回転 (最後の手順を先頭へ) した変種。新しい参照を足さないので知識境界は元の定石と同じ |
+| 探索: 変種 | `variant:<定石 ID>--<変異>` | 使える定石 (信頼下限以上・保留中でない) の変種のうち、変種自身の `when` が成り立つもの (`src/engine/candidates/tactic-variants.ts`、段階 4)。変異は `reorder` (手順の回転: 最後の手順を先頭へ)、`relax` (`when` の数値の閾値を 25% 緩める。`not` の中は触らない)、`substitute` (最初の手順を 2 番目の手順で置き換える)。どれも元の定石に無い参照を足さないので知識境界は元の定石と同じ。変種は `learned`・未計測で、`traits.tactic` は元の定石、`variant` に由来 (元の定石 ID と変異) を持つ。契約 C-34 |
 
 - **エンジンが使える定石** (`buildEngineWorld`): `draft: true` と `superseded_by` 付きは常に除外。player モードはバンドルを
   `toPlayerView` 経由で読み、さらに `knowledge: masked` の定石を明示的に除外する (二重)。omniscient (検算・デバッグ) は masked も使える。
@@ -138,7 +138,8 @@
 
 ## 7. ドライバ (`src/engine/driver.ts`)
 
-`runDriver({adapter, decider, mode, maxTicks, record?})`: hello → (observe → decide → act) を、ゲームが終わるか `maxTicks` まで回す。
+`runDriver({adapter, decider, mode, maxTicks, record?, reflect?})`: hello → (observe → decide → act → reflect) を、ゲームが終わるか `maxTicks` まで回す。
+`reflect` を渡すと、毎ティックの行動の後と run の終わりに呼ぶ (段階 4、[learning.md](learning.md) §1)。
 
 - hello の `mode` と各観測の `mode` が要求と違えば停止 (`mode-mismatch`)。
 - player モードでは各観測を `findMaskedPointers` で検査し、masked が 1 つでもあれば **decider に渡す前に** 停止する
@@ -195,7 +196,10 @@ samples/bestia (seed 1、20 run、2000 ティック) の実測:
 
 ## 10. `guide run`
 
-`guide run --game <bundle> [--adapter sim|stdio] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--record <out.jsonl>]`
+`guide run --game <bundle> [--adapter sim|stdio] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--record <out.jsonl>] [--observe <observations.jsonl>]`
+
+- `--observe` は reflect の観測行を書く (慣例の置き場所は `<bundle>/observations/runs/<run-slug>.jsonl`、既存ファイルは拒否)。
+- `guide run` と `guide bench` は、バンドルに `observations/overlay.json` があれば起動時に適用してから走る (正本は触らない。[learning.md](learning.md) §2)。
 
 - 既定: `sim`、`expert`、`player`、`efficiency`、seed 1、1200 ティック。run ID は `run:<game>-<persona>-s<seed>`。
 - `--record` は新しいファイルに段階 2A の形式で記録する (既存ファイルは拒否)。

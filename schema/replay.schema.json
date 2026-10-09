@@ -28,7 +28,8 @@
         "manifest_version": { "type": "string", "minLength": 1 },
         "adapter_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$" },
         "mode": { "enum": ["player", "omniscient"] },
-        "purpose": { "enum": ["efficiency", "coverage"] },
+        "purpose": { "enum": ["efficiency", "coverage", "human"] },
+        "source": { "description": "human: a human play imported by guide import plays (design 14.D). Left out for engine runs.", "enum": ["human"] },
         "persona": { "$ref": "id.schema.json#/$defs/slug" },
         "started_at": { "type": "string", "format": "date-time" }
       },
