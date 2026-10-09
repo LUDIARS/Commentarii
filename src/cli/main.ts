@@ -15,6 +15,7 @@ import { createStreamLineChannel } from '../adapters/stdio/line-channel.ts';
 import { readPromptTemplate } from '../adapters/llm/read-prompt-template.ts';
 import { createSchemaRegistry } from '../schema/schema-registry.ts';
 import { fsScanSource } from '../audit/fs-scan-source.ts';
+import { createFsLearnIo } from '../learn/io/fs-learn-io.ts';
 import { PLAYER_SALT_ENV } from '../import/plays/player-salt.ts';
 import { runCli } from './run-cli.ts';
 
@@ -42,6 +43,7 @@ try {
       openStdioChannel: () => createStreamLineChannel(process.stdin, process.stdout),
       now: () => new Date(),
     },
+    learnIo: createFsLearnIo(),
     playsIo: {
       readRunFiles: readPlayRunFiles,
       replaySchema,

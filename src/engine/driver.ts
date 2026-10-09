@@ -1,5 +1,5 @@
-// The tick driver (design 7.5): observe -> decide -> act until the game ends or the tick limit
-// is reached, optionally recording a replay. The adapter only observes and acts; this loop is
+// The tick driver (design 7.5): observe -> decide -> act -> reflect until the game ends or the
+// tick limit is reached, optionally recording a replay and reflecting into the overlay. The adapter only observes and acts; this loop is
 // the engine's. In player mode every observation is checked for masked values before the
 // decider sees it, independently of the adapter's own duty (principle 2): one masked value
 // stops the run (result abort) and nothing of that observation is decided on or recorded.
@@ -12,6 +12,7 @@ import type { ReplayAction } from '../replay/replay-action.ts';
 import type { ReplayResult } from '../replay/replay-record.ts';
 import type { ReplayHeader } from '../replay/replay-record.ts';
 import { openRecording, type RecordingSink, type ReplayLineWriter } from '../replay/recording-sink.ts';
+import type { TickReflector } from './reflect/tick-reflector.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:18a2c66d */
 import augurContract_85802f43 from '../contracts/run-driver.contract.ts'; /* augur-inject:contract-predicate:09321758 */
 
@@ -30,6 +31,8 @@ export interface DriverOptions {
   readonly maxTicks: number;
   /** When given, the run is recorded (header, one line per tick, footer) through RecordingSink. */
   readonly record?: DriverRecording;
+  /** When given, reflect runs at the end of every tick and once when the run ends (design 7.5). */
+  readonly reflect?: TickReflector;
 }
 
 export type DriverStop =
@@ -106,6 +109,7 @@ export async function runDriver(options: DriverOptions): Promise<DriverReport> {
       }
       const action: ReplayAction = recording === undefined ? decider.decide(observed.frame).action : await recording.step(observed.frame);
       await adapter.act(action);
+      await options.reflect?.afterTick(observed.frame);
       ticks += 1;
     }
   } catch (cause) {
@@ -115,6 +119,7 @@ export async function runDriver(options: DriverOptions): Promise<DriverReport> {
     throw cause;
   }
   await adapter.close(stop.reason);
+  await options.reflect?.finish();
   const result: ReplayResult = end?.result ?? 'abort';
   const summary = end?.summary ?? engineSummary(stop);
   await recording?.finish({ result, summary: { ...summary, ticks } });

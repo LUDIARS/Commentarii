@@ -6,6 +6,7 @@ import type { TacticMetrics } from '../../domain/documents.ts';
 import type { BtNode } from '../bt/bt-node.ts';
 import type { Bindings } from '../match/bindings.ts';
 import type { TacticConfidence } from '../persona/persona.ts';
+import type { TacticMutation } from './tactic-variants.ts';
 
 export type CandidateKind = 'tactic' | 'generic' | 'explore';
 
@@ -30,8 +31,16 @@ export interface CandidateTraits {
   readonly novelty: number;
 }
 
+/** Which variant an exploration candidate runs (tactic-variants.ts), for reflect to measure it. */
+export interface VariantOrigin {
+  /** The variant's own tactic ID (<tactic ID>--<mutation>). */
+  readonly tactic: string;
+  readonly of: string;
+  readonly mutation: TacticMutation;
+}
+
 export interface Candidate {
-  /** Unique within one tick: the tactic ID, generic:<name>, explore:<node>, variant:<tactic>. */
+  /** Unique within one tick: the tactic ID, generic:<name>, explore:<node>, variant:<variant tactic ID>. */
   readonly id: string;
   readonly kind: CandidateKind;
   readonly tree: BtNode;
@@ -41,4 +50,6 @@ export interface Candidate {
   readonly expect?: Readonly<Record<string, unknown>>;
   /** True for the plan already running (it gets the hysteresis bonus). */
   readonly continuing?: boolean;
+  /** Exploration variants only. */
+  readonly variant?: VariantOrigin;
 }

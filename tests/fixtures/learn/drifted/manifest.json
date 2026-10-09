@@ -1,0 +1,39 @@
+{
+  "game_id": "bestia",
+  "title": {
+    "ja": "Bestia 攻略本 (サンプル)",
+    "en": "Bestia guide (sample)"
+  },
+  "version": "0.1.0",
+  "builds": [
+    "main"
+  ],
+  "coordinates": {
+    "system": "world-xyz",
+    "unit": "m"
+  },
+  "lexicon": {
+    "version": "0"
+  },
+  "learning": {
+    "policy": {
+      "exploration_rate": 0.15,
+      "rewrite": {
+        "min_runs": 4,
+        "min_gain": 0.1,
+        "metric_weights": {
+          "time": 0.5,
+          "resource": 0.2,
+          "risk": 0.3
+        },
+        "auto_apply": true
+      },
+      "promotion": {
+        "discoverable_requires": {
+          "player_runs": 3,
+          "agreement": 0.9
+        }
+      }
+    }
+  }
+}

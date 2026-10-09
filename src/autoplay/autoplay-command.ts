@@ -23,6 +23,8 @@ export interface RunCommand {
   readonly seed: number;
   readonly ticks: number;
   readonly recordPath?: string;
+  /** Reflect into this observation file (observations/runs/<run-slug>.jsonl, design 7.5). */
+  readonly observePath?: string;
 }
 
 export interface BenchCommand {
@@ -39,7 +41,7 @@ export interface BenchCommand {
 
 export type AutoplayCommand = RunCommand | BenchCommand;
 
-export const AUTOPLAY_USAGE = `  guide run --game <bundle-dir> [--adapter sim|stdio] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--record <out.jsonl>]
+export const AUTOPLAY_USAGE = `  guide run --game <bundle-dir> [--adapter sim|stdio] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--record <out.jsonl>] [--observe <observations.jsonl>]
   guide bench --game <bundle-dir> [--runs <n>] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--no-tactics]
 `;
 
@@ -90,12 +92,19 @@ export function parseRunCommand(args: readonly string[]): RunCommand {
   const { values, positionals } = parseArgs({
     args: [...args],
     allowPositionals: true,
-    options: { ...COMMON_OPTIONS, adapter: { type: 'string', default: 'sim' }, record: { type: 'string' } },
+    options: { ...COMMON_OPTIONS, adapter: { type: 'string', default: 'sim' }, record: { type: 'string' }, observe: { type: 'string' } },
   });
   if (positionals.length > 0) throw new Error('run takes no positional arguments');
   if (values.adapter !== 'sim' && values.adapter !== 'stdio') throw new Error(`--adapter must be one of: ${ADAPTER_KINDS.join(', ')}`);
   if (values.record === '') throw new Error('--record needs a path');
-  return { name: 'run', ...common(values, 'run'), adapter: values.adapter, ...(values.record === undefined ? {} : { recordPath: values.record }) };
+  if (values.observe === '') throw new Error('--observe needs a path');
+  return {
+    name: 'run',
+    ...common(values, 'run'),
+    adapter: values.adapter,
+    ...(values.record === undefined ? {} : { recordPath: values.record }),
+    ...(values.observe === undefined ? {} : { observePath: values.observe }),
+  };
 }
 
 export function parseBenchCommand(args: readonly string[]): BenchCommand {

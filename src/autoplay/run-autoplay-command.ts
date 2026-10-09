@@ -1,5 +1,6 @@
 // Runs `guide run` (one run of the engine through the sim or a stdio adapter, optionally
-// recorded as a replay) and `guide bench` (N sim runs, JSON report). With --adapter stdio the
+// recorded as a replay, optionally reflecting into an observation file) and `guide bench` (N sim
+// runs, JSON report). Both start from the bundle with its learning overlay applied (stage 4). With --adapter stdio the
 // process's stdout is the protocol channel, so the run report goes to stderr instead.
 
 import { createSimAdapter, SIM_ADAPTER_ID } from '../adapters/sim/sim-adapter.ts';
@@ -12,9 +13,15 @@ import type { EngineIo } from '../cli/engine-io.ts';
 import { runDriver } from '../engine/driver.ts';
 import { deriveSeed } from '../engine/rng.ts';
 import { createUtilityBtDecider } from '../engine/utility-bt-decider.ts';
+import { createObservationSink } from '../engine/reflect/observation-sink.ts';
+import { createReflector } from '../engine/reflect/create-reflector.ts';
+import { buildReflectWorld } from '../engine/reflect/reflect-world.ts';
+import type { Persona } from '../engine/persona/persona.ts';
+import { applyOverlay } from '../learn/overlay/apply-overlay.ts';
+import { readOverlay } from '../learn/overlay/read-overlay.ts';
 import type { AutoplayCommand, BenchCommand, RunCommand } from './autoplay-command.ts';
 
-type AutoplayIo = Pick<CliIo, 'stdout' | 'stderr' | 'openBundle' | 'engineIo'>;
+type AutoplayIo = Pick<CliIo, 'stdout' | 'stderr' | 'openBundle' | 'engineIo' | 'learnIo'>;
 
 function requireEngineIo(io: AutoplayIo, verb: string): EngineIo {
   if (io.engineIo === undefined) throw new Error(`guide ${verb}: no engine I/O is wired (main.ts must provide engineIo)`);
@@ -29,13 +36,25 @@ async function openGame(io: AutoplayIo, gameDir: string, verb: string): Promise<
   return { bundle: load.bundle, gameId: manifest.game_id, version: manifest.version };
 }
 
+/**
+ * The bundle and persona the engine starts from: with observations/overlay.json applied when
+ * the bundle has one (measured metrics, learned rewrites, weight factors; in memory only).
+ * Callers that wire no learnIo (tests of stage 3) get the bundle as it is.
+ */
+async function setupEngine(io: AutoplayIo, gameDir: string, gameId: string, bundle: Bundle, persona: Persona): Promise<{ bundle: Bundle; persona: Persona }> {
+  if (io.learnIo === undefined) return { bundle, persona };
+  const overlay = await readOverlay(io.learnIo, gameDir, gameId);
+  return overlay === undefined ? { bundle, persona } : applyOverlay(bundle, persona, overlay);
+}
+
 function runId(gameId: string, persona: string, seed: number): string {
   return `run:${gameId}-${persona}-s${seed}`;
 }
 
 async function runOnce(command: RunCommand, io: AutoplayIo, engineIo: EngineIo): Promise<number> {
-  const { bundle, gameId, version } = await openGame(io, command.gameDir, 'run');
-  const persona = await engineIo.loadPersona(command.gameDir, command.persona);
+  const game = await openGame(io, command.gameDir, 'run');
+  const { gameId, version } = game;
+  const { bundle, persona } = await setupEngine(io, command.gameDir, gameId, game.bundle, await engineIo.loadPersona(command.gameDir, command.persona));
   const adapter: GameAdapter =
     command.adapter === 'sim'
       ? createSimAdapter({ bundle, mode: command.mode, purpose: command.purpose, seed: deriveSeed(command.seed, 'sim') })
@@ -50,16 +69,24 @@ async function runOnce(command: RunCommand, io: AutoplayIo, engineIo: EngineIo):
           now: () => engineIo.now(),
         };
   const decider = createUtilityBtDecider({ bundle, persona }, command.seed);
-  const report = await runDriver({ adapter, decider, mode: command.mode, maxTicks: command.ticks, ...(record ? { record } : {}) });
+  const reflect =
+    command.observePath === undefined
+      ? undefined
+      : createReflector({
+          world: buildReflectWorld(bundle, command.mode),
+          sink: createObservationSink(await engineIo.createReplayWriter(command.observePath), command.mode),
+          acted: () => decider.lastOutcome?.acted,
+        });
+  const report = await runDriver({ adapter, decider, mode: command.mode, maxTicks: command.ticks, ...(record ? { record } : {}), ...(reflect ? { reflect } : {}) });
   const out = command.adapter === 'stdio' ? io.stderr : io.stdout;
   const adapterId = command.adapter === 'sim' ? SIM_ADAPTER_ID : 'stdio';
-  out(`${JSON.stringify({ run_id: id, adapter: adapterId, persona: persona.slug, mode: command.mode, purpose: command.purpose, seed: command.seed, ...report, ...(command.recordPath ? { record: command.recordPath } : {}) }, null, 2)}\n`);
+  out(`${JSON.stringify({ run_id: id, adapter: adapterId, persona: persona.slug, mode: command.mode, purpose: command.purpose, seed: command.seed, ...report, ...(command.recordPath ? { record: command.recordPath } : {}), ...(command.observePath ? { observe: command.observePath } : {}) }, null, 2)}\n`);
   return report.stop.reason === 'masked-in-player' || report.stop.reason === 'mode-mismatch' ? EXIT_INVALID : EXIT_OK;
 }
 
 async function bench(command: BenchCommand, io: AutoplayIo, engineIo: EngineIo): Promise<number> {
-  const { bundle } = await openGame(io, command.gameDir, 'bench');
-  const persona = await engineIo.loadPersona(command.gameDir, command.persona);
+  const game = await openGame(io, command.gameDir, 'bench');
+  const { bundle, persona } = await setupEngine(io, command.gameDir, game.gameId, game.bundle, await engineIo.loadPersona(command.gameDir, command.persona));
   const report = await runBench({
     bundle,
     persona,

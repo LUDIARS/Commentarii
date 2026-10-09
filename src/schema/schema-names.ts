@@ -13,6 +13,8 @@ export const DOCUMENT_SCHEMAS = [
   'tactic',
   'intent',
   'observation',
+  // Learning overlay (stage 4): observations/overlay.json, never part of the canonical bundle.
+  'overlay',
   // Inputs of guide import (stage 2): never part of a bundle, validated before conversion.
   'mapping',
   'import-navgraph',

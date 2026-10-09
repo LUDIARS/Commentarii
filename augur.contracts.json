@@ -202,6 +202,60 @@
       "sample": 1
     },
     {
+      "id": "C-30",
+      "criterion": "C-30 reflectTick(state, input): 行は mismatch / unknown-entity / tactic-outcome / value-estimate のいずれかで観測フレームの t・tick・source・mode・purpose を持ち、player モードでは knowledge: masked を含まず、success / failure の判定は開いていたエピソードにだけ付く",
+      "symbol": "reflectTick",
+      "file": "src/engine/reflect/reflect-tick.ts",
+      "module": "src/contracts/reflect-tick.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-31",
+      "criterion": "C-31 ingestRuns(input): omniscient の run は player run に数えられず標本・推定値に現れない。標本と推定値は player run からだけ来て、取り込み済みの run は二重に数えず、書き換え候補は必ず learning.policy.rewrite の min_runs と min_gain を満たす",
+      "symbol": "ingestRuns",
+      "file": "src/learn/ingest/ingest-runs.ts",
+      "module": "src/contracts/ingest-runs.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-32",
+      "criterion": "C-32 planConsolidation(input): --apply なしでは何も書かない。自動反映は auto_apply の定石書き換えで intent の teach が参照しないものだけで、昇格候補と未知 entity の雛形は常に承認待ち。反映はファイルを消さず、旧定石に superseded_by を付けて残す",
+      "symbol": "planConsolidation",
+      "file": "src/learn/consolidate/plan-consolidation.ts",
+      "module": "src/contracts/plan-consolidation.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-33",
+      "criterion": "C-33 applyOverlay(bundle, persona, overlay): オーバーレイで実測した定石はその metrics で動き、入力のバンドルとペルソナは書き換えず (変えた定石は複製)、ペルソナの重みは入力の重み × オーバーレイの係数になる",
+      "symbol": "applyOverlay",
+      "file": "src/learn/overlay/apply-overlay.ts",
+      "module": "src/contracts/apply-overlay.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-34",
+      "criterion": "C-34 deriveVariant(origin, mutation): 変種の ID は <元の定石>--<変異> で、learned・未計測・superseded_by なし、knowledge・because・expect は元と同じで、元に無い参照 (文字列) を持ち込まない",
+      "symbol": "deriveVariant",
+      "file": "src/engine/candidates/tactic-variants.ts",
+      "module": "src/contracts/derive-variant.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-35",
+      "criterion": "C-35 applyJsonPatch(document, operations): 入力の文書は変更されず、失敗は JsonPatchError になる (パッチは全部適用されるか全く適用されない)",
+      "symbol": "applyJsonPatch",
+      "file": "src/learn/patch/json-patch.ts",
+      "module": "src/contracts/apply-json-patch.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
       "id": "C-40",
       "criterion": "C-40 planPlaysImport(request): 全 run が source human・mode player・purpose human で observations/human/<player-hash>/ に置かれ、どこにも masked が無く、player-hash は salt と生のプレイヤー識別子の HMAC-SHA256 先頭 16 桁で、出力のどこにも生のプレイヤー / run 識別子が無い",
       "symbol": "planPlaysImport",

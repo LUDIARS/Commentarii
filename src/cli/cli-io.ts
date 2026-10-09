@@ -7,6 +7,7 @@ import type { LoadResult } from '../bundle/bundle.ts';
 import type { ReplayLoad } from '../replay/parse-replay.ts';
 import type { EngineIo } from './engine-io.ts';
 import type { ImportIo } from './import-io.ts';
+import type { LearnIo } from '../learn/cli/learn-io.ts';
 
 export interface CliIo {
   stdout(text: string): void;
@@ -20,6 +21,8 @@ export interface CliIo {
   readonly scanSource: ScanSource;
   /** guide run / guide bench / replay play --decider utility-bt only. */
   readonly engineIo?: EngineIo;
+  /** guide learn, and the overlay guide run / guide bench read at start-up. */
+  readonly learnIo?: LearnIo;
   /** guide import plays / guide report plays only. */
   readonly playsIo?: PlaysIo;
 }

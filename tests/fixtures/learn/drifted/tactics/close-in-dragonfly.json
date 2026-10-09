@@ -1,0 +1,43 @@
+{
+  "id": "tactic:bestia:close-in-dragonfly",
+  "name": {
+    "ja": "ドラゴンフライに詰める",
+    "en": "Close in on the dragonfly"
+  },
+  "when": {
+    "all": [
+      {
+        "entity": "enemy:bestia:bomber-dragonfly",
+        "visible": true,
+        "distance_lt": 17
+      }
+    ]
+  },
+  "do": [
+    {
+      "move_to": "$enemy"
+    },
+    {
+      "attack": "$enemy"
+    }
+  ],
+  "expect": {
+    "within_sec": 3,
+    "entity_state": {
+      "$enemy": "state:bestia:battle-ai#retreat"
+    }
+  },
+  "because": [
+    "enemy:bestia:bomber-dragonfly.stats.range"
+  ],
+  "knowledge": "discoverable",
+  "confidence": "authored",
+  "metrics": {
+    "runs": 10,
+    "success": 0.8,
+    "time_sec": {
+      "p50": 3
+    }
+  },
+  "superseded_by": null
+}
