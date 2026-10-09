@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "import-zones.schema.json",
+  "title": "Input of guide import map --kind zones",
+  "description": "Areas (polygon or rectangle) and their adjacency. Each area becomes a node placed at its centroid; each adjacency becomes an edge. Every knowledge left out defaults to masked.",
+  "type": "object",
+  "required": ["zones", "adjacency"],
+  "properties": {
+    "coordinates": { "$ref": "import-navgraph.schema.json#/$defs/coordinates" },
+    "zones": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "$ref": "import-navgraph.schema.json#/$defs/nodeName" },
+          "label": { "$ref": "id.schema.json#/$defs/localizedText" },
+          "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+          "polygon": { "type": "array", "minItems": 3, "items": { "$ref": "import-navgraph.schema.json#/$defs/point" } },
+          "rect": {
+            "type": "object",
+            "required": ["min", "max"],
+            "properties": {
+              "min": { "$ref": "import-navgraph.schema.json#/$defs/point" },
+              "max": { "$ref": "import-navgraph.schema.json#/$defs/point" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "oneOf": [{ "required": ["polygon"] }, { "required": ["rect"] }],
+        "additionalProperties": false
+      }
+    },
+    "adjacency": { "type": "array", "items": { "$ref": "import-navgraph.schema.json#/$defs/edge" } },
+    "annotations": { "type": "array", "items": { "$ref": "import-navgraph.schema.json#/$defs/annotation" } }
+  },
+  "additionalProperties": false
+}

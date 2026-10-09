@@ -3,23 +3,24 @@
 import { parseArgs } from 'node:util';
 import type { RenderKnowledge } from '../render/render-bundle.ts';
 import { parseReplayCommand, REPLAY_USAGE, type ReplayCommand } from '../replay/replay-command.ts';
+import { IMPORT_USAGE, parseImportCommand, type ImportCommand } from './parse-import-command.ts';
+import { UsageError } from './usage-error.ts';
+
+export { UsageError };
 
 export type Command =
   | { readonly name: 'validate'; readonly bundleDir: string; readonly json: boolean }
   | { readonly name: 'render'; readonly bundleDir: string; readonly outDir: string; readonly knowledge: RenderKnowledge }
   | { readonly name: 'report-knowledge'; readonly bundleDir: string; readonly json: boolean }
   | ReplayCommand
+  | ImportCommand
   | { readonly name: 'help' };
 
 export const USAGE = `usage:
   guide validate <bundle-dir> [--json]
   guide render <bundle-dir> --out <dir> [--knowledge player|full]
   guide report knowledge <bundle-dir> [--json]
-${REPLAY_USAGE}`;
-
-export class UsageError extends Error {
-  override readonly name = 'UsageError';
-}
+${REPLAY_USAGE}${IMPORT_USAGE}`;
 
 function single(positionals: readonly string[], what: string): string {
   if (positionals.length !== 1 || positionals[0] === undefined) throw new UsageError(`${what} needs exactly one <bundle-dir>`);
@@ -51,6 +52,7 @@ export function parseCommand(argv: readonly string[]): Command {
       return { name: 'report-knowledge', bundleDir: single(positionals, 'report knowledge'), json: values.json === true };
     }
     if (name === 'replay') return parseReplayCommand(rest);
+    if (name === 'import' || name === 'intent') return parseImportCommand(name, rest);
   } catch (cause) {
     if (cause instanceof UsageError) throw cause;
     throw new UsageError((cause as Error).message);

@@ -13,6 +13,10 @@ export const DOCUMENT_SCHEMAS = [
   'tactic',
   'intent',
   'observation',
+  // Inputs of guide import (stage 2): never part of a bundle, validated before conversion.
+  'mapping',
+  'import-navgraph',
+  'import-zones',
 ] as const;
 
 export type DocumentSchemaName = (typeof DOCUMENT_SCHEMAS)[number];

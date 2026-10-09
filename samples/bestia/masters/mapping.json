@@ -1,0 +1,28 @@
+{
+  "tables": {
+    "archetypes": {
+      "kind": "enemy",
+      "id": { "column": "slug" },
+      "name": { "ja": "name_ja", "en": "name_en" },
+      "behavior": "behavior",
+      "stats": {
+        "health": { "column": "health", "unit": "hp", "knowledge": "discoverable" },
+        "radius": { "column": "radius", "unit": "m", "knowledge": "shown" },
+        "speed": { "column": "speed", "unit": "m/s", "knowledge": "discoverable" },
+        "range": { "column": "range", "unit": "m", "knowledge": "discoverable" },
+        "cooldown": { "column": "cooldown", "unit": "s", "knowledge": "discoverable" },
+        "body_mass": { "column": "body_mass", "unit": "kg" },
+        "aim_lead_divisor": { "column": "aim_lead_divisor" }
+      }
+    }
+  },
+  "grid": {
+    "knowledge": "shown",
+    "legend": {
+      "#": { "walkable": false },
+      ".": { "walkable": true },
+      "s": { "walkable": true, "annotation": "spawn", "note": { "ja": "出現位置 (中心から 20 m の円周)" } },
+      "~": { "walkable": true, "annotation": "hazard", "note": { "ja": "リング外。AI は戻ろうとする" } }
+    }
+  }
+}

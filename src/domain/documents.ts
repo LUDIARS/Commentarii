@@ -211,4 +211,7 @@ export interface Intent {
   readonly stage: string;
   readonly intended: readonly IntendedItem[];
   readonly allowed_divergences: readonly AllowedDivergence[];
+  /** Set on intents drafted by `guide intent import` (source.kind = llm-draft, draft: true). */
+  readonly source?: Source;
+  readonly draft?: boolean;
 }

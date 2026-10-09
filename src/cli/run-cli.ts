@@ -8,6 +8,7 @@ import { formatValidationText } from '../validate/format-validation-text.ts';
 import { runValidation } from '../validate/run-validation.ts';
 import { EXIT_INVALID, EXIT_OK, EXIT_USAGE, type CliIo } from './cli-io.ts';
 import { parseCommand, USAGE, UsageError, type Command } from './parse-command.ts';
+import { runImportCommand } from './run-import-command.ts';
 
 async function execute(command: Command, io: CliIo): Promise<number> {
   switch (command.name) {
@@ -37,6 +38,11 @@ async function execute(command: Command, io: CliIo): Promise<number> {
     case 'replay-play':
     case 'replay-diff':
       return runReplayCommand(command, io);
+    case 'import-masters':
+    case 'import-map':
+    case 'import-spec':
+    case 'intent-import':
+      return runImportCommand(command, io);
   }
 }
 

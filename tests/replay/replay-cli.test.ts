@@ -10,6 +10,7 @@ import type { CliIo } from '../../src/cli/cli-io.ts';
 import { runCli } from '../../src/cli/run-cli.ts';
 import type { PlayReport } from '../../src/replay/play-replay.ts';
 import type { ReplayDiff } from '../../src/replay/diff-replays.ts';
+import { testImportIo } from '../support/import-io.ts';
 import { BASE_RUN, BRANCH_RUN, fixtureText } from './replay-fixtures.ts';
 
 interface Captured {
@@ -28,6 +29,7 @@ function capture(): Captured {
       openBundle: openBundleDir,
       writeFiles: writeOutputFiles,
       openReplay: openReplayFile,
+      importIo: testImportIo(),
     },
     stdout: () => out,
     stderr: () => err,

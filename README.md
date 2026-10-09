@@ -17,12 +17,15 @@
 ## 現在の段階
 
 段階 1 (設計 §11): 共通スキーマ・`validate`・`render`・`report knowledge`。
+段階 2: 取り込み `import masters` (CSV / JSON / SQLite + mapping)・`import map` (grid / navgraph / zones)・`import spec` / `intent import` (LLM 下書き)。仕様は [spec/feature/import.md](spec/feature/import.md)。
 
 | 置き場所 | 中身 |
 |---|---|
 | `schema/` | JSON Schema (draft 2020-12)。`value` (共通フィールド) / `manifest` / `glossary` / `entity` / `entity.masked` / `stage` / `map` / `events` / `rule` / `state` / `tactic` / `intent` / `observation`、ID 形式は `id` |
 | `samples/bestia/` | Bestia の archetype を手で起こした最小バンドル (敵 3・ステージ 1・ルール 2・状態機械 1・定石 2・意図 1・masked ファイル 1) |
 | `spec/feature/validate-checks.md` | `validate` の検査項目 V01〜V12 の固定リスト |
+| `samples/bestia/masters/` | 取り込みの入力例 (`archetypes.csv` / `mapping.json` / `ring.grid.txt`)。`validate` の対象外 |
+| `prompts/` | `import spec` / `intent import` の LLM プロンプト |
 
 ## 使い方
 
@@ -48,6 +51,16 @@ node dist/cli/main.js report knowledge samples/bestia
 node dist/cli/main.js report knowledge samples/bestia --json
 ```
 
+```sh
+# マスターデータ取り込み (既定 masked、masked は .masked.json へ)。--dry-run で差分だけ
+node dist/cli/main.js import masters --game samples/bestia --from samples/bestia/masters/archetypes.csv --map samples/bestia/masters/mapping.json --dry-run
+# 地図取り込み (grid は mapping の grid 凡例が要る)
+node dist/cli/main.js import map --game <bundle> --stage <slug> --from samples/bestia/masters/ring.grid.txt --kind grid --map samples/bestia/masters/mapping.json
+# 仕様書 / 意図の LLM 下書き (claude -p。draft: true・masked で書く。COMMENTARII_CLAUDE_BIN で実行ファイルを指定可)
+node dist/cli/main.js import spec --game <bundle> --from <spec.md> --kind rules
+node dist/cli/main.js intent import --game <bundle> --stage <slug> --from <intent.md>
+```
+
 `npm run guide -- validate samples/bestia` でも同じ。パッケージとして入れた場合は `guide` コマンドになる。
 
 `render` が書くファイル: `README.md` (目次) / `enemies.md` (敵図鑑) / `catalog.md` (アイテム・スキル・アクター) / `stages/<slug>.md` (目標・出現表・イベント・地図: grid は ASCII、navgraph は Mermaid、zones は隣接表) / `rules.md` (式と検算例) / `states.md` (Mermaid stateDiagram) / `tactics.md` (定石一覧と実測) / `intents.md` / `knowledge.md` (知識境界レポート)。`--knowledge full` のときだけ `masked.md`。
@@ -59,7 +72,7 @@ npm run typecheck        # tsc --noEmit (src + tests)
 npm test                 # tsc で build-test/ に出力して node --test
 ```
 
-- `src/domain/` 値・知識境界・ID・式評価の純関数 / `src/schema/` スキーマ検証 / `src/bundle/` ローダ・参照索引・player view / `src/validate/checks/` 検査項目 (1 ファイル 1 項目) / `src/render/` / `src/report/` / `src/cli/` / `src/adapters/fs/` ファイル I/O。`tests/` は `src/` と対。
+- `src/domain/` 値・知識境界・ID・式評価の純関数 / `src/schema/` スキーマ検証 / `src/bundle/` ローダ・参照索引・player view / `src/validate/checks/` 検査項目 (1 ファイル 1 項目) / `src/render/` / `src/report/` / `src/cli/` / `src/import/` 取り込み (masters / map / spec) / `src/adapters/fs/` ファイル I/O / `src/adapters/sqlite/` `node:sqlite` / `src/adapters/llm/` `claude -p`。`tests/` は `src/` と対。
 - 受け入れ条件は Augur の契約 (`augur.contracts.json`、述語は `src/contracts/`)。`npm test` は `VESTIGIUM_LOGS_DIR=<repo>/logs` で契約の観測を記録する。CLI を普段使うときは記録しない。
 - 復旧: ビルド成果物がおかしいときは `dist/` と `build-test/` を消して `npm run build` / `npm test` をやり直す。生成物はどちらも git 管理外。
 

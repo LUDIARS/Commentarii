@@ -3,6 +3,7 @@
 
 import type { LoadResult } from '../bundle/bundle.ts';
 import type { ReplayLoad } from '../replay/parse-replay.ts';
+import type { ImportIo } from './import-io.ts';
 
 export interface CliIo {
   stdout(text: string): void;
@@ -10,6 +11,8 @@ export interface CliIo {
   openBundle(directory: string): Promise<LoadResult>;
   writeFiles(outDir: string, files: ReadonlyMap<string, string>): Promise<void>;
   openReplay(path: string): Promise<ReplayLoad>;
+  /** guide import / guide intent import only. */
+  readonly importIo: ImportIo;
 }
 
 export const EXIT_OK = 0;
