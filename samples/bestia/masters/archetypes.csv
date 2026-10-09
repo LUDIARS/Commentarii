@@ -1,0 +1,4 @@
+slug,name_ja,name_en,behavior,health,radius,speed,range,cooldown,body_mass,aim_lead_divisor
+bazooka-beetle,バズーカビートル,Bazooka Beetle,state:bestia:battle-ai,180,1.6,7,23,0.24,18,32
+wire-spider,ワイヤースパイダー,Wire Spider,state:bestia:battle-ai,140,1.5,8,19,0.8,,
+bomber-dragonfly,ボマードラゴンフライ,Bomber Dragonfly,state:bestia:battle-ai,105,1.35,9,17,1.1,,

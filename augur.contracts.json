@@ -101,6 +101,33 @@
       "module": "src/contracts/diff-replays.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-12",
+      "criterion": "C-12 planMasterImport(input): 書き出す文書では masked の値が .masked.json にだけ入り .masked.json には masked 以外が無い。既存の observed / human / llm-draft の値はそのまま残り、既存の master 値の knowledge は取り込みで厳しくならない (昇格を戻さない)",
+      "symbol": "planMasterImport",
+      "file": "src/import/masters/plan-master-import.ts",
+      "module": "src/contracts/plan-master-import.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-13",
+      "criterion": "C-13 buildGuideMap(request): kind と stage が要求どおりで、ノード ID は一意、全ての辺の端点と注記の target が存在するノードを指す",
+      "symbol": "buildGuideMap",
+      "file": "src/import/map/build-guide-map.ts",
+      "module": "src/contracts/build-guide-map.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-14",
+      "criterion": "C-14 draftFromDocument(request, deps): 出力文書は全て draft: true・source.kind = llm-draft・knowledge = masked で、含まれる数値 (JSON の数とルール式の数値リテラル) は全て入力文書に書かれている",
+      "symbol": "draftFromDocument",
+      "file": "src/import/spec/draft-from-document.ts",
+      "module": "src/contracts/draft-from-document.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }

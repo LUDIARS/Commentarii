@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "intent.schema.json",
   "title": "Designer intent for one stage, and the divergences already accepted",
+  "description": "source / draft are optional; an intent drafted by guide intent import carries source.kind = llm-draft and must stay draft: true until a human rewrites it.",
   "type": "object",
   "required": ["stage", "intended", "allowed_divergences"],
   "properties": {
@@ -31,9 +32,19 @@
         },
         "additionalProperties": false
       }
-    }
+    },
+    "source": { "$ref": "value.schema.json#/$defs/source" },
+    "draft": { "type": "boolean" }
   },
   "additionalProperties": false,
+  "if": {
+    "required": ["source"],
+    "properties": { "source": { "required": ["kind"], "properties": { "kind": { "const": "llm-draft" } } } }
+  },
+  "then": {
+    "required": ["draft"],
+    "properties": { "draft": { "const": true } }
+  },
   "$defs": {
     "common": {
       "properties": {

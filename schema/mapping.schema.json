@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mapping.schema.json",
+  "title": "Import mapping of one game (guide import masters / import map)",
+  "description": "tables: master table (CSV / JSON file stem, or SQLite table name) -> entity columns. grid: character legend of grid maps. Every knowledge left out defaults to masked (design 1, principle 1).",
+  "type": "object",
+  "minProperties": 1,
+  "properties": {
+    "$schema": { "type": "string" },
+    "tables": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$" },
+      "additionalProperties": { "$ref": "#/$defs/table" }
+    },
+    "grid": { "$ref": "#/$defs/grid" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "column": { "type": "string", "minLength": 1 },
+    "entityKind": { "enum": ["enemy", "item", "skill", "actor"] },
+    "table": {
+      "type": "object",
+      "required": ["kind", "id", "name"],
+      "properties": {
+        "kind": {
+          "description": "One entity kind for every row, or a column whose values map to kinds.",
+          "oneOf": [
+            { "$ref": "#/$defs/entityKind" },
+            {
+              "type": "object",
+              "required": ["column", "values"],
+              "properties": {
+                "column": { "$ref": "#/$defs/column" },
+                "values": { "type": "object", "minProperties": 1, "additionalProperties": { "$ref": "#/$defs/entityKind" } }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "id": {
+          "description": "Column holding the ID slug. slugify: true turns free text (\"Bazooka Beetle\") into a slug.",
+          "type": "object",
+          "required": ["column"],
+          "properties": {
+            "column": { "$ref": "#/$defs/column" },
+            "slugify": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "name": {
+          "description": "Language -> column of the display name.",
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+          "additionalProperties": { "$ref": "#/$defs/column" }
+        },
+        "behavior": { "description": "Column holding the state machine reference.", "$ref": "#/$defs/column" },
+        "render_signature": {
+          "type": "object",
+          "minProperties": 1,
+          "properties": {
+            "mesh": { "$ref": "#/$defs/column" },
+            "sprite": { "$ref": "#/$defs/column" },
+            "material": { "$ref": "#/$defs/column" },
+            "material_separator": { "description": "Separator of several materials in one cell (default |).", "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "stats": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+          "additionalProperties": { "$ref": "#/$defs/stat" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "stat": {
+      "type": "object",
+      "required": ["column"],
+      "properties": {
+        "column": { "$ref": "#/$defs/column" },
+        "unit": { "type": "string", "minLength": 1 },
+        "knowledge": { "description": "Initial boundary. Left out: masked.", "$ref": "value.schema.json#/$defs/knowledge" }
+      },
+      "additionalProperties": false
+    },
+    "grid": {
+      "type": "object",
+      "required": ["legend"],
+      "properties": {
+        "legend": {
+          "description": "Cell character (or JSON cell value) -> walkable / annotation.",
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "minLength": 1 },
+          "additionalProperties": { "$ref": "#/$defs/legendEntry" }
+        },
+        "knowledge": { "description": "Boundary of the cell nodes and edges. Left out: masked.", "$ref": "value.schema.json#/$defs/knowledge" },
+        "unit": { "description": "Unit of one cell side; must equal the manifest unit when given.", "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "legendEntry": {
+      "type": "object",
+      "required": ["walkable"],
+      "properties": {
+        "walkable": { "type": "boolean" },
+        "annotation": { "enum": ["hazard", "resource", "shortcut", "spawn", "wanted", "unwanted"] },
+        "note": { "$ref": "id.schema.json#/$defs/localizedText" },
+        "knowledge": { "description": "Boundary of the annotation. Left out: the grid knowledge, else masked.", "$ref": "value.schema.json#/$defs/knowledge" }
+      },
+      "additionalProperties": false
+    }
+  }
+}
