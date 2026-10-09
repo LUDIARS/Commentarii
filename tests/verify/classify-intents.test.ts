@@ -27,9 +27,22 @@ test('the fixtures produce every class: match, interesting, undesirable and impo
     [FORBID_INTENT]: 'undesirable',
   });
   const sealed = await fixtureTraces(SEALED_RUNS);
-  const sealedClasses = classes(classifyIntents({ intent, ...sealed }));
-  assert.equal(sealedClasses[ROUTE_INTENT], 'impossible', 'no run reaches the center: the intended route cannot be reproduced');
-  assert.equal(sealedClasses[TEACH_INTENT], 'impossible', 'no run uses the taught tactic');
+  // No run reproduces the route or the taught tactic: a measurement, not a proof (Astra review P1-3).
+  const measured = classifyIntents({ intent, ...sealed });
+  assert.equal(classes(measured)[ROUTE_INTENT], 'not-reproduced');
+  assert.equal(classes(measured)[TEACH_INTENT], 'not-reproduced');
+  const route = measured.verdicts.find((verdict) => verdict.intent === ROUTE_INTENT);
+  assert.ok(route && route.runs > 0 && route.reproduced === 0 && route.reproduced_interval?.[0] === 0 && (route.reproduced_interval?.[1] ?? 0) > 0);
+  // Sealed on the map (no edge into the center) and the taught tactic gone from the guide: proven.
+  const load = await loadSample();
+  const map = load.bundle.stages.find((stage) => stage.map?.doc.stage === intent.stage)?.map?.doc;
+  assert.ok(map);
+  const walled = { ...map, edges: map.edges.filter((edge) => edge.from !== 'node:center' && edge.to !== 'node:center') };
+  const tactics = new Set(load.bundle.tactics.map(({ doc }) => doc.id).filter((id) => id !== 'tactic:bestia:kite-wire-spider'));
+  const proven = classifyIntents({ intent, ...sealed, map: walled, tactics });
+  assert.equal(classes(proven)[ROUTE_INTENT], 'impossible');
+  assert.equal(classes(proven)[TEACH_INTENT], 'impossible');
+  assert.match(proven.verdicts.find((verdict) => verdict.intent === ROUTE_INTENT)?.proof ?? '', /no path from node:mid-ring to node:center/);
 });
 
 test('divergences carry reason, signature and runs', async () => {
@@ -61,7 +74,7 @@ test('--persona keeps only that persona engine runs', async () => {
   assert.ok(selection.filteredOut.includes('run:verify-human-a'));
 });
 
-test('an accepted divergence is not reported again (by divergence ID, run or signature)', async () => {
+test('an accepted divergence is not reported again (by divergence ID or intent + signature, same guide version)', async () => {
   const intent = await sampleIntent();
   const main = await fixtureTraces(MAIN_RUNS);
   const first = classifyIntents({ intent, ...main });
@@ -69,14 +82,29 @@ test('an accepted divergence is not reported again (by divergence ID, run or sig
   assert.ok(alt);
   const allowedBy = [
     { run: 'run:x', summary: 's', decided_by: 'neco', divergence: alt.id },
-    { run: 'run:verify-alt-expert', summary: 's', decided_by: 'neco' },
     { run: 'run:x', summary: 's', decided_by: 'neco', intent: ROUTE_INTENT, signature: alt.signature },
+    { run: 'run:x', summary: 's', decided_by: 'neco', intent: ROUTE_INTENT, signature: alt.signature, manifest_version: '0.1.0' },
   ];
   for (const allowed of allowedBy) {
-    const again = classifyIntents({ intent: { ...intent, allowed_divergences: [allowed] }, ...main });
+    const again = classifyIntents({ intent: { ...intent, allowed_divergences: [allowed] }, ...main, manifestVersion: '0.1.0' });
     assert.ok(!again.divergences.some((divergence) => divergence.id === alt.id), JSON.stringify(allowed));
     assert.deepEqual(again.accepted.map((entry) => entry.divergence.id), [alt.id]);
     assert.equal(classes(again)[ROUTE_INTENT], 'match');
+  }
+});
+
+test('an acceptance naming only a run, or made under another guide version, is reported again for re-evaluation', async () => {
+  const intent = await sampleIntent();
+  const main = await fixtureTraces(MAIN_RUNS);
+  const alt = classifyIntents({ intent, ...main }).divergences.find((divergence) => divergence.reason === 'alt-route');
+  assert.ok(alt);
+  const loose = { run: 'run:verify-alt-expert', summary: 's', decided_by: 'neco' };
+  const older = { run: 'run:x', summary: 's', decided_by: 'neco', intent: ROUTE_INTENT, signature: alt.signature, manifest_version: '0.0.1' };
+  for (const [allowed, why] of [[loose, /names only a run or a tactic/], [older, /guide version 0\.0\.1/]] as const) {
+    const again = classifyIntents({ intent: { ...intent, allowed_divergences: [allowed] }, ...main, manifestVersion: '0.1.0' });
+    const reported = again.divergences.find((divergence) => divergence.id === alt.id);
+    assert.match(reported?.recheck ?? '', why);
+    assert.deepEqual(again.accepted, []);
   }
 });
 

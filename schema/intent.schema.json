@@ -32,7 +32,8 @@
           "intent": { "description": "The intended item the divergence was found against (guide verify intent --accept).", "$ref": "id.schema.json#/$defs/intentId" },
           "reason": { "$ref": "#/$defs/divergenceReason" },
           "divergence": { "description": "ID in observations/divergences.json.", "$ref": "#/$defs/divergenceId" },
-          "signature": { "$ref": "#/$defs/signature" }
+          "signature": { "$ref": "#/$defs/signature" },
+          "manifest_version": { "description": "Guide version the acceptance was judged under (guide verify intent --accept). Another version re-evaluates it.", "type": "string", "minLength": 1 }
         },
         "additionalProperties": false
       }

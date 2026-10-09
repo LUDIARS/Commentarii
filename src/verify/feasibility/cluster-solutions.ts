@@ -1,9 +1,11 @@
-// Stage traces -> solutions (design 8.5 "解法のまとまり", spec/feature/intent-verify.md 6.1).
-// Deterministic: traces sorted by tactic sequence, route and run; each joins the first solution
-// with the same tactic sequence whose route is a prefix of its own or the other way round (a
-// failed partial attempt joins the solution it was heading for), else starts a new one. A
-// solution's route is the longest of its members. Intended solutions no trace reproduces are
-// added with no members, so their band can still be judged.
+// Stage traces -> solutions (design 8.5 "解法のまとまり", spec/feature/intent-verify.md 6.1). An
+// order-independent equivalence (Astra review P2-8): traces with the same tactic sequence and the
+// same route are one class. A class whose members all failed and whose route is a strict prefix of
+// the route of exactly one class with the same tactics and at least one success is the partial
+// attempt of that solution and joins it; otherwise it stays its own solution. The result depends
+// on the set of traces only, never on their order; solution numbers follow the sorted (tactics,
+// route) keys. Intended solutions no trace reproduces are added with no members, so their band
+// can still be judged.
 
 import { followsPath } from '../intent/intent-rules.ts';
 import type { StageTrace } from '../runs/stage-trace.ts';
@@ -37,12 +39,32 @@ export function isPrefix(prefix: readonly string[], of: readonly string[]): bool
   return prefix.length <= of.length && prefix.every((node, index) => of[index] === node);
 }
 
-function key(trace: StageTrace): string {
-  return JSON.stringify([trace.tactics, trace.route, trace.run]);
+function classKey(tactics: readonly string[], route: readonly string[]): string {
+  return JSON.stringify([tactics, route]);
 }
 
 function sameTactics(a: readonly string[], b: readonly string[]): boolean {
   return a.length === b.length && a.every((tactic, index) => b[index] === tactic);
+}
+
+function equivalenceClasses(traces: readonly StageTrace[]): Draft[] {
+  const classes = new Map<string, Draft>();
+  for (const trace of traces) {
+    const id = classKey(trace.tactics, trace.route);
+    const found = classes.get(id);
+    if (found === undefined) classes.set(id, { tactics: trace.tactics, route: trace.route, members: [trace], intended: [] });
+    else found.members.push(trace);
+  }
+  return [...classes].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([, draft]) => draft);
+}
+
+/** The one successful class a failed partial class extends, if exactly one does. */
+function extensionOf(partial: Draft, classes: readonly Draft[]): Draft | undefined {
+  if (partial.members.some((member) => member.reached)) return undefined;
+  const homes = classes.filter(
+    (other) => other !== partial && sameTactics(other.tactics, partial.tactics) && other.route.length > partial.route.length && isPrefix(partial.route, other.route) && other.members.some((member) => member.reached),
+  );
+  return homes.length === 1 ? homes[0] : undefined;
 }
 
 function reproduces(draft: Draft, solution: IntendedSolution): boolean {
@@ -51,14 +73,17 @@ function reproduces(draft: Draft, solution: IntendedSolution): boolean {
 }
 
 export function clusterSolutions(stageSlug: string, traces: readonly StageTrace[], intended: readonly IntendedSolution[]): SolutionCluster[] {
+  const classes = equivalenceClasses(traces);
   const drafts: Draft[] = [];
-  for (const trace of [...traces].sort((a, b) => (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0))) {
-    const home = drafts.find((draft) => sameTactics(draft.tactics, trace.tactics) && (isPrefix(draft.route, trace.route) || isPrefix(trace.route, draft.route)));
-    if (home === undefined) drafts.push({ tactics: trace.tactics, route: trace.route, members: [trace], intended: [] });
-    else {
-      home.members.push(trace);
-      if (trace.route.length > home.route.length) home.route = trace.route;
-    }
+  const joins = new Map<Draft, Draft>();
+  for (const draft of classes) {
+    const home = extensionOf(draft, classes);
+    if (home === undefined) drafts.push({ ...draft, members: [...draft.members] });
+    else joins.set(draft, home);
+  }
+  for (const [partial, home] of joins) {
+    const target = drafts.find((draft) => draft.tactics === home.tactics && draft.route === home.route);
+    target?.members.push(...partial.members);
   }
   for (const solution of intended) {
     const homes = drafts.filter((draft) => reproduces(draft, solution));
@@ -69,7 +94,7 @@ export function clusterSolutions(stageSlug: string, traces: readonly StageTrace[
     id: `sol:${stageSlug}:${index + 1}`,
     tactics: [...draft.tactics],
     route: [...draft.route],
-    members: draft.members,
+    members: [...draft.members].sort((x, y) => (x.run < y.run ? -1 : x.run > y.run ? 1 : 0)),
     intended: [...new Set(draft.intended)].sort(),
   }));
 }

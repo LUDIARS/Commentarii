@@ -17,7 +17,7 @@ function candidate(overrides: Partial<Candidate> & Pick<Candidate, 'id' | 'kind'
 async function context(overrides: Partial<UtilityContext> = {}): Promise<UtilityContext> {
   const world = buildEngineWorld((await loadSample()).bundle, 'player');
   const observation = frame({ tick: 600, hp: 0.4 });
-  return { observation, world, stage: world.stages.get('stage:bestia:dome-arena'), purpose: 'efficiency', exploring: false, ...overrides };
+  return { observation, world, stage: world.stages.get('stage:bestia:dome-arena'), purpose: 'efficiency', exploring: false, intentAssist: false, ...overrides };
 }
 
 const KITE = candidate({
@@ -38,12 +38,19 @@ test('every consideration stays within 0..1 (or says nothing)', async () => {
   }
 });
 
-test('the intent teaches the kite tactic and forbids the outside except in coverage runs', async () => {
+test('without the intent-assisted test the intent says nothing: the decider judges from player knowledge only', async () => {
   const ctx = await context();
+  const outside = candidate({ id: 'explore:node:outside', kind: 'explore', traits: { targetNode: 'node:outside', novelty: 1 } });
+  const center = candidate({ id: 'explore:node:center', kind: 'explore', traits: { targetNode: 'node:center', novelty: 1 } });
+  for (const subject of [KITE, outside, center]) assert.equal(CONSIDERATIONS.intent(subject, ctx), undefined, subject.id);
+});
+
+test('in the intent-assisted test the intent teaches the kite tactic and forbids the outside except in coverage runs', async () => {
+  const ctx = await context({ intentAssist: true });
   assert.equal(CONSIDERATIONS.intent(KITE, ctx), 1);
   const outside = candidate({ id: 'explore:node:outside', kind: 'explore', traits: { targetNode: 'node:outside', novelty: 1 } });
   assert.equal(CONSIDERATIONS.intent(outside, ctx), 0);
-  assert.equal(CONSIDERATIONS.intent(outside, await context({ purpose: 'coverage' })), undefined);
+  assert.equal(CONSIDERATIONS.intent(outside, await context({ purpose: 'coverage', intentAssist: true })), undefined);
   const center = candidate({ id: 'explore:node:center', kind: 'explore', traits: { targetNode: 'node:center', novelty: 1 } });
   assert.equal(CONSIDERATIONS.intent(center, ctx), 1, 'center is on the intended route');
 });

@@ -65,10 +65,10 @@ async function runOnce(command: RunCommand, io: AutoplayIo, engineIo: EngineIo):
       ? undefined
       : {
           writer: await engineIo.createReplayWriter(command.recordPath),
-          header: { run_id: id, seed: command.seed, manifest_version: version, purpose: command.purpose, persona: persona.slug },
+          header: { run_id: id, seed: command.seed, manifest_version: version, purpose: command.purpose, persona: persona.slug, ...(command.intentAssist ? { decision_mode: 'intent-assisted' as const } : {}) },
           now: () => engineIo.now(),
         };
-  const decider = createUtilityBtDecider({ bundle, persona }, command.seed);
+  const decider = createUtilityBtDecider({ bundle, persona, intentAssist: command.intentAssist }, command.seed);
   const reflect =
     command.observePath === undefined
       ? undefined
@@ -97,6 +97,7 @@ async function bench(command: BenchCommand, io: AutoplayIo, engineIo: EngineIo):
     mode: command.mode,
     purpose: command.purpose,
     withoutTactics: command.withoutTactics,
+    intentAssist: command.intentAssist,
   });
   io.stdout(`${JSON.stringify(report, null, 2)}\n`);
   return EXIT_OK;

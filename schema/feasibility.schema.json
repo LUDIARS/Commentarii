@@ -10,13 +10,14 @@
     "design_stance": { "enum": ["open", "refined", "mixed", "unspecified"] },
     "thresholds": {
       "type": "object",
-      "required": ["feasible_success", "min_runs", "illusory_weight", "stall_after_sec", "stall_weight"],
+      "required": ["feasible_success", "min_runs", "illusory_weight", "stall_after_sec", "stall_weight", "zero_success_upper"],
       "properties": {
         "feasible_success": { "type": "number", "minimum": 0, "maximum": 1 },
         "min_runs": { "type": "integer", "minimum": 1 },
         "illusory_weight": { "type": "number", "minimum": 1 },
         "stall_after_sec": { "type": "number", "minimum": 0 },
-        "stall_weight": { "type": "number", "minimum": 0 }
+        "stall_weight": { "type": "number", "minimum": 0 },
+        "zero_success_upper": { "type": "number", "minimum": 0, "maximum": 1 }
       },
       "additionalProperties": false
     },
@@ -34,27 +35,53 @@
   },
   "additionalProperties": false,
   "$defs": {
-    "band": { "enum": ["feasible", "extreme", "illusory", "impossible"] },
+    "band": {
+      "description": "feasible / skill-gated / extreme / illusory / impossible are classifications; insufficient-evidence and not-observed are measured states outside the classification (spec/feature/intent-verify.md 6.2).",
+      "enum": ["feasible", "skill-gated", "extreme", "illusory", "impossible", "insufficient-evidence", "not-observed"]
+    },
+    "evidence": {
+      "description": "Finished attempts (aborted runs excluded), successes, rate, 95% Wilson interval, seeds and tick budget of the sample.",
+      "type": "object",
+      "required": ["attempts", "successes", "success_rate", "interval", "aborted", "seeds", "budget_ticks"],
+      "properties": {
+        "attempts": { "type": "integer", "minimum": 0 },
+        "successes": { "type": "integer", "minimum": 0 },
+        "success_rate": { "anyOf": [{ "type": "number", "minimum": 0, "maximum": 1 }, { "type": "null" }] },
+        "interval": {
+          "anyOf": [
+            { "type": "array", "prefixItems": [{ "type": "number", "minimum": 0, "maximum": 1 }, { "type": "number", "minimum": 0, "maximum": 1 }], "items": false, "minItems": 2 },
+            { "type": "null" }
+          ]
+        },
+        "aborted": { "type": "integer", "minimum": 0 },
+        "seeds": { "type": "array", "items": { "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "string", "minLength": 1 }] } },
+        "budget_ticks": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
     "personaBand": {
       "type": "object",
-      "required": ["persona", "attempts", "successes", "success_rate", "band"],
+      "required": ["persona", "attempts", "successes", "success_rate", "band", "evidence"],
       "properties": {
         "persona": { "$ref": "id.schema.json#/$defs/slug" },
         "attempts": { "type": "integer", "minimum": 0 },
         "successes": { "type": "integer", "minimum": 0 },
         "success_rate": { "anyOf": [{ "type": "number", "minimum": 0, "maximum": 1 }, { "type": "null" }] },
-        "band": { "$ref": "#/$defs/band" }
+        "band": { "$ref": "#/$defs/band" },
+        "evidence": { "$ref": "#/$defs/evidence" }
       },
       "additionalProperties": false
     },
     "solution": {
       "type": "object",
-      "required": ["id", "tactics", "route", "band", "visible", "intended", "personas", "evidence_runs"],
+      "required": ["id", "tactics", "route", "band", "evidence", "visible", "intended", "personas", "evidence_runs"],
       "properties": {
         "id": { "type": "string", "pattern": "^sol:[a-z0-9][a-z0-9_-]*:[1-9][0-9]*$" },
         "tactics": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/tacticId" } },
         "route": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/nodeId" } },
         "band": { "$ref": "#/$defs/band" },
+        "evidence": { "$ref": "#/$defs/evidence" },
+        "unwalkable": { "description": "The stage-map proof behind band impossible.", "type": "string", "minLength": 1 },
         "visible": { "description": "Generated as a candidate from the player export (shown / discoverable) alone.", "type": "boolean" },
         "by_design": {
           "type": "object",
@@ -70,11 +97,23 @@
     },
     "axes": {
       "type": "object",
-      "required": ["persona", "breadth", "confusion_depth", "convergence", "runs"],
+      "required": ["persona", "breadth", "confusion_depth", "observed", "convergence", "runs"],
       "properties": {
         "persona": { "$ref": "id.schema.json#/$defs/slug" },
         "breadth": { "type": "integer", "minimum": 0 },
         "confusion_depth": { "type": "number", "minimum": 0 },
+        "observed": {
+          "description": "Measured totals behind confusion_depth: failed attempts, round trips, stalled seconds, off-route nodes of failed attempts (observation kept apart from interpretation).",
+          "type": "object",
+          "required": ["failures", "round_trips", "stall_sec", "off_route_nodes"],
+          "properties": {
+            "failures": { "type": "number", "minimum": 0 },
+            "round_trips": { "type": "number", "minimum": 0 },
+            "stall_sec": { "type": "number", "minimum": 0 },
+            "off_route_nodes": { "type": "number", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
         "convergence": { "description": "breadth is 1 and the stage did not declare design_stance refined. A fact, not a verdict.", "type": "boolean" },
         "runs": { "type": "integer", "minimum": 0 }
       },

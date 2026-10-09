@@ -9,7 +9,7 @@
 import { isKnowledge, strictestKnowledge } from '../domain/knowledge.ts';
 import { isJsonObject } from '../domain/value-node.ts';
 import type { ObservationFrame } from '../replay/observation-frame.ts';
-import { BASE_FIELDS, type ObservationFieldDeclaration } from './observation-fields.ts';
+import { BASE_FIELDS, isDeclarablePath, type ObservationFieldDeclaration } from './observation-fields.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:5750df13 */
 import augurContract_3d8c6766 from '../contracts/observation-boundary.contract.ts'; /* augur-inject:contract-predicate:30d6aebb */
 
@@ -40,7 +40,8 @@ class BoundaryWalk {
   private readonly declared: ReadonlyMap<string, ObservationFieldDeclaration>;
 
   constructor(declarations: readonly ObservationFieldDeclaration[]) {
-    this.declared = new Map(declarations.map((declaration) => [declaration.path, declaration]));
+    // A declaration of a place a game cannot declare (a base field, frame structure) is ignored.
+    this.declared = new Map(declarations.filter((declaration) => isDeclarablePath(declaration.path)).map((declaration) => [declaration.path, declaration]));
   }
 
   /** One place: base fields pass, declared ones pass when player-knowable and labelled consistently. */

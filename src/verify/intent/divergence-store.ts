@@ -51,7 +51,9 @@ export function orderDivergences<T extends { readonly id: string; readonly kind:
 
 export function mergeDivergences(store: DivergenceStore | undefined, gameId: string, found: readonly Divergence[]): DivergenceStore {
   const merged = new Map<string, StoredDivergence>((store?.divergences ?? []).map((entry) => [entry.id, entry]));
-  for (const divergence of found) {
+  for (const found_ of found) {
+    // recheck is a property of this verification (an acceptance that no longer binds), not of the stored divergence.
+    const { recheck: _recheck, ...divergence } = found_;
     const existing = merged.get(divergence.id);
     merged.set(
       divergence.id,

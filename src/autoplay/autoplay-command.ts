@@ -22,6 +22,8 @@ export interface RunCommand {
   readonly purpose: ObservationPurpose;
   readonly seed: number;
   readonly ticks: number;
+  /** Intent-assisted test (design 7.4, spec/feature/engine.md §4.1): the designer's intent scores candidates. Off = player knowledge only. */
+  readonly intentAssist: boolean;
   readonly recordPath?: string;
   /** Reflect into this observation file (observations/runs/<run-slug>.jsonl, design 7.5). */
   readonly observePath?: string;
@@ -36,13 +38,14 @@ export interface BenchCommand {
   readonly purpose: ObservationPurpose;
   readonly seed: number;
   readonly ticks: number;
+  readonly intentAssist: boolean;
   readonly withoutTactics: boolean;
 }
 
 export type AutoplayCommand = RunCommand | BenchCommand;
 
-export const AUTOPLAY_USAGE = `  guide run --game <bundle-dir> [--adapter sim|stdio] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--record <out.jsonl>] [--observe <observations.jsonl>]
-  guide bench --game <bundle-dir> [--runs <n>] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--no-tactics]
+export const AUTOPLAY_USAGE = `  guide run --game <bundle-dir> [--adapter sim|stdio] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--intent-assist] [--record <out.jsonl>] [--observe <observations.jsonl>]
+  guide bench --game <bundle-dir> [--runs <n>] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--intent-assist] [--no-tactics]
 `;
 
 function nonNegativeInteger(text: string, option: string): number {
@@ -63,6 +66,7 @@ const COMMON_OPTIONS = {
   purpose: { type: 'string', default: 'efficiency' },
   seed: { type: 'string', default: String(DEFAULT_SEED) },
   ticks: { type: 'string', default: String(DEFAULT_TICKS) },
+  'intent-assist': { type: 'boolean' },
 } as const;
 
 interface CommonValues {
@@ -72,6 +76,7 @@ interface CommonValues {
   readonly purpose: string;
   readonly seed: string;
   readonly ticks: string;
+  readonly 'intent-assist'?: boolean | undefined;
 }
 
 function common(values: CommonValues, verb: string): Omit<RunCommand, 'name' | 'adapter' | 'recordPath'> {
@@ -85,6 +90,7 @@ function common(values: CommonValues, verb: string): Omit<RunCommand, 'name' | '
     purpose: values.purpose,
     seed: nonNegativeInteger(values.seed, '--seed'),
     ticks: positiveInteger(values.ticks, '--ticks'),
+    intentAssist: values['intent-assist'] === true,
   };
 }
 

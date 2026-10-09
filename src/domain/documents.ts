@@ -222,6 +222,8 @@ export interface AllowedDivergence {
   readonly reason?: DivergenceReason;
   readonly divergence?: string;
   readonly signature?: DivergenceSignature;
+  /** Guide version the acceptance was judged under (set by guide verify intent --accept). */
+  readonly manifest_version?: string;
 }
 
 export type DesignStance = 'open' | 'refined' | 'mixed';

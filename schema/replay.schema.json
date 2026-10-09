@@ -31,6 +31,7 @@
         "purpose": { "enum": ["efficiency", "coverage", "human"] },
         "source": { "description": "human: a human play imported by guide import plays (design 14.D). Left out for engine runs.", "enum": ["human"] },
         "persona": { "$ref": "id.schema.json#/$defs/slug" },
+        "decision_mode": { "description": "intent-assisted: the engine scored candidates with the designer's intent (spec/feature/engine.md 4.1). Absent = player knowledge only. Never counted as a persona's ability by guide verify intent.", "enum": ["intent-assisted"] },
         "observation_fields": {
           "description": "The game's observation field declarations the run was recorded under (manifest observation.fields, spec/feature/observation-boundary.md). Absent in older recordings: the base registry alone applies.",
           "$ref": "observation-fields.schema.json#/$defs/fields"

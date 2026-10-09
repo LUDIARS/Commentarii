@@ -49,7 +49,8 @@
             "min_runs": { "type": "integer", "minimum": 1 },
             "illusory_weight": { "type": "number", "minimum": 1 },
             "stall_after_sec": { "type": "number", "minimum": 0 },
-            "stall_weight": { "type": "number", "minimum": 0 }
+            "stall_weight": { "type": "number", "minimum": 0 },
+            "zero_success_upper": { "description": "Upper bound (95%) of the success rate below which a never-successful visible solution is illusory (default 0.2).", "$ref": "#/$defs/ratio" }
           },
           "additionalProperties": false
         }

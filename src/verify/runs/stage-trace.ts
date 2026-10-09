@@ -28,6 +28,16 @@ export interface StageTrace {
   readonly side: RunSide;
   readonly stage: string;
   readonly reached: boolean;
+  /**
+   * A finished attempt: it got through, or the run ended on its own (success / fail). An aborted
+   * run (tick limit, error) is truncated, not a failure: it is no evidence that the stage cannot be
+   * done (Astra review P1-3).
+   */
+  readonly completed: boolean;
+  /** Seed of the run (sample record of the feasibility evidence). */
+  readonly seed: number | string;
+  /** Ticks the run was given and used (its budget as recorded). */
+  readonly runTicks: number;
   readonly timeSec?: number;
   readonly route: readonly string[];
   /** Chosen tactics (variants as <tactic>--<mutation>), repeats in a row folded. */
@@ -132,6 +142,9 @@ export function traceRun(entry: VerifyRun, stallAfterSec: number): StageTrace[] 
       side: entry.side,
       stage: visit.stage,
       reached: visit.reached,
+      completed: visit.reached || run.footer.result !== 'abort',
+      seed: run.header.seed,
+      runTicks: run.ticks.length,
       ...(visit.timeSec === undefined ? {} : { timeSec: visit.timeSec }),
       route: visit.route,
       tactics: chosenTactics(ticks),

@@ -4,7 +4,7 @@
 // attempts without any tactic and outside every intended solution are wandering, not a
 // solution: they get no band but still count in confusion depth.
 
-import type { Intent } from '../../domain/documents.ts';
+import type { GuideMap, Intent } from '../../domain/documents.ts';
 import type { EngineWorld } from '../../engine/world/engine-world.ts';
 import type { StageTrace } from '../runs/stage-trace.ts';
 import { assignBands } from './assign-bands.ts';
@@ -12,6 +12,7 @@ import { clusterSolutions, type IntendedSolution } from './cluster-solutions.ts'
 import type { Band, FeasibilityDocument } from './feasibility-document.ts';
 import { playAxes } from './play-axes.ts';
 import type { FeasibilityThresholds } from './thresholds.ts';
+import { unwalkableRoute } from './route-reachability.ts';
 import { generatedTactics, isVisible } from './visible-solutions.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:b989d7c7 */
 import augurContract_16c767f8 from '../../contracts/build-feasibility.contract.ts'; /* augur-inject:contract-predicate:8109133c */
@@ -27,6 +28,8 @@ export interface FeasibilityInput {
   readonly world: EngineWorld;
   /** Map nodes of the stage in the player export. */
   readonly playerNodes: ReadonlySet<string>;
+  /** The stage's full map: the only ground on which a route can be proven unwalkable. */
+  readonly map?: GuideMap;
   readonly thresholds: FeasibilityThresholds;
 }
 
@@ -44,11 +47,14 @@ export function buildFeasibility(input: FeasibilityInput): FeasibilityDocument {
   const generated = generatedTactics(input.world, traces.flatMap((trace) => trace.frames));
   const clusters = clusterSolutions(input.stageSlug, traces, intendedSolutions(input.intent))
     .filter((cluster) => cluster.tactics.length > 0 || cluster.intended.length > 0 || cluster.members.some((member) => member.reached))
-    .map((cluster) => ({ ...cluster, visible: isVisible(cluster, generated, input.playerNodes) }));
+    .map((cluster) => {
+      const unwalkable = unwalkableRoute(cluster.route, input.map);
+      return { ...cluster, visible: isVisible(cluster, generated, input.playerNodes), ...(unwalkable === undefined ? {} : { unwalkable }) };
+    });
   const solutions = assignBands({ solutions: clusters, thresholds: input.thresholds, byDesign: input.intent?.illusory_by_design ?? [] });
   const bandOfRun = new Map<string, Band>();
   const banded = clusters.map((cluster, index) => {
-    const band = solutions[index]?.band ?? 'impossible';
+    const band = solutions[index]?.band ?? 'not-observed';
     for (const member of cluster.members) bandOfRun.set(member.run, band);
     return { band, members: cluster.members };
   });

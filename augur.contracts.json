@@ -293,7 +293,7 @@
     },
     {
       "id": "C-50",
-      "criterion": "C-50 classifyIntents(input): omniscient の run は足跡にもズレにも現れず、許容済み (allowed_divergences) に一致するズレは再報告されず、不可能は route / teach で対象 run があり再現 0 本のときだけで、未許容の望ましくないズレがある意図は望ましくないズレ、未許容のズレがある意図は一致にならない",
+      "criterion": "C-50 classifyIntents(input): omniscient の run は trace・判定・ズレのどこにも現れず、報告するズレは許容記録に一致せず、impossible は証明 (歩けない経路か攻略本に無い定石) があるときだけで、証明の無い再現 0 の route / teach は not-reproduced、未許容の望ましくないズレを持つ項目は (impossible / not-reproduced を除き) undesirable、未許容のズレを持つ項目は match にならない",
       "symbol": "classifyIntents",
       "file": "src/verify/intent/classify-intents.ts",
       "module": "src/contracts/classify-intents.contract.ts",
@@ -320,7 +320,7 @@
     },
     {
       "id": "C-53",
-      "criterion": "C-53 assignBands(input): 成功のある解法は feasible か extreme で、illusory は player 書き出しから候補生成される (visible) かつ成功 0 のときだけ、impossible は visible でなく成功 0 のときだけ、feasible は min_runs 以上試行した全ペルソナで成功率が feasible_success 以上のときだけ、by_design は illusory にだけ付く",
+      "criterion": "C-53 assignBands(input): impossible は地図が経路を歩けないと証明するときだけ。それ以外で完了した試行が無ければ not-observed、成功があれば feasible / skill-gated / extreme、無ければ visible で完了試行が十分 (95% 上限が zero_success_upper 未満) のときだけ illusory、他は insufficient-evidence。feasible は min_runs 以上の完了試行を持つ全ペルソナが feasible_success 以上のときだけ、中断 run は分母に入らず、by_design は illusory にだけ付く",
       "symbol": "assignBands",
       "file": "src/verify/feasibility/assign-bands.ts",
       "module": "src/contracts/assign-bands.contract.ts",
@@ -423,6 +423,33 @@
       "symbol": "humanTacticProposals",
       "file": "src/learn/consolidate/human-tactic-proposals.ts",
       "module": "src/contracts/human-tactic-proposals.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-68",
+      "criterion": "C-68 sampleEvidence(members): 分母は完了した試行だけ (中断した run は別に数える)、成功は試行を超えず、95% 区間は成功率を含む (試行が無ければどちらも null)",
+      "symbol": "sampleEvidence",
+      "file": "src/verify/feasibility/sample-evidence.ts",
+      "module": "src/contracts/sample-evidence.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-69",
+      "criterion": "C-69 matchAllowed(allowed, divergence, manifestVersion): 許容記録がズレを抑えるのはズレ ID か同じ意図と署名を名指しし、別の攻略本版で判定されていないときだけ。run や定石だけを名指しする記録は抑えない",
+      "symbol": "matchAllowed",
+      "file": "src/verify/intent/allowed-match.ts",
+      "module": "src/contracts/match-allowed.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-70",
+      "criterion": "C-70 selectRuns(runs, persona): omniscient の run と意図支援 (decision_mode intent-assisted) の run は数えられず、全ての run はちょうど 1 つの一覧に入る",
+      "symbol": "selectRuns",
+      "file": "src/verify/runs/select-runs.ts",
+      "module": "src/contracts/select-runs.contract.ts",
       "mode": "observe",
       "sample": 1
     }

@@ -20,8 +20,10 @@ export interface StageView {
   /** Nodes annotated as resource spots. */
   readonly resourceNodes: readonly string[];
   readonly intents: readonly IntendedItem[];
-  /** Seconds, from the stage time limit or else the intent's upper time bound. */
+  /** Seconds, from the stage's own time limit (a game rule). */
   readonly timeLimit?: number;
+  /** The intent's upper time bound: the designer's expectation, used only in the intent-assisted test. */
+  readonly intendedTimeLimit?: number;
 }
 
 export interface EngineWorld {

@@ -19,6 +19,8 @@ export const UTILITY_BT_DECIDER_ID = 'utility-bt';
 export interface EngineSetup {
   readonly bundle: Bundle;
   readonly persona: Persona;
+  /** Intent-assisted test (spec/feature/engine.md §4.1); absent = player knowledge only. */
+  readonly intentAssist?: boolean;
 }
 
 export interface UtilityBtDecider extends Decider {
@@ -46,7 +48,7 @@ export function createUtilityBtDecider(setup: EngineSetup, seed: number | string
     },
     decide(observation) {
       const rolls = { explore: rng.next(), misplay: rng.next() };
-      const outcome = decideTick({ world: worldFor(observation.mode), persona: setup.persona, state, observation, rolls });
+      const outcome = decideTick({ world: worldFor(observation.mode), persona: setup.persona, state, observation, rolls, intentAssist: setup.intentAssist === true });
       state = outcome.state;
       lastOutcome = outcome;
       return { decision: outcome.decision, action: outcome.action };

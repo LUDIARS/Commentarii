@@ -38,20 +38,55 @@ function kiteSolution(doc: ReturnType<typeof buildFeasibility>) {
   return doc.solutions.find((solution) => solution.tactics.length === 1 && solution.tactics[0] === KITE);
 }
 
-test('illusory: generated as a candidate from the player export, never succeeded', async () => {
-  const traces = [trace({ run: 'run:a', route: ['node:mid-ring', 'node:outer-ring'], frames: [KITE_LOOKS_POSSIBLE] })];
-  const doc = buildFeasibility(await input({ traces }));
-  const kite = kiteSolution(doc);
+/** n finished failed attempts of the kite solution (distinct runs and seeds). */
+function failedKite(n: number, frames = [KITE_LOOKS_POSSIBLE]) {
+  return Array.from({ length: n }, (_, index) => trace({ run: `run:f${index}`, seed: index, reached: false, tactics: [KITE], route: ['node:mid-ring', 'node:outer-ring'], frames }));
+}
+
+test('success 0 alone is not illusory: too few finished attempts stay insufficient-evidence', async () => {
+  const kite = kiteSolution(buildFeasibility(await input({ traces: failedKite(1) })));
   assert.equal(kite?.visible, true);
-  assert.equal(kite?.band, 'illusory');
-  assert.deepEqual(kite?.intended, ['intent:bestia:dome-arena:learn-kite']);
+  assert.equal(kite?.band, 'insufficient-evidence');
+  assert.deepEqual([kite?.evidence.attempts, kite?.evidence.successes, kite?.evidence.interval?.[0]], [1, 0, 0]);
+  assert.ok((kite?.evidence.interval?.[1] ?? 0) > DEFAULT_THRESHOLDS.zero_success_upper, 'one failure leaves the upper bound high');
 });
 
-test('impossible, not illusory, when the candidate is never generated', async () => {
-  const traces = [trace({ run: 'run:a', route: ['node:mid-ring', 'node:outer-ring'], frames: [KITE_NEVER_PROPOSED] })];
-  const kite = kiteSolution(buildFeasibility(await input({ traces })));
+test('illusory: visible, never succeeded, and enough finished attempts that the 95% upper bound is below zero_success_upper', async () => {
+  const kite = kiteSolution(buildFeasibility(await input({ traces: failedKite(16) })));
+  assert.equal(kite?.band, 'illusory');
+  assert.deepEqual(kite?.intended, ['intent:bestia:dome-arena:learn-kite']);
+  assert.equal(kite?.evidence.attempts, 16);
+  assert.ok((kite?.evidence.interval?.[1] ?? 1) < 0.2);
+  assert.equal(kite?.evidence.seeds.length, 16);
+  assert.equal(kite?.evidence.budget_ticks, 900);
+});
+
+test('aborted runs are not in the denominator: a solution only aborted runs tried is not-observed', async () => {
+  const aborted = failedKite(20).map((entry) => ({ ...entry, completed: false }));
+  const kite = kiteSolution(buildFeasibility(await input({ traces: aborted })));
+  assert.equal(kite?.band, 'not-observed');
+  assert.deepEqual([kite?.evidence.attempts, kite?.evidence.aborted], [0, 20]);
+});
+
+test('never generated and never succeeded is not impossible without a map proof; a route off the map is', async () => {
+  const kite = kiteSolution(buildFeasibility(await input({ traces: failedKite(16, [KITE_NEVER_PROPOSED]) })));
   assert.equal(kite?.visible, false);
-  assert.equal(kite?.band, 'impossible');
+  assert.equal(kite?.band, 'insufficient-evidence');
+  const load = await loadSample();
+  const map = load.bundle.stages.find((stage) => stage.map?.doc.stage === STAGE)?.map?.doc;
+  assert.ok(map);
+  const offMap = [trace({ run: 'run:ghost', reached: false, tactics: ['tactic:bestia:sidestep-lead-shot'], route: ['node:mid-ring', 'node:vault'] })];
+  const doc = buildFeasibility(await input({ traces: offMap, map }));
+  const ghost = doc.solutions.find((solution) => solution.route.includes('node:vault'));
+  assert.equal(ghost?.band, 'impossible');
+  assert.match(ghost?.unwalkable ?? '', /node:vault is not on the stage map/);
+});
+
+test('an intended solution nobody tried is not-observed, not impossible', async () => {
+  const doc = buildFeasibility(await input({ traces: [] }));
+  const intended = doc.solutions.filter((solution) => solution.intended.length > 0);
+  assert.ok(intended.length > 0);
+  for (const solution of intended) assert.equal(solution.band, 'not-observed', solution.id);
 });
 
 test('a solution that succeeded is never illusory, even when visible', async () => {
@@ -64,21 +99,23 @@ test('a solution that succeeded is never illusory, even when visible', async () 
   assert.deepEqual(kite?.evidence_runs, ['run:a', 'run:b']);
 });
 
-test('feasible needs every judged persona at the threshold; otherwise a success is extreme', async () => {
+test('the expert succeeds and the novice does not: skill-gated, not feasible; low success everywhere is extreme', async () => {
   const solutions = clusterSolutions('dome-arena', [
     trace({ run: 'run:e1', persona: 'expert', tactics: [KITE] }),
     trace({ run: 'run:n1', persona: 'novice', tactics: [KITE], reached: false, route: ['node:mid-ring'] }),
     trace({ run: 'run:n2', persona: 'novice', tactics: [KITE], reached: false, route: ['node:mid-ring'] }),
   ], []).map((cluster) => ({ ...cluster, visible: true }));
   const [band] = assignBands({ solutions, thresholds: DEFAULT_THRESHOLDS, byDesign: [] });
-  assert.equal(band?.band, 'extreme');
-  assert.deepEqual(band?.personas.map((persona) => [persona.persona, persona.band]), [['expert', 'feasible'], ['novice', 'illusory']]);
+  assert.equal(band?.band, 'skill-gated');
+  assert.deepEqual(band?.personas.map((persona) => [persona.persona, persona.band]), [['expert', 'feasible'], ['novice', 'insufficient-evidence']]);
+  const strict = assignBands({ solutions, thresholds: { ...DEFAULT_THRESHOLDS, feasible_success: 1.01 }, byDesign: [] });
+  assert.equal(strict[0]?.band, 'extreme');
 });
 
 test('illusory_by_design is kept apart with its rationale', async () => {
   const base = await input({});
   const intent: Intent = { ...(base.intent as Intent), illusory_by_design: [{ tactics: [KITE], rationale: '釣りの選択肢', decided_by: 'neco' }] };
-  const doc = buildFeasibility({ ...base, intent, traces: [trace({ run: 'run:a', route: ['node:mid-ring', 'node:outer-ring'], frames: [KITE_LOOKS_POSSIBLE] })] });
+  const doc = buildFeasibility({ ...base, intent, traces: failedKite(16) });
   assert.deepEqual(kiteSolution(doc)?.by_design, { rationale: '釣りの選択肢', decided_by: 'neco' });
 });
 
@@ -98,8 +135,9 @@ test('confusion depth weighs failures on illusory solutions, stalling and off-ro
     trace({ run: 'run:fail', reached: false, tactics: [KITE], route: ['node:mid-ring', 'node:outer-ring'], stallSec: 20, frames: [KITE_LOOKS_POSSIBLE] }),
   ];
   const doc = buildFeasibility(await input({ traces }));
-  // run:ok 0; run:fail = illusory_weight 3 + 20 s x 0.1 + 1 node off the intended route = 6; mean 3.
-  assert.equal(doc.axes[0]?.confusion_depth, 3);
+  // One failure is no proof of an illusory solution (insufficient-evidence): it weighs 1.
+  // run:ok 0; run:fail = 1 + 20 s x 0.1 + 1 node off the intended route = 4; mean 2.
+  assert.equal(doc.axes[0]?.confusion_depth, 2);
 });
 
 test('omniscient runs neither band a solution nor count (fixture)', async () => {

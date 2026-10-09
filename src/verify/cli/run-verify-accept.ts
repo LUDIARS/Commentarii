@@ -24,6 +24,7 @@ export async function runVerifyAccept(command: VerifyAcceptCommand, io: VerifyCl
     id: command.id,
     by: command.by,
     ...(command.note === undefined ? {} : { note: command.note }),
+    ...(load.bundle.manifest?.doc.version === undefined ? {} : { manifestVersion: load.bundle.manifest.doc.version }),
   });
   const located = load.bundle.intents.find(({ doc }) => doc === result.before);
   if (located === undefined) throw new VerifyError(`no intent file for ${result.entry.stage}`);

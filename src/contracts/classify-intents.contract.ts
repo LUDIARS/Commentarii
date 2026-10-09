@@ -1,6 +1,7 @@
 // C-50 classifyIntents(input): no omniscient run appears in a trace, verdict or divergence; no
-// reported divergence matches an allowed_divergences entry; impossible only for route / teach
-// items with runs judged and none reproduced; an item with an open undesirable divergence is
+// reported divergence matches an allowed_divergences entry; impossible only with a proof (an
+// unwalkable route or a taught tactic missing from the guide), and an unreproduced route / teach
+// without one is not-reproduced; an item with an open undesirable divergence is
 // undesirable (unless impossible), and one with open divergences is never match.
 
 import { matchesAllowed } from '../verify/intent/allowed-match.ts';
@@ -14,14 +15,15 @@ export default {
       for (const run of divergence.runs) if (omniscient.has(run)) return `omniscient ${run} is used in divergence ${divergence.id}`;
     }
     for (const divergence of result.divergences) {
-      if (input.intent.allowed_divergences.some((allowed) => matchesAllowed(allowed, divergence))) return `allowed divergence ${divergence.id} is reported again`;
+      if (input.intent.allowed_divergences.some((allowed) => matchesAllowed(allowed, divergence, input.manifestVersion))) return `allowed divergence ${divergence.id} is reported again`;
     }
     for (const verdict of result.verdicts) {
       const open = result.divergences.filter((divergence) => divergence.intent === verdict.intent);
-      if (verdict.classification === 'impossible' && (!(verdict.kind === 'route' || verdict.kind === 'teach') || verdict.reproduced !== 0 || verdict.runs === 0)) {
-        return `${verdict.intent} is impossible without being an unreproduced route / teach`;
+      if (verdict.classification === 'impossible' && verdict.proof === undefined) return `${verdict.intent} is impossible without a proof`;
+      if (verdict.proof === undefined && verdict.runs > 0 && verdict.reproduced === 0 && (verdict.kind === 'route' || verdict.kind === 'teach') && verdict.classification !== 'not-reproduced') {
+        return `${verdict.intent} was reproduced by no run but is ${verdict.classification}`;
       }
-      if (verdict.classification !== 'impossible' && open.some((divergence) => divergence.kind === 'undesirable') && verdict.classification !== 'undesirable') {
+      if (verdict.classification !== 'impossible' && verdict.classification !== 'not-reproduced' && open.some((divergence) => divergence.kind === 'undesirable') && verdict.classification !== 'undesirable') {
         return `${verdict.intent} has an open undesirable divergence but is ${verdict.classification}`;
       }
       if (verdict.classification === 'match' && open.length > 0) return `${verdict.intent} is match with open divergences`;

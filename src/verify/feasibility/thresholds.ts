@@ -14,6 +14,11 @@ export interface FeasibilityThresholds {
   readonly stall_after_sec: number;
   /** Confusion depth per stalled second. */
   readonly stall_weight: number;
+  /**
+   * A solution with no success is called illusory only when the 95% upper bound of its success
+   * rate is below this (enough finished attempts); otherwise it is insufficient-evidence.
+   */
+  readonly zero_success_upper: number;
 }
 
 export const DEFAULT_THRESHOLDS: FeasibilityThresholds = {
@@ -22,6 +27,7 @@ export const DEFAULT_THRESHOLDS: FeasibilityThresholds = {
   illusory_weight: 3,
   stall_after_sec: 10,
   stall_weight: 0.1,
+  zero_success_upper: 0.2,
 };
 
 export function thresholdsOf(manifest: Manifest | undefined): FeasibilityThresholds {
@@ -36,5 +42,6 @@ export function thresholdsOf(manifest: Manifest | undefined): FeasibilityThresho
     illusory_weight: pick('illusory_weight'),
     stall_after_sec: pick('stall_after_sec'),
     stall_weight: pick('stall_weight'),
+    zero_success_upper: pick('zero_success_upper'),
   };
 }

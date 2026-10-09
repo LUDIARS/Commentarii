@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { openBundleDir } from '../../src/adapters/fs/open-bundle-dir.ts';
@@ -138,17 +138,24 @@ test('convergence is reported as a fact without recommending refinement', async 
   });
 });
 
-test('sealed runs: the intended route and tactic are impossible and their solutions illusory, listed first', async () => {
+test('sealed runs: unreproduced intents stay measurements; sealing the map proves the route impossible', async () => {
   await withSampleCopy(async (directory) => {
-    const verify = await run(['verify', 'intent', '--game', directory, '--runs', SEALED_RUNS, '--json']);
-    assert.equal(verify.code, 0, verify.stderr);
-    const classes = (JSON.parse(verify.stdout) as VerifyReport).stages[0]?.intents.map((verdict) => verdict.classification);
-    assert.deepEqual(classes, ['impossible', 'impossible', 'match', 'match']);
+    const measured = await run(['verify', 'intent', '--game', directory, '--runs', SEALED_RUNS, '--json']);
+    assert.equal(measured.code, 0, measured.stderr);
+    const classesOf = (stdout: string) => (JSON.parse(stdout) as VerifyReport).stages[0]?.intents.map((verdict) => verdict.classification);
+    assert.deepEqual(classesOf(measured.stdout), ['not-reproduced', 'not-reproduced', 'match', 'match']);
+
+    const mapPath = join(directory, 'stages', 'dome-arena', 'map.json');
+    const map = JSON.parse(await readFile(mapPath, 'utf8')) as { edges: { from: string; to: string }[] };
+    await writeFile(mapPath, JSON.stringify({ ...map, edges: map.edges.filter((edge) => edge.from !== 'node:center' && edge.to !== 'node:center') }));
+    const sealed = await run(['verify', 'intent', '--game', directory, '--runs', SEALED_RUNS, '--json']);
+    assert.equal(sealed.code, 0, sealed.stderr);
+    assert.deepEqual(classesOf(sealed.stdout), ['impossible', 'not-reproduced', 'match', 'match'], 'the walled route is proven; the taught tactic still exists');
     const report = await run(['report', 'feasibility', '--game', directory]);
     assert.equal(report.code, 0, report.stderr);
     const rows = report.stdout.split('\n').filter((line) => line.startsWith('| ') && line.includes('stage:bestia:dome-arena') && line.includes('sol:'));
-    assert.match(rows[0] ?? '', /^\| illusory/);
-    assert.match(rows.at(-1) ?? '', /^\| feasible/);
+    assert.ok(rows.length > 0);
+    assert.doesNotMatch(rows.join('\n'), /^\| illusory/m, 'a handful of sealed runs is not enough evidence for illusory');
   });
 });
 

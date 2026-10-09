@@ -24,9 +24,9 @@
 | P0-2 raw tap ≠ 人間可視 | `render-tap/1` 契約で観測者・pass・可視性の根拠・外見の識別可否を固定し、raw tap と player 観測を分離 (`selectPlayerDraws`)。厳密な可視性は約束しない | ✅ `spec/feature/render-tap-contract.md` |
 | P1-7 段 6 接続契約 | `--frames` (既存 `--observe` 維持)、hello の方向・起動主体・mode を adapter-protocol で統一、版つき schema + golden。6 / 6P / 6B の依頼文に補正 | ✅ |
 | P1-5 学習 | 全意図種別の影響判定、relax は自動反映しない、basis (版・ビルド・条件・単位) + 内容ハッシュ、承認 (`guide learn approve`) と失効、人間候補 → 提案 → 承認 → 正本 | ✅ `spec/feature/learning.md` §4 |
-| P1-3 成功 0 ≠ 不可能 / 分母・区間 | 段階 5 (マージ済み) の補正。段階 5 の Actio で後続 PR | ⏳ 残件 |
-| P1-4 intent を bot に与えて人間能力と呼ばない | 段階 5 の補正 (評価器と判断器の分離、意図支援試験の別モード、「ペルソナモデル上の推定」表記) | ⏳ 残件 |
-| P2-8 許容ズレの照合と confusion | 段階 5 の補正 (署名・版・条件に紐付け、同値関係のクラスタ、観測と解釈の分離) | ⏳ 残件 |
+| P1-3 成功 0 ≠ 不可能 / 分母・区間 | 分母 = 完了した試行 (中断 run は除外)、標本 (試行・成功・95% Wilson 区間・seed・予算・中断数) を帯ごとに記録、`insufficient-evidence` / `not-observed` を分類外の実測状態に、`impossible` は地図の到達不能証明 / 攻略本に無い定石だけ、意図分類に `not-reproduced`、expert 成功・novice 失敗は `skill-gated` | ✅ 第 2 PR |
+| P1-4 intent を bot に与えて人間能力と呼ばない | 意図の考慮項目と意図の時間上限は `--intent-assist` (header `decision_mode: intent-assisted`) のときだけ。verify は意図支援 run を数えない。レポートに「ペルソナモデル上の推定」と限界を明記 | ✅ 第 2 PR |
+| P2-8 許容ズレの照合と confusion | 許容を意図 + 署名 + 攻略本の版に紐付け、run / 定石だけの許容と別版の許容は再判定要として再報告。クラスタを順序非依存の同値関係に。迷いの観測値 (失敗・往復・滞留・経路外) を解釈と分離し、別解の長さを迷いにしない | ✅ 第 2 PR |
 | P1-6 5C は decision regression | 段階 5C の実装時に反映 (live balance と別結果、互換性情報の保存と非互換比較の拒否、sim 証跡の明示) | ⏳ 残件 (5C) |
 
 ## 3. 変更した境界
@@ -55,9 +55,20 @@
 - Concordia 側の completed 判定は共有ログ 1 GB のため本 run でも失敗する見込み。共有ログのローテーションは他セッションの証跡に関わるので本 run では行わず、委託元に判断を求める。
 - 人間 run を境界の昇格根拠に数える段 (人間リプレイからの値の推定) は未実装。manifest の選択肢はその段と同時に置く。
 
-## 7. 完成までの残件 (順番)
+## 7. 第 2 PR (段階 5 補正、Actio `actio:1cf5d580-…` の後続) の記録
 
-1. 段階 5 補正 (P1-3 / P1-4 / P2-8) — 段階 5 の Actio `actio:1cf5d580-…` の後続として。
+- 初回 PR は Revisor **#2628 merged** (2026-10-09、merge commit `4c72a7b`、Test OK、非ブロック所見: 孤立関数 1 件 → `isDeclarablePath` を境界チェックで使用して解消、spec_linkage)。
+- 変更した境界: `guide verify intent` の分類に `not-reproduced`、帯に `skill-gated` / `insufficient-evidence` / `not-observed`、feasibility 文書に標本 `evidence` と
+  `unwalkable`、2 軸に `observed`、manifest `feasibility.thresholds.zero_success_upper` (既定 0.2)、intent `allowed_divergences[].manifest_version`、
+  replay header `decision_mode`、`guide run` / `guide bench --intent-assist`。既定の判断器は intent を見ない。
+- **実測 (sim、各 20 run、seed 1)**: 意図支援なしで攻略本の定石は expert のクリア時間を縮めた (18.85 秒 vs 汎用のみ 19.72 秒) が、novice では
+  縮めなかった (25.53 秒 vs 24.62 秒)。意図支援ありでは novice 29.0 秒 / expert 18.7 秒。従来のベンチテストが通っていたのは汎用側にも意図の加点が
+  効いていたため。ベンチテストは意図支援なしの expert 比較に変えた。設計 §12「攻略本ありで明確に強い」は sim の novice では未実証、expert でも差は小さい。
+- 復旧: revert。旧 feasibility 文書は再生成で新形式になる (`guide verify intent` を再実行)。旧い許容 (run / 定石だけ) は「再判定要」として再報告されるので `--accept` し直す。
+
+## 8. 完成までの残件 (順番)
+
+1. (完了) 段階 5 補正 (P1-3 / P1-4 / P2-8)。
 2. 5C バランス回帰ゲート (P1-6 を反映) → 5K Praeforma 連携 (`2026-10-09-stage-5c-balance-gate.md` / `2026-10-09-stage-5k-praeforma-link.md`)。
 3. 段 6 render-tap 受信・正規化 + 6F 敵 AI (確定契約に固定) と、6P Pictor フレームタップ・6B Bestia 実機アダプタ (各リポの別 Opus 委託、契約参照を同梱)。
 4. 段 7 Web 編集 (エンティティ / 地図注記 / 定石 / 意図 / 観測差分の採否 / ズレ判定)、7G ゲーム内図鑑・解放済み知識 export、7I 意味差分説明、

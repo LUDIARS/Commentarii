@@ -71,6 +71,8 @@ export interface VerifyReport {
     readonly counted: readonly string[];
     readonly ignored_omniscient: readonly string[];
     readonly ignored_efficiency: readonly string[];
+    /** Engine runs given the designer's intent (answer-key tests, never counted). */
+    readonly ignored_intent_assisted: readonly string[];
     readonly filtered_out: readonly string[];
     readonly unreadable: readonly string[];
   };

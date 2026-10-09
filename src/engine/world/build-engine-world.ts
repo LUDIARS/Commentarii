@@ -26,9 +26,13 @@ function adjacencyOf(map: GuideMap | undefined): Map<string, string[]> {
   return new Map([...table].map(([node, set]) => [node, [...set].sort()]));
 }
 
-function timeLimitOf(stage: StageFiles, intents: readonly Intent[]): number | undefined {
+function timeLimitOf(stage: StageFiles): number | undefined {
   const limit = stage.stage?.doc.time_limit?.value;
-  if (typeof limit === 'number' && limit > 0) return limit;
+  return typeof limit === 'number' && limit > 0 ? limit : undefined;
+}
+
+/** The designer's upper time bound (intent time): only for the intent-assisted test. */
+function intendedTimeLimitOf(intents: readonly Intent[]): number | undefined {
   for (const intent of intents) {
     for (const item of intent.intended) if (item.kind === 'time') return item.range_sec[1];
   }
@@ -40,7 +44,8 @@ function stageView(stage: StageFiles, intents: readonly Intent[]): StageView | u
   if (id === undefined) return undefined;
   const own = intents.filter((intent) => intent.stage === id && intent.draft !== true);
   const map = stage.map?.doc;
-  const timeLimit = timeLimitOf(stage, own);
+  const timeLimit = timeLimitOf(stage);
+  const intendedTimeLimit = intendedTimeLimitOf(own);
   return {
     id,
     nodes: (map?.nodes ?? []).map((node) => node.id),
@@ -48,6 +53,7 @@ function stageView(stage: StageFiles, intents: readonly Intent[]): StageView | u
     resourceNodes: (map?.annotations ?? []).filter((note) => note.kind === 'resource').map((note) => note.target),
     intents: own.flatMap((intent) => intent.intended),
     ...(timeLimit === undefined ? {} : { timeLimit }),
+    ...(intendedTimeLimit === undefined ? {} : { intendedTimeLimit }),
   };
 }
 

@@ -25,6 +25,8 @@ export interface BenchOptions {
   readonly purpose: ObservationPurpose;
   /** Measure the engine with the guide's tactics removed (generic actions only). */
   readonly withoutTactics?: boolean;
+  /** Intent-assisted test (spec/feature/engine.md §4.1); absent = player knowledge only. */
+  readonly intentAssist?: boolean;
   readonly simConfig?: SimConfig;
 }
 
@@ -46,7 +48,7 @@ export async function runBench(options: BenchOptions): Promise<BenchReport> {
       seed: deriveSeed(seed, 'sim'),
       ...(options.simConfig ? { config: options.simConfig } : {}),
     });
-    const decider = createUtilityBtDecider({ bundle, persona: options.persona }, seed);
+    const decider = createUtilityBtDecider({ bundle, persona: options.persona, intentAssist: options.intentAssist === true }, seed);
     const report = await runDriver({ adapter, decider, mode: options.mode, observationFields: options.bundle.manifest?.doc.observation?.fields ?? [], maxTicks: options.ticks });
     const stats = adapter.stats();
     runs.push({ seed, result: report.result, ticks: report.ticks, time_sec: stats.time_sec, damage_taken: stats.damage_taken, chosen: report.chosen });

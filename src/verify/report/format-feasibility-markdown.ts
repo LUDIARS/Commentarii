@@ -7,11 +7,19 @@ import { document, table } from '../../markdown/markdown.ts';
 import type { Band, FeasibilityDocument, FeasibilitySolution } from '../feasibility/feasibility-document.ts';
 import { BAND_LABEL, CONVERGENCE_TEXT, rateText } from './labels.ts';
 
-const BAND_ORDER: Readonly<Record<Band, number>> = { illusory: 0, impossible: 1, extreme: 2, feasible: 3 };
+const BAND_ORDER: Readonly<Record<Band, number>> = { illusory: 0, impossible: 1, 'insufficient-evidence': 2, 'not-observed': 3, extreme: 4, 'skill-gated': 5, feasible: 6 };
 
 interface Row {
   readonly stage: string;
   readonly solution: FeasibilitySolution;
+}
+
+/** The sample behind the band: finished attempts, 95% interval, aborted runs, map proof. */
+function evidenceText(solution: FeasibilitySolution): string {
+  const { evidence } = solution;
+  const interval = evidence.interval === null ? '-' : `[${rateText(evidence.interval[0])}, ${rateText(evidence.interval[1])}]`;
+  const proof = solution.unwalkable === undefined ? '' : ` / 証明: ${solution.unwalkable}`;
+  return `完了 ${evidence.successes}/${evidence.attempts} 95%区間 ${interval} / 中断 ${evidence.aborted} / seed ${evidence.seeds.length} 個${proof}`;
 }
 
 function solutionCells(row: Row): (string | number)[] {
@@ -25,6 +33,7 @@ function solutionCells(row: Row): (string | number)[] {
     solution.visible ? '見える' : '見えない',
     solution.personas.length === 0 ? '試行なし' : solution.personas.map((persona) => `${persona.persona} ${persona.successes}/${persona.attempts} (${rateText(persona.success_rate)})`).join(', '),
     solution.intended.length === 0 ? '-' : solution.intended.join(', '),
+    evidenceText(solution),
   ];
 }
 
@@ -35,12 +44,14 @@ export function formatFeasibilityMarkdown(documents: readonly FeasibilityDocumen
     .filter((row) => row.solution.by_design === undefined)
     .sort((a, b) => BAND_ORDER[a.solution.band] - BAND_ORDER[b.solution.band] || (a.stage < b.stage ? -1 : a.stage > b.stage ? 1 : 0) || (a.solution.id < b.solution.id ? -1 : 1));
   const byDesign = rows.filter((row) => row.solution.by_design !== undefined);
-  const headers = ['帯', 'ステージ', '解法', '定石列', '経路', 'player 情報から', 'ペルソナ別 成功/試行', '想定解'];
+  const headers = ['帯', 'ステージ', '解法', '定石列', '経路', 'player 情報から', 'ペルソナ別 成功/試行', '想定解', '標本'];
   const axes = documents.flatMap((doc) => doc.axes.map((axis) => [doc.stage, doc.design_stance, axis.persona, axis.breadth, axis.confusion_depth, axis.runs, axis.convergence ? CONVERGENCE_TEXT : '-']));
   const omniscient = documents.reduce((sum, doc) => sum + doc.runs.ignored_omniscient.length, 0);
   return document([
     '# 行動可能性の帯',
     `- 帯の判定に使った run: ${new Set(documents.flatMap((doc) => doc.runs.counted)).size} (player のみ) / 無視した omniscient run: ${omniscient}`,
+    '- 帯と 2 軸はペルソナモデル上の推定 (sim の反応遅延・誤操作率・探索率による)。人間ログで較正するまで人間の能力の測定ではない。入力の抽象化・照準や移動の物理的制約は模していない。',
+    '- 成功 0 だけでは illusory / impossible にしない: 完了試行が足りなければ「判定保留」、impossible は地図上の到達不能証明があるときだけ。',
     '## 解法と帯 (illusory を先頭)',
     sorted.length === 0 ? '解法がありません。' : table(headers, sorted.map(solutionCells)),
     ...(byDesign.length === 0

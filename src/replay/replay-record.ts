@@ -19,6 +19,11 @@ export interface ReplayHeader {
   readonly source?: 'human';
   readonly persona?: string;
   /**
+   * intent-assisted: the engine scored candidates with the designer's intent (spec/feature/engine.md §4.1).
+   * Absent = player knowledge only. Such runs never count as a persona's (human-like) ability.
+   */
+  readonly decision_mode?: 'intent-assisted';
+  /**
    * The game's observation field declarations the run was recorded under (manifest
    * observation.fields, spec/feature/observation-boundary.md). Absent in recordings made before
    * the boundary registry: those are checked against the base registry only.

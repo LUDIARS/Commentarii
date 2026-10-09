@@ -23,7 +23,7 @@ import augurContract_85802f43 from '../contracts/run-driver.contract.ts'; /* aug
 export interface DriverRecording {
   readonly writer: ReplayLineWriter;
   /** Header fields the adapter's hello does not give (game_id, adapter_id come from hello). */
-  readonly header: Pick<ReplayHeader, 'run_id' | 'seed' | 'manifest_version' | 'purpose' | 'persona'>;
+  readonly header: Pick<ReplayHeader, 'run_id' | 'seed' | 'manifest_version' | 'purpose' | 'persona' | 'decision_mode'>;
   /** Injected for deterministic tests (coding conventions 16). */
   readonly now?: () => Date;
 }

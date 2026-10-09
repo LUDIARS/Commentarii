@@ -27,7 +27,7 @@ export interface StageReportInput {
   readonly feasibility: FeasibilityDocument;
 }
 
-const BANDS: readonly Band[] = ['feasible', 'extreme', 'illusory', 'impossible'];
+const BANDS: readonly Band[] = ['feasible', 'skill-gated', 'extreme', 'illusory', 'impossible', 'insufficient-evidence', 'not-observed'];
 
 function reachOf(traces: readonly StageTrace[]): SideReach {
   const reached = traces.filter((trace) => trace.reached).length;

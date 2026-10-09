@@ -45,6 +45,10 @@ function playerNodes(view: Bundle, stageId: string): Set<string> {
   return new Set((stage?.map?.doc.nodes ?? []).map((node) => node.id));
 }
 
+function stageMap(bundle: Bundle, stageId: string) {
+  return bundle.stages.find((candidate) => stageIdOf(candidate) === stageId)?.map?.doc;
+}
+
 export function verifyIntent(input: VerifyInput): VerifyOutput {
   const { bundle } = input.load;
   const gameId = bundle.manifest?.doc.game_id;
@@ -62,7 +66,7 @@ export function verifyIntent(input: VerifyInput): VerifyOutput {
   const computed = stages.map(({ id, slug }) => {
     const intent = intents.find((candidate) => candidate.stage === id);
     const own = traces.filter((trace) => trace.stage === id);
-    const verification = intent === undefined ? undefined : classifyIntents({ intent, traces: own, ignoredOmniscient: selection.ignoredOmniscient });
+    const verification = intent === undefined ? undefined : classifyIntents({ intent, traces: own, ignoredOmniscient: selection.ignoredOmniscient, ...(stageMap(bundle, id) === undefined ? {} : { map: stageMap(bundle, id) }), tactics: new Set(bundle.tactics.map(({ doc }) => doc.id)), manifestVersion: bundle.manifest?.doc.version });
     const feasibility = buildFeasibility({
       stage: id,
       stageSlug: slug,
@@ -71,6 +75,7 @@ export function verifyIntent(input: VerifyInput): VerifyOutput {
       ignoredOmniscient: selection.ignoredOmniscient,
       world,
       playerNodes: playerNodes(view, id),
+      ...(stageMap(bundle, id) === undefined ? {} : { map: stageMap(bundle, id) }),
       thresholds,
     });
     return { id, slug, intent, own, verification, feasibility };
@@ -95,6 +100,7 @@ export function verifyIntent(input: VerifyInput): VerifyOutput {
       counted: selection.counted.map((entry) => entry.run.header.run_id),
       ignored_omniscient: selection.ignoredOmniscient,
       ignored_efficiency: selection.ignoredEfficiency,
+      ignored_intent_assisted: selection.ignoredIntentAssisted,
       filtered_out: selection.filteredOut,
       unreadable: [...input.unreadable],
     },

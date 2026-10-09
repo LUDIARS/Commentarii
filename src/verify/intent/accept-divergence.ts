@@ -19,6 +19,8 @@ export interface AcceptInput {
   readonly id: string;
   readonly by: string;
   readonly note?: string;
+  /** manifest.version the acceptance is judged under (recorded on the entry, Astra review P2-8). */
+  readonly manifestVersion?: string;
 }
 
 export interface AcceptResult {
@@ -32,7 +34,7 @@ export interface AcceptResult {
   readonly promotions: readonly PromotionCandidate[];
 }
 
-function allowedEntry(entry: StoredDivergence, by: string): AllowedDivergence {
+function allowedEntry(entry: StoredDivergence, by: string, manifestVersion: string | undefined): AllowedDivergence {
   const [run] = entry.runs;
   if (run === undefined) throw new VerifyError(`divergence ${entry.id} has no run`);
   const [tactic] = entry.signature.tactics;
@@ -45,6 +47,7 @@ function allowedEntry(entry: StoredDivergence, by: string): AllowedDivergence {
     reason: entry.reason,
     divergence: entry.id,
     signature: { tactics: [...entry.signature.tactics], route: [...entry.signature.route] },
+    ...(manifestVersion === undefined ? {} : { manifest_version: manifestVersion }),
   };
 }
 
@@ -55,8 +58,9 @@ export function acceptDivergence(input: AcceptInput): AcceptResult {
   if (before === undefined) throw new VerifyError(`no valid intent for ${found.stage}`);
   const entry: StoredDivergence = { ...found, decision: 'allow', decided_by: input.by, ...(input.note === undefined ? {} : { note: input.note }) };
   const store: DivergenceStore = { ...input.store, divergences: input.store.divergences.map((stored) => (stored.id === input.id ? entry : stored)) };
-  const already = before.allowed_divergences.some((allowed) => allowed.divergence === input.id);
-  const intent = already ? before : { ...before, allowed_divergences: [...before.allowed_divergences, allowedEntry(entry, input.by)] };
+  // Accepted again under a new guide version: a new entry bound to that version (the old one stays as history).
+  const already = before.allowed_divergences.some((allowed) => allowed.divergence === input.id && allowed.manifest_version === input.manifestVersion);
+  const intent = already ? before : { ...before, allowed_divergences: [...before.allowed_divergences, allowedEntry(entry, input.by, input.manifestVersion)] };
   return { store, entry, before, intent, changed: !already, promotions: promotionCandidates(entry.id, entry.signature, input.tactics) };
 }
 // @ts-expect-error augur-inject

@@ -25,6 +25,8 @@ export interface Divergence {
   readonly runs: readonly string[];
   readonly personas: readonly string[];
   readonly signature: DivergenceSignature;
+  /** Set when an acceptance exists but no longer binds (loose entry or another guide version): re-evaluate. */
+  readonly recheck?: string;
 }
 
 export function divergenceId(intent: string, reason: DivergenceReason, signature: DivergenceSignature): string {

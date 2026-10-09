@@ -15,6 +15,7 @@ function runsSection(report: VerifyReport): string {
     `対象 run: ${runs.counted.length}${report.persona === undefined ? '' : ` (ペルソナ ${report.persona} のみ)`}`,
     `無視した omniscient run: ${runs.ignored_omniscient.length}${runs.ignored_omniscient.length === 0 ? '' : ` (${runs.ignored_omniscient.join(', ')})`}`,
     `対象外の efficiency run: ${runs.ignored_efficiency.length}`,
+    `対象外の意図支援 run (答えを渡した試験。能力の推定に使わない): ${runs.ignored_intent_assisted.length}`,
     ...(runs.filtered_out.length === 0 ? [] : [`--persona で除いた run: ${runs.filtered_out.length}`]),
     ...(runs.unreadable.length === 0 ? [] : [`読めなかったファイル: ${runs.unreadable.length} (${runs.unreadable.join(', ')})`]),
   ]
