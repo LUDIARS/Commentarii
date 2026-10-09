@@ -12,7 +12,7 @@ import { collectGuideNumbers } from './guide-numbers.ts';
 import { collectMaskedNeedles } from './masked-needles.ts';
 import type { ScanText } from './scan-source.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:2f3bbf2d */
-import augurContract_552b5a0c from '../contracts/audit-mask.contract.ts'; /* augur-inject:contract-predicate:5e1421ac */
+import augurContract_532c6ea1 from '../contracts/audit-mask.contract.ts'; /* augur-inject:contract-predicate:039ae680 */
 
 export interface AuditInput {
   readonly load: LoadResult;
@@ -62,4 +62,4 @@ export function auditMask(input: AuditInput): AuditReport {
   };
 }
 // @ts-expect-error augur-inject
-auditMask = contract(auditMask, { ...augurContract_552b5a0c, contractId: 'C-15', mode: 'observe', sample: 1, where: 'src/audit/audit-mask.ts:32', rule: 'contract-wrap', id: '552b5a0c' }); /* augur-inject:contract-wrap:552b5a0c */
+auditMask = contract(auditMask, { ...augurContract_532c6ea1, contractId: 'C-15', mode: 'observe', sample: 1, where: 'src/audit/audit-mask.ts:32', rule: 'contract-wrap', id: '532c6ea1' }); /* augur-inject:contract-wrap:532c6ea1 */
