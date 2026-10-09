@@ -18,6 +18,7 @@
 
 段階 1 (設計 §11): 共通スキーマ・`validate`・`render`・`report knowledge`。
 段階 2: 取り込み `import masters` (CSV / JSON / SQLite + mapping)・`import map` (grid / navgraph / zones)・`import spec` / `intent import` (LLM 下書き)。仕様は [spec/feature/import.md](spec/feature/import.md)。
+段階 3 (+3E): `export` (`bundle.json` + 索引、既定 player)、判断エンジン (Utility が狙いを選び BT が手順を実行、decider `utility-bt`)、アダプタ契約 (TypeScript + JSON Lines プロトコル + C++ 最小ヘッダ)、模擬アダプタ `sim`、ペルソナ (`novice` / `expert` / `explorer`)、`run` / `bench`。仕様は [spec/feature/engine.md](spec/feature/engine.md) と [spec/feature/adapter-protocol.md](spec/feature/adapter-protocol.md)。
 
 | 置き場所 | 中身 |
 |---|---|
@@ -26,6 +27,8 @@
 | `spec/feature/validate-checks.md` | `validate` の検査項目 V01〜V12 の固定リスト |
 | `samples/bestia/masters/` | 取り込みの入力例 (`archetypes.csv` / `mapping.json` / `ring.grid.txt`)。`validate` の対象外 |
 | `prompts/` | `import spec` / `intent import` の LLM プロンプト |
+| `personas/` | ゲーム非依存のペルソナ (`schema/persona.schema.json`)。バンドル内 `personas/` の同名が優先 |
+| `adapter/cpp/` | プロセス分離アダプタの C++ 最小ヘッダ (宣言のみ、ビルドしない) |
 
 ## 使い方
 
@@ -59,6 +62,17 @@ node dist/cli/main.js import map --game <bundle> --stage <slug> --from samples/b
 # 仕様書 / 意図の LLM 下書き (claude -p。draft: true・masked で書く。COMMENTARII_CLAUDE_BIN で実行ファイルを指定可)
 node dist/cli/main.js import spec --game <bundle> --from <spec.md> --kind rules
 node dist/cli/main.js intent import --game <bundle> --stage <slug> --from <intent.md>
+```
+
+```sh
+# 機械向け書き出し: <out>/bundle.json (全文書 + 索引)。既定 player は masked を一切含まない
+node dist/cli/main.js export samples/bestia --out out/runtime
+# エンジンを模擬アダプタで 1 回走らせ、リプレイを記録 (同じ seed なら同じ判断)
+node dist/cli/main.js run --game samples/bestia --adapter sim --persona novice --seed 1 --record replay/bestia-novice-s1.jsonl
+# 記録した run をエンジンで再判定 (決定性の検証)
+node dist/cli/main.js replay play replay/bestia-novice-s1.jsonl --decider utility-bt --game samples/bestia
+# ベンチ: クリア率・時間・被ダメージ・定石の使用割合 (JSON)。--no-tactics で汎用行動だけ
+node dist/cli/main.js bench --game samples/bestia --runs 20 --persona novice --seed 1
 ```
 
 `npm run guide -- validate samples/bestia` でも同じ。パッケージとして入れた場合は `guide` コマンドになる。

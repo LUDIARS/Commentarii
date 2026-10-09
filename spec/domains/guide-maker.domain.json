@@ -1,6 +1,6 @@
 {
   "name": "guide-maker",
-  "description": "攻略本ツクールの CLI (guide): validate (V01〜V12 の固定リスト)、render (生成 Markdown、既定で masked を出さない)、report knowledge (知識境界レポート)、import masters / import map / import spec / intent import (取り込み。既定 masked、LLM は draft のみ)。",
+  "description": "攻略本ツクールの CLI (guide): validate (V01〜V12 の固定リスト)、render (生成 Markdown、既定で masked を出さない)、report knowledge (知識境界レポート)、import masters / import map / import spec / intent import (取り込み。既定 masked、LLM は draft のみ)、export (bundle.json と索引、既定 player)。",
   "presetRules": [],
   "templateRules": [],
   "membership": [
@@ -10,6 +10,7 @@
     { "pathPattern": "(^|/)src/markdown/[^/]+\\.ts$" },
     { "pathPattern": "(^|/)src/cli/[^/]+\\.ts$" },
     { "pathPattern": "(^|/)src/import/.+\\.ts$" },
+    { "pathPattern": "(^|/)src/export/[^/]+\\.ts$" },
     { "pathPattern": "(^|/)src/adapters/(llm|sqlite)/[^/]+\\.ts$" },
     { "pathPattern": "(^|/)src/contracts/[^/]+\\.contract\\.ts$" },
     { "pathPattern": "(^|/)prompts/[^/]+\\.md$" },
@@ -18,6 +19,7 @@
     { "pathPattern": "(^|/)tests/report/[^/]+\\.test\\.ts$" },
     { "pathPattern": "(^|/)tests/cli/[^/]+\\.test\\.ts$" },
     { "pathPattern": "(^|/)tests/import/.+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/export/[^/]+\\.test\\.ts$" },
     { "pathPattern": "(^|/)tests/adapters/(llm|sqlite)/[^/]+\\.test\\.ts$" },
     { "pathPattern": "(^|/)tests/fixtures/broken/.+$" },
     { "pathPattern": "(^|/)samples/[^/]+/masters/[^/]+\\.(csv|txt)$" },
@@ -25,6 +27,6 @@
     { "pathPattern": "(^|/)spec/feature/import\\.md$" }
   ],
   "cardTemplate": "Summarise the \"guide-maker\" domain: guide validate / render / report knowledge over a loaded bundle, and guide import (masters / map / spec / intent) into it.",
-  "specRefs": ["spec/architecture/design.md §6", "spec/feature/validate-checks.md", "spec/feature/import.md"],
+  "specRefs": ["spec/architecture/design.md §6", "spec/feature/validate-checks.md", "spec/feature/import.md", "spec/feature/engine.md §1"],
   "rationale": "ツクールの操作口。段階 2 以降の import / export / learn / verify もここへ足す。"
 }

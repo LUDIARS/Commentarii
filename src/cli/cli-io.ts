@@ -4,6 +4,7 @@
 import type { ScanSource } from '../audit/scan-source.ts';
 import type { LoadResult } from '../bundle/bundle.ts';
 import type { ReplayLoad } from '../replay/parse-replay.ts';
+import type { EngineIo } from './engine-io.ts';
 import type { ImportIo } from './import-io.ts';
 
 export interface CliIo {
@@ -16,6 +17,8 @@ export interface CliIo {
   readonly importIo: ImportIo;
   /** Game repository files for `guide audit mask`. */
   readonly scanSource: ScanSource;
+  /** guide run / guide bench / replay play --decider utility-bt only. */
+  readonly engineIo?: EngineIo;
 }
 
 export const EXIT_OK = 0;

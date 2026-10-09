@@ -2,6 +2,7 @@
 // EXIT_INVALID, as is a play mismatch; a diff reports and exits OK either way.
 
 import { EXIT_INVALID, EXIT_OK, type CliIo } from '../cli/cli-io.ts';
+import type { EngineSetup } from '../engine/utility-bt-decider.ts';
 import { createDecider } from './decider-registry.ts';
 import { diffReplays } from './diff-replays.ts';
 import { formatPlayText } from './format-play-text.ts';
@@ -11,12 +12,23 @@ import { playReplay } from './play-replay.ts';
 import type { ReplayCommand } from './replay-command.ts';
 import type { ReplayRun } from './replay-record.ts';
 
-type ReplayIo = Pick<CliIo, 'stdout' | 'stderr' | 'openReplay'>;
+type ReplayIo = Pick<CliIo, 'stdout' | 'stderr' | 'openReplay'> & Partial<Pick<CliIo, 'openBundle' | 'engineIo'>>;
 
 async function load(path: string, io: ReplayIo): Promise<ReplayRun | undefined> {
   const loaded = await io.openReplay(path);
   if (loaded.run === undefined) io.stderr(formatReplayIssues(path, loaded.issues));
   return loaded.run;
+}
+
+/** Bundle and persona for a decider that judges from the guide (persona: option, else the run's). */
+async function engineSetup(gameDir: string, persona: string | undefined, run: ReplayRun, io: ReplayIo): Promise<EngineSetup> {
+  if (io.openBundle === undefined || io.engineIo === undefined) throw new Error('replay play: no bundle / engine I/O is wired for an engine decider');
+  const slug = persona ?? run.header.persona;
+  if (slug === undefined) throw new Error(`replay play: ${run.header.run_id} records no persona; pass --persona <slug>`);
+  const load = await io.openBundle(gameDir);
+  if (load.issues.length > 0) io.stderr(`guide replay play: ${load.issues.length} schema issue(s) in ${gameDir}; invalid files are left out
+`);
+  return { bundle: load.bundle, persona: await io.engineIo.loadPersona(gameDir, slug) };
 }
 
 function print(io: ReplayIo, json: boolean, report: unknown, text: string): void {
@@ -29,7 +41,8 @@ export async function runReplayCommand(command: ReplayCommand, io: ReplayIo): Pr
       const run = await load(command.runPath, io);
       if (run === undefined) return EXIT_INVALID;
       const options = command.until === undefined ? {} : { until: command.until };
-      const report = playReplay(run, createDecider(command.decider, run), options);
+      const engine = command.gameDir === undefined ? undefined : await engineSetup(command.gameDir, command.persona, run, io);
+      const report = playReplay(run, createDecider(command.decider, run, engine), options);
       print(io, command.json, report, formatPlayText(report));
       return report.ok ? EXIT_OK : EXIT_INVALID;
     }

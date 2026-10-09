@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "persona.schema.json",
+  "title": "Player persona: Utility weights and play habits (design 14.E)",
+  "description": "personas/<slug>.json, shipped with Commentarii (game independent) or kept inside a bundle (game specific; a bundle persona wins over a shipped one with the same slug). Selected with --persona <slug>.",
+  "type": "object",
+  "required": ["slug", "name", "weights", "exploration_rate", "reaction_delay_ticks", "misplay_rate", "min_confidence", "hysteresis"],
+  "properties": {
+    "slug": { "$ref": "id.schema.json#/$defs/slug" },
+    "name": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "description": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "weights": {
+      "description": "Weight of each Utility consideration (spec/feature/engine.md). 0 turns a consideration off.",
+      "type": "object",
+      "required": ["distance", "hp", "time", "resource", "confidence", "metrics", "intent", "exploration"],
+      "properties": {
+        "distance": { "$ref": "#/$defs/weight" },
+        "hp": { "$ref": "#/$defs/weight" },
+        "time": { "$ref": "#/$defs/weight" },
+        "resource": { "$ref": "#/$defs/weight" },
+        "confidence": { "$ref": "#/$defs/weight" },
+        "metrics": { "$ref": "#/$defs/weight" },
+        "intent": { "$ref": "#/$defs/weight" },
+        "exploration": { "$ref": "#/$defs/weight" }
+      },
+      "additionalProperties": false
+    },
+    "exploration_rate": { "description": "Share of efficiency ticks on which the exploration bonus is active.", "$ref": "#/$defs/ratio" },
+    "reaction_delay_ticks": { "description": "The persona decides on the observation this many ticks old.", "type": "integer", "minimum": 0 },
+    "misplay_rate": { "description": "Share of ticks on which the chosen action is fumbled (replaced by wait).", "$ref": "#/$defs/ratio" },
+    "min_confidence": { "description": "Least trusted tactic confidence used: authored (only) > derived > learned (all).", "enum": ["authored", "derived", "learned"] },
+    "hysteresis": { "description": "Utility added to the tactic whose behavior tree is still running.", "type": "number", "minimum": 0, "maximum": 1 },
+    "links": {
+      "description": "IDs of the same persona in other LUDIARS services (Discutere, Histrio).",
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+    "weight": { "type": "number", "minimum": 0, "maximum": 10 }
+  }
+}

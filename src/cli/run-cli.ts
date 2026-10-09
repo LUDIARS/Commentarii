@@ -1,6 +1,8 @@
 // Runs one CLI command and returns the process exit code.
 
 import { runAuditMask } from '../audit/run-audit-mask.ts';
+import { runAutoplayCommand } from '../autoplay/run-autoplay-command.ts';
+import { runExportCommand } from '../export/run-export-command.ts';
 import { buildKnowledgeReport } from '../report/build-knowledge-report.ts';
 import { formatKnowledgeMarkdown } from '../report/format-knowledge-markdown.ts';
 import { renderBundle } from '../render/render-bundle.ts';
@@ -46,6 +48,11 @@ async function execute(command: Command, io: CliIo): Promise<number> {
       return runImportCommand(command, io);
     case 'audit-mask':
       return runAuditMask(command, io);
+    case 'export':
+      return runExportCommand(command, io);
+    case 'run':
+    case 'bench':
+      return runAutoplayCommand(command, io);
   }
 }
 

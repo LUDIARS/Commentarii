@@ -9,7 +9,7 @@
   },
   "do": [
     { "move_to": "node:outer-ring" },
-    { "wait": 1 }
+    { "attack": "$enemy" }
   ],
   "expect": { "within_sec": 3, "entity_state": { "$enemy": "state:bestia:battle-ai#chase" } },
   "because": ["enemy:bestia:wire-spider.stats.range", "rule:bestia:wounded-retreat"],

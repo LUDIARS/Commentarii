@@ -17,6 +17,8 @@ export const DOCUMENT_SCHEMAS = [
   'mapping',
   'import-navgraph',
   'import-zones',
+  // Player personas (design 14.E): shipped under personas/ or kept in a bundle's personas/.
+  'persona',
 ] as const;
 
 export type DocumentSchemaName = (typeof DOCUMENT_SCHEMAS)[number];

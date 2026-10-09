@@ -1,0 +1,24 @@
+{
+  "name": "auto-player",
+  "description": "オートプレイヤー: 判断エンジン (Utility が狙いを選び BT が手順を実行、decider utility-bt)、候補生成・効用・BT・期待判定、ペルソナ、ティック駆動のドライバ、アダプタ契約 (TypeScript + JSON Lines プロトコル + C++ 最小ヘッダ)、模擬アダプタ sim、stdio アダプタ、guide run / guide bench。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)src/engine/.+\\.ts$" },
+    { "pathPattern": "(^|/)src/adapter/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)src/adapters/sim/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)src/adapters/stdio/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)src/bench/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)src/autoplay/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)adapter/cpp/[^/]+\\.hpp$" },
+    { "pathPattern": "(^|/)personas/[^/]+\\.json$" },
+    { "pathPattern": "(^|/)tests/engine/.+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/adapters/(sim|stdio)/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/bench/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)spec/feature/engine\\.md$" },
+    { "pathPattern": "(^|/)spec/feature/adapter-protocol\\.md$" }
+  ],
+  "cardTemplate": "Summarise the \"auto-player\" domain: adapter observe -> driver (masked check) -> decideTick (match / candidates / utility / BT / expect) -> adapter act, recorded as a replay; sim adapter and bench for tests.",
+  "specRefs": ["spec/architecture/design.md §7 §11 §14.A §14.E", "spec/feature/engine.md", "spec/feature/adapter-protocol.md"],
+  "rationale": "判断エンジンはゲーム非依存 (原則 4) で、ゲームとはアダプタ契約だけでつながる。リプレイ (replay ドメイン) の Decider を実装し、決定性はリプレイで検証する。ペルソナのスキーマ (schema/)、fs アダプタ (src/adapters/fs/) とテスト補助 (tests/support/) は guide-bundle の所属パターンに含まれるのでここには重ねない。"
+}
