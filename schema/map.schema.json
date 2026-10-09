@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "map.schema.json",
+  "title": "Stage map normalized to nodes + edges + annotations (design 4.5)",
+  "description": "grid: one node per walkable cell (cell = [x, y]); navgraph: nodes with positions; zones: nodes are areas and edges are adjacency.",
+  "type": "object",
+  "required": ["stage", "kind", "source", "nodes", "edges", "annotations"],
+  "properties": {
+    "stage": { "$ref": "id.schema.json#/$defs/stageId" },
+    "kind": { "enum": ["grid", "navgraph", "zones"] },
+    "size": {
+      "type": "array",
+      "prefixItems": [{ "type": "integer", "minimum": 1 }, { "type": "integer", "minimum": 1 }],
+      "items": false,
+      "minItems": 2
+    },
+    "source": { "$ref": "value.schema.json#/$defs/source" },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "knowledge"],
+        "properties": {
+          "id": { "$ref": "id.schema.json#/$defs/nodeId" },
+          "label": { "$ref": "id.schema.json#/$defs/localizedText" },
+          "cell": {
+            "type": "array",
+            "prefixItems": [{ "type": "integer", "minimum": 0 }, { "type": "integer", "minimum": 0 }],
+            "items": false,
+            "minItems": 2
+          },
+          "pos": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 3 },
+          "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "knowledge"],
+        "properties": {
+          "from": { "$ref": "id.schema.json#/$defs/nodeId" },
+          "to": { "$ref": "id.schema.json#/$defs/nodeId" },
+          "directed": { "type": "boolean" },
+          "cost": { "type": "number", "minimum": 0 },
+          "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "annotations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["target", "kind", "knowledge"],
+        "properties": {
+          "target": { "$ref": "id.schema.json#/$defs/nodeId" },
+          "kind": { "enum": ["hazard", "resource", "shortcut", "spawn", "wanted", "unwanted"] },
+          "ref": { "$ref": "id.schema.json#/$defs/anyId" },
+          "note": { "$ref": "id.schema.json#/$defs/localizedText" },
+          "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "allOf": [
+    { "if": { "properties": { "kind": { "const": "grid" } }, "required": ["kind"] }, "then": { "required": ["size"] } }
+  ],
+  "additionalProperties": false
+}

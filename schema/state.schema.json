@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "state.schema.json",
+  "title": "State machine (phases, behavior patterns)",
+  "type": "object",
+  "required": ["id", "name", "initial", "states", "transitions", "knowledge", "source"],
+  "properties": {
+    "id": { "$ref": "id.schema.json#/$defs/stateId" },
+    "name": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "initial": { "$ref": "id.schema.json#/$defs/slug" },
+    "states": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "$ref": "id.schema.json#/$defs/slug" },
+          "label": { "$ref": "id.schema.json#/$defs/localizedText" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "transitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "on"],
+        "properties": {
+          "from": { "$ref": "id.schema.json#/$defs/slug" },
+          "to": { "$ref": "id.schema.json#/$defs/slug" },
+          "on": { "type": "string", "minLength": 1 },
+          "rule": { "$ref": "id.schema.json#/$defs/ruleId" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+    "source": { "$ref": "value.schema.json#/$defs/source" },
+    "draft": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

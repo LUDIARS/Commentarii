@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stage.schema.json",
+  "title": "Stage: objectives, clear conditions and spawn table",
+  "type": "object",
+  "required": ["id", "name", "objectives"],
+  "properties": {
+    "id": { "$ref": "id.schema.json#/$defs/stageId" },
+    "name": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "objectives": { "type": "array", "minItems": 1, "items": { "$ref": "value.schema.json#/$defs/textValue" } },
+    "clear_conditions": { "type": "array", "items": { "$ref": "value.schema.json#/$defs/textValue" } },
+    "time_limit": { "$ref": "value.schema.json#/$defs/statValue" },
+    "spawns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["entity", "count"],
+        "properties": {
+          "entity": { "$ref": "id.schema.json#/$defs/entityId" },
+          "count": { "$ref": "value.schema.json#/$defs/statValue" },
+          "at": { "$ref": "id.schema.json#/$defs/nodeId" },
+          "wave": { "type": "integer", "minimum": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

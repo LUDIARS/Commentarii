@@ -1,0 +1,18 @@
+{
+  "id": "tactic:bestia:sidestep-lead-shot",
+  "name": { "ja": "偏差射撃の裏をかく横移動", "en": "Sidestep the leading shot" },
+  "when": {
+    "all": [
+      { "entity": "enemy:bestia:bazooka-beetle", "visible": true, "distance_lt": 10 }
+    ]
+  },
+  "do": [
+    { "custom": "strafe-perpendicular", "target": "$enemy" },
+    { "attack": "$enemy" }
+  ],
+  "expect": { "within_sec": 2, "entity_state": { "$enemy": "state:bestia:battle-ai#attack" } },
+  "because": ["enemy:bestia:bazooka-beetle.stats.aim_lead_divisor"],
+  "knowledge": "masked",
+  "confidence": "derived",
+  "superseded_by": null
+}

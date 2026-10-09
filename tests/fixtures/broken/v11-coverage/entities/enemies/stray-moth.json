@@ -1,0 +1,54 @@
+{
+  "id": "enemy:bestia:stray-moth",
+  "name": {
+    "ja": "はぐれ蛾",
+    "en": "Stray Moth"
+  },
+  "stats": {
+    "health": {
+      "value": 105,
+      "unit": "hp",
+      "knowledge": "discoverable",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[2]"
+      }
+    },
+    "radius": {
+      "value": 1.35,
+      "unit": "m",
+      "knowledge": "shown",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[2]"
+      }
+    },
+    "speed": {
+      "value": 9,
+      "unit": "m/s",
+      "knowledge": "discoverable",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[2]"
+      }
+    },
+    "range": {
+      "value": 17,
+      "unit": "m",
+      "knowledge": "discoverable",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[2]"
+      }
+    },
+    "cooldown": {
+      "value": 1.1,
+      "unit": "s",
+      "knowledge": "discoverable",
+      "source": {
+        "kind": "master",
+        "ref": "Bestia src/world.cpp archetype[2]"
+      }
+    }
+  }
+}

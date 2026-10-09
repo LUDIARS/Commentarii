@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "events.schema.json",
+  "title": "Stage events: what happens on time or on condition",
+  "type": "object",
+  "required": ["stage", "events"],
+  "properties": {
+    "stage": { "$ref": "id.schema.json#/$defs/stageId" },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "trigger", "description"],
+        "properties": {
+          "id": { "$ref": "id.schema.json#/$defs/slug" },
+          "trigger": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": ["kind", "at_sec"],
+                "properties": { "kind": { "const": "time" }, "at_sec": { "$ref": "value.schema.json#/$defs/statValue" } },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": ["kind", "condition"],
+                "properties": { "kind": { "const": "condition" }, "condition": { "$ref": "value.schema.json#/$defs/textValue" } },
+                "additionalProperties": false
+              }
+            ]
+          },
+          "description": { "$ref": "value.schema.json#/$defs/textValue" },
+          "spawns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["entity", "count"],
+              "properties": {
+                "entity": { "$ref": "id.schema.json#/$defs/entityId" },
+                "count": { "$ref": "value.schema.json#/$defs/statValue" },
+                "at": { "$ref": "id.schema.json#/$defs/nodeId" }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

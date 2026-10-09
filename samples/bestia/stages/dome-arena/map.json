@@ -1,0 +1,20 @@
+{
+  "stage": "stage:bestia:dome-arena",
+  "kind": "zones",
+  "source": { "kind": "human", "ref": "sample: ring radius 36 m split into zones" },
+  "nodes": [
+    { "id": "node:center", "label": { "ja": "中央" }, "knowledge": "shown" },
+    { "id": "node:mid-ring", "label": { "ja": "中間リング" }, "knowledge": "shown" },
+    { "id": "node:outer-ring", "label": { "ja": "外周" }, "knowledge": "shown" },
+    { "id": "node:outside", "label": { "ja": "リング外" }, "knowledge": "shown" }
+  ],
+  "edges": [
+    { "from": "node:center", "to": "node:mid-ring", "knowledge": "shown" },
+    { "from": "node:mid-ring", "to": "node:outer-ring", "knowledge": "shown" },
+    { "from": "node:outer-ring", "to": "node:outside", "knowledge": "shown" }
+  ],
+  "annotations": [
+    { "target": "node:mid-ring", "kind": "spawn", "note": { "ja": "全員が中心から 20 m の円周上に出現する" }, "knowledge": "shown" },
+    { "target": "node:outside", "kind": "hazard", "note": { "ja": "リング外。AI は戻ろうとする" }, "knowledge": "shown" }
+  ]
+}

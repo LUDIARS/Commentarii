@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "entity.masked.schema.json",
+  "title": "Masked companion of an entity (<slug>.masked.json)",
+  "description": "Holds only values the player must not know. Every value here must be knowledge=masked (design 1, principle 1).",
+  "type": "object",
+  "required": ["id"],
+  "minProperties": 2,
+  "properties": {
+    "id": { "$ref": "id.schema.json#/$defs/entityId" },
+    "stats": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "$ref": "value.schema.json#/$defs/maskedStatValue" }
+    },
+    "fields": {
+      "description": "Masked non-numeric values (tables, internal flags) by field name.",
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "$ref": "value.schema.json#/$defs/maskedValue" }
+    }
+  },
+  "additionalProperties": false
+}

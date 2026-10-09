@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "contractsDir": "src/contracts",
+  "importFrom": "#contract-runtime",
+  "contracts": [
+    {
+      "id": "C-1",
+      "criterion": "C-1 runValidation(load): V01〜V12 の 12 項目を固定順で必ず返し、各項目の status は error 所見があれば error・warning のみなら warning・所見なしなら ok で、ok は error 項目が 0 のときだけ true",
+      "symbol": "runValidation",
+      "file": "src/validate/run-validation.ts",
+      "module": "src/contracts/run-validation.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-2",
+      "criterion": "C-2 evaluateExpression(source, variables): 結果は常に有限の数で、評価できない式 (未定義変数・未知の関数・0 除算・構文誤り) は ExpressionError で失敗する",
+      "symbol": "evaluateExpression",
+      "file": "src/domain/expression/evaluate-expression.ts",
+      "module": "src/contracts/evaluate-expression.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-3",
+      "criterion": "C-3 toPlayerView(bundle): 返すバンドルのどこにも knowledge: masked が無く、masked 付随ファイル (maskedEntities) は空",
+      "symbol": "toPlayerView",
+      "file": "src/bundle/player-view.ts",
+      "module": "src/contracts/to-player-view.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-4",
+      "criterion": "C-4 loadBundleFromTexts(texts, registry): スキーマ不適合のファイルには必ず V01 用の issue があり、スキーマ適合のファイルには issue が無く、manifest.json が無ければ issue になる",
+      "symbol": "loadBundleFromTexts",
+      "file": "src/bundle/load-bundle.ts",
+      "module": "src/contracts/load-bundle.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-5",
+      "criterion": "C-5 renderBundle(load, options): 既定 (knowledge=player) の出力に masked.md が無く、masked の値 (masked 付随ファイルの項目名と文字列値) がどのファイルにも現れない。full のときだけ masked.md を出す",
+      "symbol": "renderBundle",
+      "file": "src/render/render-bundle.ts",
+      "module": "src/contracts/render-bundle.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-6",
+      "criterion": "C-6 buildKnowledgeReport(load): エンティティ行ごとに total = shown + discoverable + masked、全体の件数は行の合計と一致し、割合は 0〜1",
+      "symbol": "buildKnowledgeReport",
+      "file": "src/report/build-knowledge-report.ts",
+      "module": "src/contracts/build-knowledge-report.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-7",
+      "criterion": "C-7 healthResponse(method, path): GET/HEAD /health は 200 と {status: ok, service: commentarii}、/health 以外は 404、/health への他メソッドは 405",
+      "symbol": "healthResponse",
+      "file": "src/health/health-response.ts",
+      "module": "src/contracts/health-response.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    }
+  ]
+}

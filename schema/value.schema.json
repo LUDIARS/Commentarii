@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "value.schema.json",
+  "title": "Guide value (design 4.3)",
+  "description": "Every value carries its knowledge boundary and its source. llm-draft values must stay draft.",
+  "type": "object",
+  "required": ["value", "knowledge", "source"],
+  "properties": {
+    "value": true,
+    "unit": { "type": "string", "minLength": 1 },
+    "knowledge": { "$ref": "#/$defs/knowledge" },
+    "source": { "$ref": "#/$defs/source" },
+    "draft": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "if": {
+    "required": ["source"],
+    "properties": { "source": { "required": ["kind"], "properties": { "kind": { "const": "llm-draft" } } } }
+  },
+  "then": {
+    "required": ["draft"],
+    "properties": { "draft": { "const": true } }
+  },
+  "$defs": {
+    "knowledge": { "enum": ["shown", "discoverable", "masked"] },
+    "sourceKind": { "enum": ["master", "observed", "human", "llm-draft"] },
+    "source": {
+      "type": "object",
+      "required": ["kind", "ref"],
+      "properties": {
+        "kind": { "$ref": "#/$defs/sourceKind" },
+        "ref": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "statValue": {
+      "$ref": "#",
+      "properties": { "value": { "type": "number" } }
+    },
+    "idValue": {
+      "$ref": "#",
+      "properties": { "value": { "$ref": "id.schema.json#/$defs/anyId" } }
+    },
+    "textValue": {
+      "$ref": "#",
+      "properties": { "value": { "$ref": "id.schema.json#/$defs/localizedText" } }
+    },
+    "stringValue": {
+      "$ref": "#",
+      "properties": { "value": { "type": "string", "minLength": 1 } }
+    },
+    "maskedValue": {
+      "$ref": "#",
+      "properties": { "knowledge": { "const": "masked" } }
+    },
+    "maskedStatValue": {
+      "$ref": "#/$defs/statValue",
+      "properties": { "knowledge": { "const": "masked" } }
+    },
+    "statMap": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "$ref": "#/$defs/statValue" }
+    }
+  }
+}

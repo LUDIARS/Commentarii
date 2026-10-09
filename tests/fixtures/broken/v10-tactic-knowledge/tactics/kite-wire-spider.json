@@ -1,0 +1,52 @@
+{
+  "id": "tactic:bestia:kite-wire-spider",
+  "name": {
+    "ja": "スパイダーの射程外へ下がる",
+    "en": "Kite the wire spider"
+  },
+  "when": {
+    "all": [
+      {
+        "entity": "enemy:bestia:wire-spider",
+        "visible": true,
+        "distance_lt": 19
+      },
+      {
+        "self": {
+          "hp_ratio_lt": 0.5
+        }
+      }
+    ]
+  },
+  "do": [
+    {
+      "move_to": "node:outer-ring"
+    },
+    {
+      "wait": 1
+    }
+  ],
+  "expect": {
+    "within_sec": 3,
+    "entity_state": {
+      "$enemy": "state:bestia:battle-ai#chase"
+    }
+  },
+  "because": [
+    "enemy:bestia:wire-spider.stats.range",
+    "rule:bestia:wounded-retreat"
+  ],
+  "knowledge": "shown",
+  "confidence": "authored",
+  "metrics": {
+    "runs": 12,
+    "success": 0.75,
+    "time_sec": {
+      "p50": 2.4
+    },
+    "risk": {
+      "damage_taken_p50": 6
+    }
+  },
+  "superseded_by": null
+}

@@ -2,6 +2,10 @@
 
 設計正本: `spec/architecture/design.md` (このリポ)。本タスクは設計 §11 の段階 1。段階 2 以降 (import / export / エンジン / 学習 / 意図検証 / 描画タップ / Web) はやらない。
 
+- Actio: `actio:a784b5d1-c32b-48d9-8d18-4a0c313336b9`
+- 検査項目の固定リスト: [spec/feature/validate-checks.md](../feature/validate-checks.md)
+- ドメイン: `spec/domains/{guide-bundle,guide-maker,service-bootstrap}.domain.json`
+
 ## 目的
 
 攻略本バンドル (`guide/<game-id>/`) の JSON 正本を、スキーマで検証し、人間向け Markdown に描画し、知識境界 (第一原則) のレポートを出せる状態にする。段階 2 以降が全てこの上に乗る。

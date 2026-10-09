@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "manifest.schema.json",
+  "title": "Guide bundle manifest",
+  "type": "object",
+  "required": ["game_id", "title", "version", "coordinates"],
+  "properties": {
+    "game_id": { "$ref": "id.schema.json#/$defs/slug" },
+    "title": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "version": { "type": "string", "minLength": 1 },
+    "builds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "coordinates": {
+      "type": "object",
+      "required": ["system", "unit"],
+      "properties": {
+        "system": { "enum": ["grid", "world-xy", "world-xyz"] },
+        "unit": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "lexicon": {
+      "type": "object",
+      "required": ["version"],
+      "properties": { "version": { "type": "string", "minLength": 1 } },
+      "additionalProperties": false
+    },
+    "learning": {
+      "type": "object",
+      "required": ["policy"],
+      "properties": { "policy": { "$ref": "#/$defs/policy" } },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+    "policy": {
+      "type": "object",
+      "required": ["exploration_rate", "rewrite", "promotion"],
+      "properties": {
+        "exploration_rate": { "$ref": "#/$defs/ratio" },
+        "rewrite": {
+          "type": "object",
+          "required": ["min_runs", "min_gain", "metric_weights", "auto_apply"],
+          "properties": {
+            "min_runs": { "type": "integer", "minimum": 1 },
+            "min_gain": { "type": "number", "minimum": 0 },
+            "metric_weights": {
+              "type": "object",
+              "required": ["time", "resource", "risk"],
+              "properties": {
+                "time": { "$ref": "#/$defs/ratio" },
+                "resource": { "$ref": "#/$defs/ratio" },
+                "risk": { "$ref": "#/$defs/ratio" }
+              },
+              "additionalProperties": false
+            },
+            "auto_apply": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "promotion": {
+          "type": "object",
+          "required": ["discoverable_requires"],
+          "properties": {
+            "discoverable_requires": {
+              "type": "object",
+              "required": ["player_runs", "agreement"],
+              "properties": {
+                "player_runs": { "type": "integer", "minimum": 1 },
+                "agreement": { "$ref": "#/$defs/ratio" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
