@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "replay.schema.json",
+  "title": "Replay line: one line of replay/<run-id>.jsonl (design 14.A)",
+  "description": "A run file is one header line, then one tick line per engine tick, then one footer line. Line order, tick order and the player-mode masked ban are checked by the loader (spec/feature/replay.md), not by this schema.",
+  "type": "object",
+  "required": ["type"],
+  "properties": { "type": { "enum": ["header", "tick", "footer"] } },
+  "oneOf": [
+    { "$ref": "#/$defs/header" },
+    { "$ref": "#/$defs/tick" },
+    { "$ref": "#/$defs/footer" }
+  ],
+  "$defs": {
+    "header": {
+      "type": "object",
+      "required": ["type", "run_id", "seed", "game_id", "manifest_version", "adapter_id", "mode", "purpose", "started_at"],
+      "properties": {
+        "type": { "const": "header" },
+        "run_id": { "$ref": "id.schema.json#/$defs/runId" },
+        "seed": {
+          "anyOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "game_id": { "$ref": "id.schema.json#/$defs/slug" },
+        "manifest_version": { "type": "string", "minLength": 1 },
+        "adapter_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$" },
+        "mode": { "enum": ["player", "omniscient"] },
+        "purpose": { "enum": ["efficiency", "coverage"] },
+        "persona": { "$ref": "id.schema.json#/$defs/slug" },
+        "started_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "tick": {
+      "type": "object",
+      "required": ["type", "tick", "t", "observation", "decision", "action"],
+      "properties": {
+        "type": { "const": "tick" },
+        "tick": { "type": "integer", "minimum": 0 },
+        "t": { "type": "number", "minimum": 0 },
+        "observation": { "$ref": "observation-frame.schema.json" },
+        "decision": { "type": "array", "items": { "$ref": "#/$defs/decisionEntry" } },
+        "action": { "$ref": "#/$defs/action" }
+      },
+      "additionalProperties": false
+    },
+    "footer": {
+      "type": "object",
+      "required": ["type", "ended_at", "result", "summary"],
+      "properties": {
+        "type": { "const": "footer" },
+        "ended_at": { "type": "string", "format": "date-time" },
+        "result": { "enum": ["success", "fail", "abort"] },
+        "summary": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "decisionEntry": {
+      "description": "One candidate the decider weighed and its utility (design 7.4).",
+      "type": "object",
+      "required": ["candidate", "utility", "chosen"],
+      "properties": {
+        "candidate": { "type": "string", "minLength": 1 },
+        "utility": { "type": "number" },
+        "chosen": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "operand": {
+      "anyOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "number" },
+        { "type": "array", "minItems": 1, "items": { "type": "number" } }
+      ]
+    },
+    "action": {
+      "description": "Abstract adapter action (design 7.3): exactly one verb. wait takes seconds (0 = one tick).",
+      "type": "object",
+      "properties": {
+        "move_to": { "$ref": "#/$defs/operand" },
+        "attack": { "$ref": "#/$defs/operand" },
+        "use_item": { "$ref": "#/$defs/operand" },
+        "use_skill": { "$ref": "#/$defs/operand" },
+        "wait": { "type": "number", "minimum": 0 },
+        "interact": { "$ref": "#/$defs/operand" },
+        "custom": { "type": "string", "minLength": 1 },
+        "target": { "$ref": "#/$defs/operand" },
+        "params": { "type": "object" }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        { "required": ["move_to"] },
+        { "required": ["attack"] },
+        { "required": ["use_item"] },
+        { "required": ["use_skill"] },
+        { "required": ["wait"] },
+        { "required": ["interact"] },
+        { "required": ["custom"] }
+      ]
+    }
+  }
+}

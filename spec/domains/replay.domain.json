@@ -1,0 +1,15 @@
+{
+  "name": "replay",
+  "description": "リプレイの記録と再生: replay/<run-id>.jsonl (header / tick / footer)、RecordingSink (player モードの masked を記録時に拒否)、観測を受けて行動を返す Decider の型と固定 decider、guide replay play (決定性テスト) / diff (最初の分岐と効用差)。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)src/replay/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)tests/replay/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)tests/fixtures/replay/[^/]+\\.jsonl$" },
+    { "pathPattern": "(^|/)spec/feature/replay\\.md$" }
+  ],
+  "cardTemplate": "Summarise the \"replay\" domain: record (decider wrapped by RecordingSink) -> replay/<run-id>.jsonl -> parse -> play (determinism) / diff (first branch).",
+  "specRefs": ["spec/architecture/design.md §7.2 §7.5 §14.A", "spec/feature/replay.md"],
+  "rationale": "段階 3 以降のエンジンのテスト正本になる層。判断エンジンは Decider の型でだけ受け、ゲームにもエンジン実装にも依存しない。スキーマ (schema/*.schema.json) と fs アダプタ (src/adapters/fs/replay-*.ts) は既存の guide-bundle の所属パターンに含まれるのでここには重ねない。"
+}

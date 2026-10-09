@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "observation-frame.schema.json",
+  "title": "Observation frame: what the engine saw on one tick (design 7.2)",
+  "description": "The complete per-tick observation an adapter hands to the engine, recorded as is in replay/<run-id>.jsonl. Not the one-line overlay observation of design 4.4 (observation.schema.json). masked values may appear only in omniscient mode; a player recording containing one is rejected by the recorder and the replay loader.",
+  "type": "object",
+  "required": ["tick", "t", "source", "mode", "purpose", "self", "entities", "stage", "events"],
+  "properties": {
+    "tick": { "type": "integer", "minimum": 0 },
+    "t": { "type": "number", "minimum": 0 },
+    "source": { "enum": ["game-api", "render-tap", "pixels"] },
+    "mode": { "enum": ["player", "omniscient"] },
+    "purpose": { "enum": ["efficiency", "coverage"] },
+    "self": {
+      "type": "object",
+      "properties": {
+        "pos": { "$ref": "#/$defs/vector3" },
+        "hp": { "$ref": "#/$defs/observedValue" },
+        "resources": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+          "additionalProperties": {
+            "anyOf": [
+              { "type": "number" },
+              { "$ref": "#/$defs/observedValue" }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["instance"],
+        "properties": {
+          "entity": { "$ref": "id.schema.json#/$defs/entityId" },
+          "instance": { "type": "integer", "minimum": 0 },
+          "pos": { "$ref": "#/$defs/vector3" },
+          "screen": {
+            "type": "array",
+            "prefixItems": [{ "type": "number" }, { "type": "number" }, { "type": "number", "minimum": 0 }, { "type": "number", "minimum": 0 }],
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "state_guess": { "$ref": "id.schema.json#/$defs/stateRef" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "stage": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "$ref": "id.schema.json#/$defs/stageId" },
+        "elapsed": { "type": "number", "minimum": 0 },
+        "node": { "$ref": "id.schema.json#/$defs/nodeId" }
+      },
+      "additionalProperties": false
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind"],
+        "properties": { "kind": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "extra": { "type": "object" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "vector3": {
+      "type": "array",
+      "prefixItems": [{ "type": "number" }, { "type": "number" }, { "type": "number" }],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "observedValue": {
+      "description": "A value read from the game with its knowledge boundary (observations carry no source; the run is the source).",
+      "type": "object",
+      "required": ["value", "knowledge"],
+      "properties": {
+        "value": true,
+        "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

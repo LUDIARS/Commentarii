@@ -3,6 +3,7 @@
 import { buildKnowledgeReport } from '../report/build-knowledge-report.ts';
 import { formatKnowledgeMarkdown } from '../report/format-knowledge-markdown.ts';
 import { renderBundle } from '../render/render-bundle.ts';
+import { runReplayCommand } from '../replay/run-replay-command.ts';
 import { formatValidationText } from '../validate/format-validation-text.ts';
 import { runValidation } from '../validate/run-validation.ts';
 import { EXIT_INVALID, EXIT_OK, EXIT_USAGE, type CliIo } from './cli-io.ts';
@@ -33,6 +34,9 @@ async function execute(command: Command, io: CliIo): Promise<number> {
       io.stdout(command.json ? `${JSON.stringify(report, null, 2)}\n` : formatKnowledgeMarkdown(report));
       return EXIT_OK;
     }
+    case 'replay-play':
+    case 'replay-diff':
+      return runReplayCommand(command, io);
   }
 }
 
