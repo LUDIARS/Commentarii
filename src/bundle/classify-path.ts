@@ -50,8 +50,11 @@ const PATTERNS: readonly { readonly pattern: RegExp; readonly kind: FileKind; re
   { pattern: new RegExp(`^intent/${SLUG}\\.json$`), kind: 'intent' },
 ];
 
-/** Overlay, schema references and the import inputs (master data, mapping) kept next to the bundle. */
-const IGNORED_PREFIXES = ['observations/', 'schema/', 'masters/'];
+/**
+ * Overlay, schema references, the import inputs (master data, mapping) and the engine's
+ * personas (read by the engine, not part of the guide itself) kept next to the bundle.
+ */
+const IGNORED_PREFIXES = ['observations/', 'schema/', 'masters/', 'personas/'];
 
 export function classifyPath(relativePath: string): PathClass {
   if (IGNORED_PREFIXES.some((prefix) => relativePath.startsWith(prefix))) return { type: 'ignored' };

@@ -2,6 +2,8 @@
 
 import { parseArgs } from 'node:util';
 import { AUDIT_USAGE, parseAuditArgs, type AuditMaskCommand } from '../audit/parse-audit-mask-args.ts';
+import { AUTOPLAY_USAGE, parseBenchCommand, parseRunCommand, type AutoplayCommand } from '../autoplay/autoplay-command.ts';
+import { EXPORT_USAGE, parseExportCommand, type ExportCommand } from '../export/export-command.ts';
 import type { RenderKnowledge } from '../render/render-bundle.ts';
 import { parseReplayCommand, REPLAY_USAGE, type ReplayCommand } from '../replay/replay-command.ts';
 import { IMPORT_USAGE, parseImportCommand, type ImportCommand } from './parse-import-command.ts';
@@ -16,13 +18,15 @@ export type Command =
   | ReplayCommand
   | ImportCommand
   | AuditMaskCommand
+  | ExportCommand
+  | AutoplayCommand
   | { readonly name: 'help' };
 
 export const USAGE = `usage:
   guide validate <bundle-dir> [--json]
   guide render <bundle-dir> --out <dir> [--knowledge player|full]
   guide report knowledge <bundle-dir> [--json]
-${REPLAY_USAGE}${IMPORT_USAGE}${AUDIT_USAGE}`;
+${EXPORT_USAGE}${AUTOPLAY_USAGE}${REPLAY_USAGE}${IMPORT_USAGE}${AUDIT_USAGE}`;
 
 function single(positionals: readonly string[], what: string): string {
   if (positionals.length !== 1 || positionals[0] === undefined) throw new UsageError(`${what} needs exactly one <bundle-dir>`);
@@ -56,6 +60,9 @@ export function parseCommand(argv: readonly string[]): Command {
     if (name === 'replay') return parseReplayCommand(rest);
     if (name === 'import' || name === 'intent') return parseImportCommand(name, rest);
     if (name === 'audit') return parseAuditArgs(rest);
+    if (name === 'export') return parseExportCommand(rest);
+    if (name === 'run') return parseRunCommand(rest);
+    if (name === 'bench') return parseBenchCommand(rest);
   } catch (cause) {
     if (cause instanceof UsageError) throw cause;
     throw new UsageError((cause as Error).message);

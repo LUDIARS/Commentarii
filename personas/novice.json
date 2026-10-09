@@ -1,0 +1,11 @@
+{
+  "slug": "novice",
+  "name": { "ja": "初心者", "en": "Novice" },
+  "description": { "ja": "反応が遅く、たまに操作を誤る。人が書いた (authored) 定石しか使わず、寄り道はほとんどしない。" },
+  "weights": { "distance": 1, "hp": 0.6, "time": 0.3, "resource": 0.3, "confidence": 1, "metrics": 0.4, "intent": 1, "exploration": 0.5 },
+  "exploration_rate": 0.03,
+  "reaction_delay_ticks": 4,
+  "misplay_rate": 0.08,
+  "min_confidence": "authored",
+  "hysteresis": 0.15
+}

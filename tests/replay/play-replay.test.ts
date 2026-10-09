@@ -4,6 +4,8 @@ import { createDecider, DECIDER_IDS, DEFAULT_DECIDER_ID, isDeciderId } from '../
 import { playReplay } from '../../src/replay/play-replay.ts';
 import { createRecordedDecider } from '../../src/replay/recorded-decider.ts';
 import { createWaitDecider } from '../../src/replay/wait-decider.ts';
+import { loadSample } from '../support/bundles.ts';
+import { shippedPersona } from '../support/personas.ts';
 import { BASE_RUN, BRANCH_RUN, loadRun } from './replay-fixtures.ts';
 
 test('the recorded decider reproduces every fixture tick by tick', async () => {
@@ -40,10 +42,13 @@ test('a decider answering for another run diverges at that run\'s branch tick', 
   assert.equal(playReplay(branch, createRecordedDecider(base), { until: 4 }).ok, true);
 });
 
-test('the registry knows recorded (default) and wait', async () => {
+test('the registry knows recorded (default), wait and the utility-bt engine', async () => {
   const run = await loadRun(BASE_RUN);
-  assert.deepEqual([...DECIDER_IDS], ['recorded', 'wait']);
+  assert.deepEqual([...DECIDER_IDS], ['recorded', 'wait', 'utility-bt']);
   assert.equal(DEFAULT_DECIDER_ID, 'recorded');
   assert.equal(isDeciderId('utility'), false);
-  for (const id of DECIDER_IDS) assert.equal(createDecider(id, run).id, id);
+  for (const id of ['recorded', 'wait'] as const) assert.equal(createDecider(id, run).id, id);
+  assert.throws(() => createDecider('utility-bt', run), /needs the bundle and a persona/);
+  const engine = { bundle: (await loadSample()).bundle, persona: await shippedPersona('expert') };
+  assert.equal(createDecider('utility-bt', run, engine).id, 'utility-bt');
 });

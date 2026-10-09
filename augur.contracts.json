@@ -146,6 +146,60 @@
       "module": "src/contracts/audit-exit-code.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-17",
+      "criterion": "C-17 buildExport(load, options): knowledge=player の bundle.json のどこにも knowledge: masked が無く masked_entities は空で、索引 ids の全 pointer が同じ ID の文書を指す",
+      "symbol": "buildExport",
+      "file": "src/export/build-export.ts",
+      "module": "src/contracts/build-export.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-18",
+      "criterion": "C-18 generateCandidates(input): 候補 ID は一意かつ ID 順で、player モードでは masked・draft・superseded の定石 (その変種を含む) を候補にせず、ペルソナの confidence 下限未満の定石も候補にしない",
+      "symbol": "generateCandidates",
+      "file": "src/engine/candidates/generate-candidates.ts",
+      "module": "src/contracts/generate-candidates.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-19",
+      "criterion": "C-19 decideTick(input): 判断ログは各候補を 1 回ずつ有限の効用で並べ、chosen は高々 1 件で outcome.chosen と一致し、chosen より効用の高い候補は skipped に入り、行動の verb は 1 つ (選択なしなら wait 0)",
+      "symbol": "decideTick",
+      "file": "src/engine/decide-tick.ts",
+      "module": "src/contracts/decide-tick.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-20",
+      "criterion": "C-20 stepTree(tree, memory, context): running は必ず行動を持ち failure は行動を持たず、行動の verb は 1 つで、返す memory はその木のノードだけを持つ",
+      "symbol": "stepTree",
+      "file": "src/engine/bt/step-tree.ts",
+      "module": "src/contracts/step-tree.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-21",
+      "criterion": "C-21 runDriver(options): ティック数は maxTicks 以下、ゲーム自身の終了以外の停止では result は abort、masked-in-player 停止は player モードでだけ起き pointer を 1 件以上持ち、選択数の合計はティック数以下",
+      "symbol": "runDriver",
+      "file": "src/engine/driver.ts",
+      "module": "src/contracts/run-driver.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-22",
+      "criterion": "C-22 runBench(options): per_run は要求した runs 件、clear_rate は成功 run の割合、time_sec はクリア 0 件のときだけ null、候補の割合は 0〜1 で合計 1 以下、tactics は --no-tactics なら none",
+      "symbol": "runBench",
+      "file": "src/bench/run-bench.ts",
+      "module": "src/contracts/run-bench.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }

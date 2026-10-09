@@ -1,0 +1,11 @@
+{
+  "slug": "expert",
+  "name": { "ja": "上級者", "en": "Expert" },
+  "description": { "ja": "反応が速く操作も正確。観測から学んだ (learned) 定石まで使い、実測 (metrics) を重く見る。" },
+  "weights": { "distance": 0.8, "hp": 1, "time": 0.8, "resource": 0.6, "confidence": 0.6, "metrics": 1.2, "intent": 0.4, "exploration": 0.5 },
+  "exploration_rate": 0.1,
+  "reaction_delay_ticks": 0,
+  "misplay_rate": 0,
+  "min_confidence": "learned",
+  "hysteresis": 0.08
+}

@@ -1,0 +1,11 @@
+{
+  "slug": "explorer",
+  "name": { "ja": "探索好き", "en": "Explorer" },
+  "description": { "ja": "未訪問の場所や未試行の定石・その変種を好んで試す。" },
+  "weights": { "distance": 0.6, "hp": 0.6, "time": 0.2, "resource": 0.4, "confidence": 0.4, "metrics": 0.4, "intent": 0.3, "exploration": 2 },
+  "exploration_rate": 0.5,
+  "reaction_delay_ticks": 2,
+  "misplay_rate": 0.02,
+  "min_confidence": "derived",
+  "hysteresis": 0.05
+}

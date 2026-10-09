@@ -1,5 +1,7 @@
 # 段階 3: export・判断エンジン (Utility + BT)・アダプタ契約・模擬アダプタ・ペルソナ (3E)
 
+Actio タスク: `actio:ed316a31-c3cb-4b6d-b685-49f78fc16c0c`。仕様: `spec/feature/engine.md`、`spec/feature/adapter-protocol.md`。
+
 設計正本: `spec/architecture/design.md` §7 (オートプレイヤー全体)、§7.2〜7.6、§4.4 の tactic / manifest 例、§14.A (リプレイ) と §14.E (ペルソナ)、§11 の段 3 と 3E。段階 1 / 2 / 2A / 2B はマージ済み。特に `src/replay/decider.ts` の `Decider` 契約 (観測 → 判断候補 + 行動、決定的) を **そのまま実装する** こと。`src/bundle/player-view.ts` の `toPlayerView` が masked を落とす既存の正本。
 
 Bestia 本体 (C++、別リポ) 側の改修は本段ではやらない。本段は Commentarii 側の **エンジン・契約・模擬アダプタ** までで、Bestia 実機アダプタは次の run (Bestia リポ側 PR) に回す。
@@ -44,3 +46,46 @@ Bestia 本体 (C++、別リポ) 側の改修は本段ではやらない。本段
 - ビルドとテストはフォアグラウンドで待つ。
 - 完了 = コミット → Revisor local PR 提出 (`node E:/Document/Ars/command-runner.mjs rv:submit --repo <worktree>`) → **PR 番号と検証結果を報告してから** 終了指示を待つ。マージはしない。ブロック所見は直して再提出する。
 - 不明点は推測で埋めず、報告に「仮定」として書く。
+
+## 実装記録 (PR 説明)
+
+### 変更した境界
+
+- CLI: `guide export` / `guide run` / `guide bench` を追加。`guide replay play` に `--decider utility-bt` と `--game` / `--persona` を追加 (既存の `recorded` / `wait` は不変)。
+- `CliIo` に任意の `engineIo` (ペルソナ読み込み・リプレイ書き出し・stdio チャネル・時刻) を追加。既存コマンドは使わない。
+- `createDecider(id, run, engine?)`: 第 3 引数を追加 (utility-bt のときだけ必須)。
+- スキーマ: `schema/persona.schema.json` を追加し `persona` をスキーマ名に登録。バンドルの `personas/` はローダの対象外 (classify-path の除外に追加)。
+- 新しい境界: アダプタ契約 `src/adapter/` (TypeScript) と JSON Lines プロトコル、C++ ヘッダ `adapter/cpp/commentarii_adapter.hpp` (宣言のみ)。
+- samples/bestia: 定石 `kite-wire-spider` の `do` を `[move_to outer-ring, wait 1]` → `[move_to outer-ring, attack $enemy]` (下がってから撃ち返す)。sim のベンチで「外周で 1 秒棒立ち」が定石なしより悪かったため。`because` / `knowledge` / `metrics` は不変。
+- 契約 C-17〜C-22 (`augur.contracts.json`、`src/contracts/*.contract.ts`) と注入行。
+- domain: `spec/domains/auto-player.domain.json` を新設、`guide-maker` に `src/export/` を追加。
+
+### 復旧方法
+
+コミット `feat(stage-3): ...` を revert すれば段階 2 までの状態に戻る (既存データ・既存リプレイの形式は変えていない。新ファイルの削除と上記の追加分の取り消しだけ)。見本の kite を戻す場合は `samples/bestia/tactics/kite-wire-spider.json` の `do` だけを戻す (テスト `tests/bench/run-bench.test.ts` の「定石ありの方が良い」が落ちる)。
+
+### 実施した検証
+
+- `npm install --include=dev && npm run typecheck && npm test`: 227 件すべて成功 (既存 163 + 新規 64)。
+- `npm run build` と `node dist/cli/main.js validate samples/bestia` (OK、warning 0)。
+- `augur contracts report --acceptance`: C-17〜C-22 は全て covered・違反 0。
+- 受入条件のテスト: player export に masked 無し (`tests/export/build-export.test.ts`)、`run --record` した run が `replay play --decider utility-bt` で全ティック一致・別ペルソナでは不一致 (`tests/cli/autoplay-cli.test.ts`)、player で masked / draft の定石が候補に出ない (`tests/engine/candidates/generate-candidates.test.ts`)、定石なしでも sim で走り切り定石ありの方がクリア率・時間が良い (`tests/bench/run-bench.test.ts`: novice でクリア率 0.85 → 1.0、平均 31.1 → 27.7 秒)、explorer の探索採用率が novice / expert より高い (同)、player の観測に masked があればドライバが停止 (`tests/engine/driver.test.ts`、`tests/adapters/stdio/stdio-adapter.test.ts`)。
+
+### 未実施
+
+- Bestia 実機アダプタ (Bestia リポ側の次の run)。C++ ヘッダはビルドしていない (宣言のみ)。
+- サービスの起動・起動テスト (本段に常駐サービスの変更は無い)。
+- 閾値比較のバランス回帰ゲート (段階 5C)。
+
+### 再利用探索の採否
+
+- 採用: `toPlayerView` (export とエンジンの player 世界)、`findMaskedPointers` (ドライバの masked 二重検査)、`RecordingSink` / `parseReplay` / `playReplay` (記録と決定性検証)、`evaluateExpression` (sim のルール・ダメージ式)、`findPackageRoot` / スキーマレジストリ (ペルソナ読み込みと検証)、`writeOutputFiles` / `createReplayFileWriter` (書き出し)。
+- 不採用: `bundle-index.ts` の `BundleIndex` は検査用 (ID → 知識境界) で、export の索引 (ID → bundle.json 内の位置・逆引き・隣接表) とは用途が違うため別に作った。地図の隣接表は render の zones 隣接表と似るが、render は Markdown 生成に閉じているので共有しなかった。
+
+### 仮定
+
+- Actio のタスク本文は `actio_unavailable` で取得できなかったため、親が直前コミットで置いた本ファイルを正本とした。
+- sim の敵 AI は乱戦 (最寄りの他の戦闘者を狙う) とした (Bestia の「最後の 1 体まで生き残る」)。状態機械の遷移は遷移先の状態 id の慣例で読む (`on` の文は解釈しない)。
+- sim の既定の強さ (`src/adapters/sim/sim-config.ts`) は、汎用行動だけでも一定割合クリアでき定石の差が測れる値に合わせた。
+- `--persona` の既定は `expert`、ペルソナの反応遅延は「その分だけ古い観測で判断する」と解釈した。
+- `guide run --adapter stdio` はゲームが `guide` を子プロセスとして起動し、`guide` の stdin / stdout をプロトコルに使う形とした。
