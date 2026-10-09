@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "human-candidates.schema.json",
+  "title": "Human alternative candidates: observations/human/candidates.json (design 14.D)",
+  "description": "Action sequences human players used in a situation that no tactic of the guide covers, as learned draft tactics. Overlay data: never part of the canonical bundle; adoption is stage 4 consolidate or a human.",
+  "type": "object",
+  "required": ["game_id", "runs", "candidates"],
+  "properties": {
+    "game_id": { "$ref": "id.schema.json#/$defs/slug" },
+    "runs": { "description": "Human runs the candidates were extracted from.", "type": "integer", "minimum": 0 },
+    "candidates": { "type": "array", "items": { "$ref": "#/$defs/candidate" } }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "candidate": {
+      "type": "object",
+      "required": ["tactic", "source", "evidence"],
+      "properties": {
+        "tactic": {
+          "allOf": [
+            { "$ref": "tactic.schema.json" },
+            {
+              "type": "object",
+              "required": ["draft"],
+              "properties": { "confidence": { "const": "learned" }, "draft": { "const": true } }
+            }
+          ]
+        },
+        "source": {
+          "type": "object",
+          "required": ["kind", "ref"],
+          "properties": {
+            "kind": { "const": "human" },
+            "ref": { "description": "Run IDs and occurrence count (\"run:human-... x3\").", "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "evidence": {
+          "type": "object",
+          "required": ["stage", "occurrences", "runs", "players", "run_ids"],
+          "properties": {
+            "stage": { "$ref": "id.schema.json#/$defs/stageId" },
+            "occurrences": { "type": "integer", "minimum": 1 },
+            "runs": { "type": "integer", "minimum": 1 },
+            "players": { "type": "integer", "minimum": 1 },
+            "run_ids": { "type": "array", "minItems": 1, "items": { "$ref": "id.schema.json#/$defs/runId" } },
+            "success_rate": { "description": "Share of those runs that ended in success.", "type": "number", "minimum": 0, "maximum": 1 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

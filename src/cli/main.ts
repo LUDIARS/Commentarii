@@ -4,16 +4,18 @@
 import { readFile } from 'node:fs/promises';
 import { loadPersona } from '../adapters/fs/load-persona.ts';
 import { openBundleDir } from '../adapters/fs/open-bundle-dir.ts';
+import { readPlayRunFiles } from '../adapters/fs/plays-read-runs.ts';
 import { readSchemaDocuments } from '../adapters/fs/read-schema-documents.ts';
 import { removeBundleFiles } from '../adapters/fs/remove-bundle-files.ts';
 import { createReplayFileWriter } from '../adapters/fs/replay-file-writer.ts';
-import { openReplayFile } from '../adapters/fs/replay-open-file.ts';
+import { openReplayFile, replaySchema } from '../adapters/fs/replay-open-file.ts';
 import { writeOutputFiles } from '../adapters/fs/write-output-files.ts';
 import { createClaudeCliLlm } from '../adapters/llm/claude-cli-llm.ts';
 import { createStreamLineChannel } from '../adapters/stdio/line-channel.ts';
 import { readPromptTemplate } from '../adapters/llm/read-prompt-template.ts';
 import { createSchemaRegistry } from '../schema/schema-registry.ts';
 import { fsScanSource } from '../audit/fs-scan-source.ts';
+import { PLAYER_SALT_ENV } from '../import/plays/player-salt.ts';
 import { runCli } from './run-cli.ts';
 
 try {
@@ -38,6 +40,12 @@ try {
       createReplayWriter: createReplayFileWriter,
       // guide run --adapter stdio: the game process owns guide's stdin / stdout (protocol only).
       openStdioChannel: () => createStreamLineChannel(process.stdin, process.stdout),
+      now: () => new Date(),
+    },
+    playsIo: {
+      readRunFiles: readPlayRunFiles,
+      replaySchema,
+      playerSaltFromEnv: () => process.env[PLAYER_SALT_ENV],
       now: () => new Date(),
     },
   });

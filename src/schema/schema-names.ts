@@ -19,6 +19,9 @@ export const DOCUMENT_SCHEMAS = [
   'import-zones',
   // Player personas (design 14.E): shipped under personas/ or kept in a bundle's personas/.
   'persona',
+  // Human play logs (design 14.D): the import plays mapping and the extracted candidates overlay.
+  'plays-mapping',
+  'human-candidates',
 ] as const;
 
 export type DocumentSchemaName = (typeof DOCUMENT_SCHEMAS)[number];

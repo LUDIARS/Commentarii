@@ -1,0 +1,33 @@
+{
+  "player": { "column": "player_id" },
+  "run": { "column": "session" },
+  "tick": { "column": "frame" },
+  "t": { "column": "time_ms", "scale": 0.001 },
+  "started_at": { "column": "wallclock" },
+  "stage": { "column": "level", "values": { "ARENA_01": "stage:bestia:dome-arena" } },
+  "node": {
+    "column": "zone",
+    "values": { "Z_CENTER": "node:center", "Z_MID": "node:mid-ring", "Z_OUTER": "node:outer-ring", "Z_OUT": "node:outside" }
+  },
+  "self": {
+    "pos": "pos",
+    "hp": { "column": "hp", "max_column": "hp_max", "knowledge": "shown" },
+    "resources": { "boost": { "column": "boost", "knowledge": "shown" } }
+  },
+  "entities": { "column": "enemies", "fields": { "entity": "type", "instance": "uid", "pos": "pos" } },
+  "events": { "column": "event", "values": { "HIT_TAKEN": "damage-taken", "ENEMY_DOWN": "enemy-defeated" } },
+  "action": {
+    "column": "input",
+    "verbs": {
+      "MOVE": { "verb": "move_to", "operand": "input_arg" },
+      "FIRE": { "verb": "attack", "operand": "input_arg" },
+      "DASH": { "verb": "custom", "custom": "dash", "operand": "input_arg" },
+      "IDLE": { "verb": "wait" }
+    }
+  },
+  "result": { "column": "outcome", "values": { "CLEAR": "success", "DEAD": "fail", "QUIT": "abort" } },
+  "identify": {
+    "table": { "SPIDER_W": "enemy:bestia:wire-spider" },
+    "masters": { "mapping": "../../../samples/bestia/masters/mapping.json", "table": "archetypes" }
+  }
+}

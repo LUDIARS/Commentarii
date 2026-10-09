@@ -200,6 +200,42 @@
       "module": "src/contracts/run-bench.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-40",
+      "criterion": "C-40 planPlaysImport(request): 全 run が source human・mode player・purpose human で observations/human/<player-hash>/ に置かれ、どこにも masked が無く、player-hash は salt と生のプレイヤー識別子の HMAC-SHA256 先頭 16 桁で、出力のどこにも生のプレイヤー / run 識別子が無い",
+      "symbol": "planPlaysImport",
+      "file": "src/import/plays/plan-plays-import.ts",
+      "module": "src/contracts/plan-plays-import.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-41",
+      "criterion": "C-41 extractCandidates(input): 候補は全て confidence learned・draft true・knowledge masked・source.kind human の定石下書きで、ID は一意・ID 順・既存定石の ID と重ならず、既存定石と同じ when + do の候補は出ない",
+      "symbol": "extractCandidates",
+      "file": "src/import/plays/extract-candidates.ts",
+      "module": "src/contracts/extract-candidates.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-42",
+      "criterion": "C-42 buildPlaysReport(gameId, runs): run 数は分類済み run と一致し、ステージ・側ごとに reached <= runs、reach_rate = reached / runs (run 無しは null)、通過 run があるときだけ時間の分位があり、経路の run 数は runs を超えない",
+      "symbol": "buildPlaysReport",
+      "file": "src/import/plays/build-plays-report.ts",
+      "module": "src/contracts/build-plays-report.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-43",
+      "criterion": "C-43 hashIdentifier(salt, identifier): 空の salt を受けず、結果は 16 桁の小文字 16 進で生の識別子そのものにならない",
+      "symbol": "hashIdentifier",
+      "file": "src/import/plays/hash-identifier.ts",
+      "module": "src/contracts/hash-identifier.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }

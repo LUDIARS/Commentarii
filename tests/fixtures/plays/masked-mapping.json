@@ -1,0 +1,10 @@
+{
+  "player": { "column": "player_id" },
+  "run": { "column": "session" },
+  "tick": { "column": "frame" },
+  "t": { "column": "time_ms", "scale": 0.001 },
+  "stage": { "column": "level", "values": { "ARENA_01": "stage:bestia:dome-arena" } },
+  "self": {
+    "hp": { "column": "hp", "max_column": "hp_max", "knowledge": "masked" }
+  }
+}

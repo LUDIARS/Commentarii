@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "plays-mapping.schema.json",
+  "title": "Human play log mapping of one game (guide import plays, design 14.D)",
+  "description": "Telemetry column -> Observation field, and game identifier -> guide ID. Only what the mapping names reaches the output: every other column (names, mail addresses, device IDs, IP addresses, free text) is dropped. Player and run identifiers are only ever written as salted HMAC hashes. Every knowledge left out defaults to masked, and a masked value in a human observation fails the import (principle 2).",
+  "type": "object",
+  "required": ["player", "run", "t", "stage"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "player": { "description": "Column of the raw player identifier (hashed, never written).", "$ref": "#/$defs/columnRef" },
+    "run": { "description": "Column of the raw session / play identifier (hashed together with the player, never written).", "$ref": "#/$defs/columnRef" },
+    "tick": { "description": "Column of the frame number. Left out: the row order within the run.", "$ref": "#/$defs/columnRef" },
+    "t": {
+      "description": "Column of the time; scale converts it to seconds (0.001 for milliseconds). Written relative to the first row of the run.",
+      "type": "object",
+      "required": ["column"],
+      "properties": {
+        "column": { "$ref": "#/$defs/column" },
+        "scale": { "type": "number", "exclusiveMinimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "started_at": { "description": "Column of the wall-clock start (ISO 8601 or epoch milliseconds), read from the first row. Left out: the import time.", "$ref": "#/$defs/columnRef" },
+    "stage": {
+      "description": "Column of the stage. A cell resolves through values, else as a stage ID or stage slug of the bundle; an unresolved stage fails.",
+      "$ref": "#/$defs/lookup"
+    },
+    "node": {
+      "description": "Column of the map node the player is at. A cell resolves through values, else as a node ID or node slug of the stage map; unresolved cells are left out.",
+      "$ref": "#/$defs/lookup"
+    },
+    "self": {
+      "type": "object",
+      "properties": {
+        "pos": { "$ref": "#/$defs/vector" },
+        "hp": {
+          "description": "HP as the bar ratio 0..1: the cell, divided by max or by the max_column cell when given.",
+          "type": "object",
+          "required": ["column"],
+          "properties": {
+            "column": { "$ref": "#/$defs/column" },
+            "max": { "type": "number", "exclusiveMinimum": 0 },
+            "max_column": { "$ref": "#/$defs/column" },
+            "knowledge": { "$ref": "#/$defs/knowledge" }
+          },
+          "additionalProperties": false
+        },
+        "resources": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+          "additionalProperties": {
+            "type": "object",
+            "required": ["column"],
+            "properties": {
+              "column": { "$ref": "#/$defs/column" },
+              "knowledge": { "$ref": "#/$defs/knowledge" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "entities": {
+      "description": "Column holding the visible entities as an array of objects (a JSON array, or JSON text in a CSV cell). fields name the keys inside each object.",
+      "type": "object",
+      "required": ["column", "fields"],
+      "properties": {
+        "column": { "$ref": "#/$defs/column" },
+        "fields": {
+          "type": "object",
+          "required": ["entity", "instance"],
+          "properties": {
+            "entity": { "description": "Key of the game identifier, resolved through identify (unidentified entities keep only their instance).", "$ref": "#/$defs/column" },
+            "instance": { "$ref": "#/$defs/column" },
+            "pos": { "$ref": "#/$defs/vector" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "events": {
+      "description": "Column of the game event (one name, or an array of names). Only names listed in values become events.",
+      "type": "object",
+      "required": ["column", "values"],
+      "properties": {
+        "column": { "$ref": "#/$defs/column" },
+        "values": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]*$" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "action": {
+      "description": "Column of the player input. verbs maps an input to an abstract action (design 7.3); unmapped or empty inputs record wait 0.",
+      "type": "object",
+      "required": ["column", "verbs"],
+      "properties": {
+        "column": { "$ref": "#/$defs/column" },
+        "verbs": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/$defs/verb" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "result": {
+      "description": "Column of the run outcome, read from the last row that has one. Left out or unmapped: abort.",
+      "type": "object",
+      "required": ["column", "values"],
+      "properties": {
+        "column": { "$ref": "#/$defs/column" },
+        "values": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "enum": ["success", "fail", "abort"] }
+        }
+      },
+      "additionalProperties": false
+    },
+    "identify": {
+      "description": "Game identifier -> guide entity ID (design 7.3 identify). table entries win; masters reuses the ID rule (kind, id column, slugify) of one table of a guide import masters mapping.",
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "table": {
+          "type": "object",
+          "additionalProperties": { "$ref": "id.schema.json#/$defs/entityId" }
+        },
+        "masters": {
+          "type": "object",
+          "required": ["mapping", "table"],
+          "properties": {
+            "mapping": { "description": "Path of the masters mapping, relative to this file.", "type": "string", "minLength": 1 },
+            "table": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "extra": {
+      "description": "Columns explicitly allowed into observation.extra. Free-text columns can hold proper names: list one only after checking it.",
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "$ref": "#/$defs/column" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "column": { "type": "string", "minLength": 1 },
+    "columnRef": {
+      "type": "object",
+      "required": ["column"],
+      "properties": { "column": { "$ref": "#/$defs/column" } },
+      "additionalProperties": false
+    },
+    "lookup": {
+      "type": "object",
+      "required": ["column"],
+      "properties": {
+        "column": { "$ref": "#/$defs/column" },
+        "values": { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } }
+      },
+      "additionalProperties": false
+    },
+    "vector": {
+      "description": "One column holding [x, y, z], or three columns.",
+      "oneOf": [
+        { "$ref": "#/$defs/column" },
+        { "type": "array", "items": { "$ref": "#/$defs/column" }, "minItems": 3, "maxItems": 3 }
+      ]
+    },
+    "knowledge": { "description": "Boundary of the observed value. Left out: masked, which fails the import.", "$ref": "value.schema.json#/$defs/knowledge" },
+    "verb": {
+      "type": "object",
+      "required": ["verb"],
+      "properties": {
+        "verb": { "enum": ["move_to", "attack", "use_item", "use_skill", "wait", "interact", "custom"] },
+        "operand": { "description": "Column of the operand: an entity instance number, or a game identifier / node resolved like entities and nodes.", "$ref": "#/$defs/column" },
+        "operand_pos": { "description": "Position operand (move_to a point).", "$ref": "#/$defs/vector" },
+        "custom": { "description": "Name of the custom action (verb custom).", "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+        "seconds": { "description": "Seconds of a wait (default 0).", "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

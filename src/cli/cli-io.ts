@@ -2,6 +2,7 @@
 // tests pass in-memory ones.
 
 import type { ScanSource } from '../audit/scan-source.ts';
+import type { PlaysIo } from '../import/plays/plays-io.ts';
 import type { LoadResult } from '../bundle/bundle.ts';
 import type { ReplayLoad } from '../replay/parse-replay.ts';
 import type { EngineIo } from './engine-io.ts';
@@ -19,6 +20,8 @@ export interface CliIo {
   readonly scanSource: ScanSource;
   /** guide run / guide bench / replay play --decider utility-bt only. */
   readonly engineIo?: EngineIo;
+  /** guide import plays / guide report plays only. */
+  readonly playsIo?: PlaysIo;
 }
 
 export const EXIT_OK = 0;

@@ -19,6 +19,7 @@
 段階 1 (設計 §11): 共通スキーマ・`validate`・`render`・`report knowledge`。
 段階 2: 取り込み `import masters` (CSV / JSON / SQLite + mapping)・`import map` (grid / navgraph / zones)・`import spec` / `intent import` (LLM 下書き)。仕様は [spec/feature/import.md](spec/feature/import.md)。
 段階 3 (+3E): `export` (`bundle.json` + 索引、既定 player)、判断エンジン (Utility が狙いを選び BT が手順を実行、decider `utility-bt`)、アダプタ契約 (TypeScript + JSON Lines プロトコル + C++ 最小ヘッダ)、模擬アダプタ `sim`、ペルソナ (`novice` / `expert` / `explorer`)、`run` / `bench`。仕様は [spec/feature/engine.md](spec/feature/engine.md) と [spec/feature/adapter-protocol.md](spec/feature/adapter-protocol.md)。
+段階 4D: 人間プレイログの取り込み `import plays` (テレメトリ → リプレイ形式、HMAC で匿名化、別解候補 `candidates.json`) と `report plays` (人間 vs オートプレイヤーの数表)。仕様は [spec/feature/human-plays.md](spec/feature/human-plays.md)。
 
 | 置き場所 | 中身 |
 |---|---|
@@ -73,6 +74,14 @@ node dist/cli/main.js run --game samples/bestia --adapter sim --persona novice -
 node dist/cli/main.js replay play replay/bestia-novice-s1.jsonl --decider utility-bt --game samples/bestia
 # ベンチ: クリア率・時間・被ダメージ・定石の使用割合 (JSON)。--no-tactics で汎用行動だけ
 node dist/cli/main.js bench --game samples/bestia --runs 20 --persona novice --seed 1
+```
+
+```sh
+# 人間のプレイログ取り込み: observations/human/<player-hash>/<run>.jsonl と別解候補 candidates.json。
+# プレイヤー識別子は salt との HMAC だけを書く (salt が無ければ失敗)。mapping に無い列 (名前・メール等) は捨てる
+COMMENTARII_PLAYER_SALT=<secret> node dist/cli/main.js import plays --game <bundle> --from tests/fixtures/plays/telemetry.jsonl --map tests/fixtures/plays/plays-mapping.json
+# 人間 run と observations/runs/ のオートプレイヤー run (run --record) をステージ別に並べる (Markdown、--json で JSON)
+node dist/cli/main.js report plays --game <bundle>
 ```
 
 `npm run guide -- validate samples/bestia` でも同じ。パッケージとして入れた場合は `guide` コマンドになる。

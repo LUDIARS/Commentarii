@@ -15,7 +15,7 @@
 
 | 行 | `type` | 必須フィールド | 任意 |
 |---|---|---|---|
-| 先頭 1 行 | `header` | `run_id`, `seed` (非負整数か文字列), `game_id`, `manifest_version`, `adapter_id`, `mode` (`player` / `omniscient`), `purpose` (`efficiency` / `coverage`), `started_at` (ISO 8601) | `persona` |
+| 先頭 1 行 | `header` | `run_id`, `seed` (非負整数か文字列), `game_id`, `manifest_version`, `adapter_id`, `mode` (`player` / `omniscient`), `purpose` (`efficiency` / `coverage` / `human`), `started_at` (ISO 8601) | `persona`, `source` (`human`: `guide import plays` が取り込んだ人間のプレイ、`spec/feature/human-plays.md`) |
 | 以後 1 ティック 1 行 | `tick` | `tick`, `t`, `observation`, `decision`, `action` | |
 | 末尾 1 行 | `footer` | `ended_at`, `result` (`success` / `fail` / `abort`), `summary` (オブジェクト) | |
 
