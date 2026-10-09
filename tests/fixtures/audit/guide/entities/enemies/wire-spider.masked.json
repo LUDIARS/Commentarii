@@ -1,0 +1,10 @@
+{
+  "id": "enemy:bestia:wire-spider",
+  "stats": {
+    "web_tension": { "value": 420, "unit": "N", "knowledge": "masked", "source": { "kind": "human", "ref": "fixture: invented masked stat" } }
+  },
+  "fields": {
+    "ambush_script": { "value": "wire_ambush_b", "knowledge": "masked", "source": { "kind": "human", "ref": "fixture: invented masked string" } },
+    "loot_table": { "value": "item:bestia:silk-gland", "knowledge": "masked", "source": { "kind": "human", "ref": "fixture: invented masked ID" } }
+  }
+}

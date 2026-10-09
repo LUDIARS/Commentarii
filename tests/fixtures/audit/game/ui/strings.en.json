@@ -1,0 +1,8 @@
+{
+  "hud.enemy.beetle": "Bazooka Beetle",
+  "tips.beetle_mass": "The beetle weighs 18 kg, too heavy to push.",
+  "tips.beetle_lead": "It leads its shots by 1/32 of your speed.",
+  "tips.spider_loot": "Wire spiders sometimes leave a silk-gland behind.",
+  "tips.beetle_health": "A beetle falls after 180 damage.",
+  "shop.offer": "Buy 750 coins and get a bonus!"
+}

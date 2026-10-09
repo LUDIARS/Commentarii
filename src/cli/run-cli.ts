@@ -1,5 +1,6 @@
 // Runs one CLI command and returns the process exit code.
 
+import { runAuditMask } from '../audit/run-audit-mask.ts';
 import { buildKnowledgeReport } from '../report/build-knowledge-report.ts';
 import { formatKnowledgeMarkdown } from '../report/format-knowledge-markdown.ts';
 import { renderBundle } from '../render/render-bundle.ts';
@@ -43,6 +44,8 @@ async function execute(command: Command, io: CliIo): Promise<number> {
     case 'import-spec':
     case 'intent-import':
       return runImportCommand(command, io);
+    case 'audit-mask':
+      return runAuditMask(command, io);
   }
 }
 

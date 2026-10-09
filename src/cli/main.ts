@@ -10,6 +10,7 @@ import { writeOutputFiles } from '../adapters/fs/write-output-files.ts';
 import { createClaudeCliLlm } from '../adapters/llm/claude-cli-llm.ts';
 import { readPromptTemplate } from '../adapters/llm/read-prompt-template.ts';
 import { createSchemaRegistry } from '../schema/schema-registry.ts';
+import { fsScanSource } from '../audit/fs-scan-source.ts';
 import { runCli } from './run-cli.ts';
 
 try {
@@ -28,6 +29,7 @@ try {
       llm: createClaudeCliLlm(),
     },
     openReplay: openReplayFile,
+    scanSource: fsScanSource,
   });
 } catch (cause) {
   process.stderr.write(`guide: ${(cause as Error).message}\n`);

@@ -128,6 +128,24 @@
       "module": "src/contracts/draft-from-document.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-15",
+      "criterion": "C-15 auditMask(input): hits は value-hit / key-hit だけ、warnings は undefined-exposure だけで、allow に一致した所見は hits / warnings に残らず allowed[] に根拠 (rationale) と決めた人 (decided_by) つきで移り、summary の件数は各配列の長さと一致し、報告のどこにも masked の文字列値が現れない",
+      "symbol": "auditMask",
+      "file": "src/audit/audit-mask.ts",
+      "module": "src/contracts/audit-mask.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-16",
+      "criterion": "C-16 auditExitCode(report, failOn): --fail-on hit で hits が 1 件以上なら非 0、--fail-on none なら常に 0、hits が 0 件なら常に 0 (warnings と allowed は終了コードに影響しない)",
+      "symbol": "auditExitCode",
+      "file": "src/audit/audit-exit-code.ts",
+      "module": "src/contracts/audit-exit-code.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }
