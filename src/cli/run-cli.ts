@@ -15,6 +15,7 @@ import { EXIT_INVALID, EXIT_OK, EXIT_USAGE, type CliIo } from './cli-io.ts';
 import { parseCommand, USAGE, UsageError, type Command } from './parse-command.ts';
 import { runImportCommand } from './run-import-command.ts';
 import { runVerifyCommand } from '../verify/cli/run-verify-command.ts';
+import { runGateCommand } from '../gate/cli/run-gate-command.ts';
 import { readStageExtras } from '../verify/cli/read-stage-extras.ts';
 
 async function execute(command: Command, io: CliIo): Promise<number> {
@@ -63,6 +64,10 @@ async function execute(command: Command, io: CliIo): Promise<number> {
     case 'learn-consolidate':
     case 'learn-approve':
       return runLearnCommand(command, io);
+    case 'bench-compare':
+    case 'bench-replay':
+    case 'gate-balance':
+      return runGateCommand(command, io);
     case 'import-plays':
     case 'report-plays':
       return runPlaysCommand(command, io);

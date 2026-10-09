@@ -1,0 +1,14 @@
+{
+  "name": "balance-gate",
+  "description": "バランス回帰ゲート (段階 5C): live balance の比較 (互換性キーが違えば拒否、閾値を超えた指標と新しい望ましくないズレだけが候補、証跡は sim) と、replay による判断回帰 (体験の検証ではない) を分けて出す。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)src/gate/.+\.ts$" },
+    { "pathPattern": "(^|/)tests/gate/[^/]+\.test\.ts$" },
+    { "pathPattern": "(^|/)spec/feature/balance-gate\.md$" }
+  ],
+  "cardTemplate": "Summarise the \"balance-gate\" domain: bench result (comparability key, versions, metrics) -> compareBench (refuse incomparable) -> gateBalance (fail-on) ; decision regression (replay) reported apart.",
+  "specRefs": ["spec/architecture/design.md §14.C", "spec/feature/balance-gate.md"],
+  "rationale": "ベンチの実行 (src/bench/) は auto-player に属し、その結果の比較とゲート判定は審査側の責務なので別 domain に置く。結果の保存形式 (src/bench/bench-result.ts 等) は auto-player の所属パターンに含まれる。"
+}

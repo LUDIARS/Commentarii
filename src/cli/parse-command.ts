@@ -9,6 +9,7 @@ import type { RenderKnowledge } from '../render/render-bundle.ts';
 import { parseReplayCommand, REPLAY_USAGE, type ReplayCommand } from '../replay/replay-command.ts';
 import { IMPORT_USAGE, parseImportCommand, type ImportCommand } from './parse-import-command.ts';
 import { LEARN_USAGE, parseLearnCommand, type LearnCommand } from '../learn/cli/learn-command.ts';
+import { GATE_USAGE, parseBenchCompare, parseBenchReplay, parseGateCommand, type GateCommand } from '../gate/cli/gate-command.ts';
 import { parseReportFeasibilityCommand, parseVerifyCommand, VERIFY_USAGE, type VerifyCommand } from '../verify/cli/verify-command.ts';
 import { UsageError } from './usage-error.ts';
 
@@ -24,6 +25,7 @@ export type Command =
   | ExportCommand
   | AutoplayCommand
   | LearnCommand
+  | GateCommand
   | PlaysCommand
   | VerifyCommand
   | { readonly name: 'help' };
@@ -32,7 +34,7 @@ export const USAGE = `usage:
   guide validate <bundle-dir> [--json]
   guide render <bundle-dir> --out <dir> [--knowledge player|full]
   guide report knowledge <bundle-dir> [--json]
-${EXPORT_USAGE}${AUTOPLAY_USAGE}${REPLAY_USAGE}${IMPORT_USAGE}${PLAYS_USAGE}${AUDIT_USAGE}${LEARN_USAGE}${VERIFY_USAGE}`;
+${EXPORT_USAGE}${AUTOPLAY_USAGE}${REPLAY_USAGE}${IMPORT_USAGE}${PLAYS_USAGE}${AUDIT_USAGE}${LEARN_USAGE}${VERIFY_USAGE}${GATE_USAGE}`;
 
 function single(positionals: readonly string[], what: string): string {
   if (positionals.length !== 1 || positionals[0] === undefined) throw new UsageError(`${what} needs exactly one <bundle-dir>`);
@@ -71,7 +73,10 @@ export function parseCommand(argv: readonly string[]): Command {
     if (name === 'audit') return parseAuditArgs(rest);
     if (name === 'export') return parseExportCommand(rest);
     if (name === 'run') return parseRunCommand(rest);
+    if (name === 'bench' && rest[0] === 'compare') return parseBenchCompare(rest.slice(1));
+    if (name === 'bench' && rest[0] === 'replay') return parseBenchReplay(rest.slice(1));
     if (name === 'bench') return parseBenchCommand(rest);
+    if (name === 'gate') return parseGateCommand(rest);
     if (name === 'learn') return parseLearnCommand(rest);
     if (name === 'verify') return parseVerifyCommand(rest);
   } catch (cause) {

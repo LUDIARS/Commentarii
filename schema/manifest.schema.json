@@ -38,6 +38,24 @@
       "properties": { "fields": { "$ref": "observation-fields.schema.json#/$defs/fields" } },
       "additionalProperties": false
     },
+    "bench": {
+      "description": "Balance gate thresholds (spec/feature/balance-gate.md 3). Every field is optional; absent ones take the defaults.",
+      "type": "object",
+      "properties": {
+        "thresholds": {
+          "type": "object",
+          "properties": {
+            "clear_rate_drop": { "$ref": "#/$defs/ratio" },
+            "time_p50_increase": { "type": "number", "minimum": 0 },
+            "time_p90_increase": { "type": "number", "minimum": 0 },
+            "damage_p50_increase": { "type": "number", "minimum": 0 },
+            "new_undesirable_divergence": { "type": "integer", "minimum": 1 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "feasibility": {
       "description": "Feasibility band thresholds (design 8.5, spec/feature/intent-verify.md 6.3). Every field is optional; absent ones take the defaults.",
       "type": "object",

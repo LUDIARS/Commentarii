@@ -40,12 +40,14 @@ export interface BenchCommand {
   readonly ticks: number;
   readonly intentAssist: boolean;
   readonly withoutTactics: boolean;
+  /** bench/<label>.json under the bundle directory (spec/feature/balance-gate.md §2). */
+  readonly savePath?: string;
 }
 
 export type AutoplayCommand = RunCommand | BenchCommand;
 
 export const AUTOPLAY_USAGE = `  guide run --game <bundle-dir> [--adapter sim|stdio] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--intent-assist] [--record <out.jsonl>] [--observe <observations.jsonl>]
-  guide bench --game <bundle-dir> [--runs <n>] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--intent-assist] [--no-tactics]
+  guide bench --game <bundle-dir> [--runs <n>] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--intent-assist] [--no-tactics] [--save <bench/label.json>]
 `;
 
 function nonNegativeInteger(text: string, option: string): number {
@@ -117,8 +119,15 @@ export function parseBenchCommand(args: readonly string[]): BenchCommand {
   const { values, positionals } = parseArgs({
     args: [...args],
     allowPositionals: true,
-    options: { ...COMMON_OPTIONS, runs: { type: 'string', default: String(DEFAULT_BENCH_RUNS) }, 'no-tactics': { type: 'boolean' } },
+    options: { ...COMMON_OPTIONS, runs: { type: 'string', default: String(DEFAULT_BENCH_RUNS) }, 'no-tactics': { type: 'boolean' }, save: { type: 'string' } },
   });
   if (positionals.length > 0) throw new Error('bench takes no positional arguments');
-  return { name: 'bench', ...common(values, 'bench'), runs: positiveInteger(values.runs, '--runs'), withoutTactics: values['no-tactics'] === true };
+  if (values.save !== undefined && !/^[^/\:][^:]*.json$/.test(values.save)) throw new Error('--save needs a relative path ending in .json (under the bundle directory)');
+  return {
+    name: 'bench',
+    ...common(values, 'bench'),
+    runs: positiveInteger(values.runs, '--runs'),
+    withoutTactics: values['no-tactics'] === true,
+    ...(values.save === undefined ? {} : { savePath: values.save }),
+  };
 }

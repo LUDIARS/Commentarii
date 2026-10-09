@@ -11,6 +11,8 @@ import type { Persona } from '../engine/persona/persona.ts';
 import { deriveSeed } from '../engine/rng.ts';
 import { createUtilityBtDecider } from '../engine/utility-bt-decider.ts';
 import type { ObservationMode, ObservationPurpose } from '../replay/observation-frame.ts';
+import type { ReplayFooter, ReplayHeader, ReplayRun, ReplayTick } from '../replay/replay-record.ts';
+import type { ReplayLineWriter } from '../replay/recording-sink.ts';
 import { summarizeBench, type BenchReport, type BenchRun } from './summarize-bench.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:7c3f1b7b */
 import augurContract_38d5b9f8 from '../contracts/run-bench.contract.ts'; /* augur-inject:contract-predicate:39493530 */
@@ -28,6 +30,20 @@ export interface BenchOptions {
   /** Intent-assisted test (spec/feature/engine.md §4.1); absent = player knowledge only. */
   readonly intentAssist?: boolean;
   readonly simConfig?: SimConfig;
+  /** Receives every run as a recorded replay (coverage benches feed intent verification). */
+  readonly onRun?: (run: ReplayRun) => void;
+}
+
+/** Collects the recorder's lines in memory and reads them back as one run. */
+function memoryRecording(): { writer: ReplayLineWriter; run(): ReplayRun } {
+  const lines: string[] = [];
+  return {
+    writer: { append: async (line) => void lines.push(line) },
+    run() {
+      const parsed = lines.map((line) => JSON.parse(line) as ReplayHeader | ReplayTick | ReplayFooter);
+      return { header: parsed[0] as ReplayHeader, ticks: parsed.slice(1, -1) as ReplayTick[], footer: parsed.at(-1) as ReplayFooter };
+    },
+  };
 }
 
 /** Seed of run `index` of a bench started with `seed`. */
@@ -49,7 +65,19 @@ export async function runBench(options: BenchOptions): Promise<BenchReport> {
       ...(options.simConfig ? { config: options.simConfig } : {}),
     });
     const decider = createUtilityBtDecider({ bundle, persona: options.persona, intentAssist: options.intentAssist === true }, seed);
-    const report = await runDriver({ adapter, decider, mode: options.mode, observationFields: options.bundle.manifest?.doc.observation?.fields ?? [], maxTicks: options.ticks });
+    const recording = options.onRun === undefined ? undefined : memoryRecording();
+    const record =
+      recording === undefined
+        ? {}
+        : {
+            record: {
+              writer: recording.writer,
+              header: { run_id: `run:bench-${options.persona.slug}-${index}`, seed, manifest_version: options.bundle.manifest?.doc.version ?? '0', purpose: options.purpose, persona: options.persona.slug, ...(options.intentAssist === true ? { decision_mode: 'intent-assisted' as const } : {}) },
+              now: () => new Date(0),
+            },
+          };
+    const report = await runDriver({ adapter, decider, mode: options.mode, observationFields: options.bundle.manifest?.doc.observation?.fields ?? [], maxTicks: options.ticks, ...record });
+    if (recording !== undefined) options.onRun?.(recording.run());
     const stats = adapter.stats();
     runs.push({ seed, result: report.result, ticks: report.ticks, time_sec: stats.time_sec, damage_taken: stats.damage_taken, chosen: report.chosen });
   }

@@ -3,6 +3,7 @@
 
 import { readFile } from 'node:fs/promises';
 import { loadPersona } from '../adapters/fs/load-persona.ts';
+import { readEngineVersion } from '../adapters/fs/read-engine-version.ts';
 import { openBundleDir } from '../adapters/fs/open-bundle-dir.ts';
 import { readPlayRunFiles } from '../adapters/fs/plays-read-runs.ts';
 import { readSchemaDocuments } from '../adapters/fs/read-schema-documents.ts';
@@ -43,6 +44,7 @@ try {
       // guide run --adapter stdio: the game process owns guide's stdin / stdout (protocol only).
       openStdioChannel: () => createStreamLineChannel(process.stdin, process.stdout),
       now: () => new Date(),
+      engineVersion: readEngineVersion,
     },
     learnIo: createFsLearnIo(),
     playsIo: {

@@ -32,6 +32,8 @@ export interface Manifest {
   readonly learning?: { readonly policy: unknown };
   /** Game-declared observation fields (spec/feature/observation-boundary.md). */
   readonly observation?: { readonly fields: readonly { readonly path: string; readonly knowledge: Knowledge; readonly origin: string }[] };
+  /** Balance gate thresholds (spec/feature/balance-gate.md §3); defaults when absent. */
+  readonly bench?: { readonly thresholds?: Readonly<Record<string, number>> };
   /** Feasibility band thresholds (spec/feature/intent-verify.md 6.3); defaults when absent. */
   readonly feasibility?: { readonly thresholds?: Readonly<Record<string, number>> };
 }

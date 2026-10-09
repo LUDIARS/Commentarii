@@ -452,6 +452,24 @@
       "module": "src/contracts/select-runs.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-71",
+      "criterion": "C-71 compareBench(base, head, thresholds): 比較可能性のキー (ペルソナ・seed 集合・予算・mode・purpose・decision_mode・定石・アダプタ) が違う結果は理由つきで拒否し指標も候補も持たない。比較できる結果は全指標を持ち、候補は閾値を超えた指標と新しい望ましくないズレだけ",
+      "symbol": "compareBench",
+      "file": "src/gate/compare-bench.ts",
+      "module": "src/contracts/compare-bench.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-72",
+      "criterion": "C-72 gateBalance(comparison, failOn): 比較不能なら常に失敗、それ以外は候補があり failOn が block のときだけ失敗し、判定が示さないこと (sim の証跡・体験の未検証) を常に添える",
+      "symbol": "gateBalance",
+      "file": "src/gate/gate-balance.ts",
+      "module": "src/contracts/gate-balance.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }

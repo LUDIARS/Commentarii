@@ -31,6 +31,8 @@ export const DOCUMENT_SCHEMAS = [
   'feasibility',
   // Render tap stream lines (contract render-tap/1, spec/feature/render-tap-contract.md): a raw tap, never an observation.
   'render-frame',
+  // Live bench results (stage 5C, spec/feature/balance-gate.md): bench/<label>.json.
+  'bench-result',
 ] as const;
 
 export type DocumentSchemaName = (typeof DOCUMENT_SCHEMAS)[number];

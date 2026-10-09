@@ -13,4 +13,6 @@ export interface EngineIo {
   /** The engine process's own stdin / stdout as the adapter protocol channel. */
   openStdioChannel(): LineChannel;
   now(): Date;
+  /** The engine's version (package.json), recorded in bench results; absent = unknown. */
+  engineVersion?(): Promise<string>;
 }
