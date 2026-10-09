@@ -1,6 +1,7 @@
 // Command line -> command. Unknown commands and options are usage errors.
 
 import { parseArgs } from 'node:util';
+import { AUDIT_USAGE, parseAuditArgs, type AuditMaskCommand } from '../audit/parse-audit-mask-args.ts';
 import type { RenderKnowledge } from '../render/render-bundle.ts';
 import { parseReplayCommand, REPLAY_USAGE, type ReplayCommand } from '../replay/replay-command.ts';
 import { IMPORT_USAGE, parseImportCommand, type ImportCommand } from './parse-import-command.ts';
@@ -14,13 +15,14 @@ export type Command =
   | { readonly name: 'report-knowledge'; readonly bundleDir: string; readonly json: boolean }
   | ReplayCommand
   | ImportCommand
+  | AuditMaskCommand
   | { readonly name: 'help' };
 
 export const USAGE = `usage:
   guide validate <bundle-dir> [--json]
   guide render <bundle-dir> --out <dir> [--knowledge player|full]
   guide report knowledge <bundle-dir> [--json]
-${REPLAY_USAGE}${IMPORT_USAGE}`;
+${REPLAY_USAGE}${IMPORT_USAGE}${AUDIT_USAGE}`;
 
 function single(positionals: readonly string[], what: string): string {
   if (positionals.length !== 1 || positionals[0] === undefined) throw new UsageError(`${what} needs exactly one <bundle-dir>`);
@@ -53,6 +55,7 @@ export function parseCommand(argv: readonly string[]): Command {
     }
     if (name === 'replay') return parseReplayCommand(rest);
     if (name === 'import' || name === 'intent') return parseImportCommand(name, rest);
+    if (name === 'audit') return parseAuditArgs(rest);
   } catch (cause) {
     if (cause instanceof UsageError) throw cause;
     throw new UsageError((cause as Error).message);

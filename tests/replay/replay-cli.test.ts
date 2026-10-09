@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { openBundleDir } from '../../src/adapters/fs/open-bundle-dir.ts';
 import { openReplayFile } from '../../src/adapters/fs/replay-open-file.ts';
+import { fsScanSource } from '../../src/audit/fs-scan-source.ts';
 import { writeOutputFiles } from '../../src/adapters/fs/write-output-files.ts';
 import type { CliIo } from '../../src/cli/cli-io.ts';
 import { runCli } from '../../src/cli/run-cli.ts';
@@ -30,6 +31,7 @@ function capture(): Captured {
       writeFiles: writeOutputFiles,
       openReplay: openReplayFile,
       importIo: testImportIo(),
+      scanSource: fsScanSource,
     },
     stdout: () => out,
     stderr: () => err,

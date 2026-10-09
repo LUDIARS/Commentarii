@@ -1,0 +1,15 @@
+{
+  "name": "mask-audit",
+  "description": "guide audit mask: 攻略本の .masked.json を正本に、ゲームリポの UI 文字列・ローカライズ表・ネットワークスキーマ・ログ・セーブ形式へ masked の値・露出禁止キーが出ていないかを検査する CI lint (value-hit / key-hit / undefined-exposure、根拠必須の allow、Revisor 向け JSON + Markdown)。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)src/audit/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)tests/audit/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)tests/fixtures/audit/.+$" },
+    { "pathPattern": "(^|/)spec/feature/mask-audit\\.md$" }
+  ],
+  "cardTemplate": "Summarise the \"mask-audit\" domain: masked values + forbidden keys → scan the game repo's exposed surface → hits / warnings / allowed report.",
+  "specRefs": ["spec/architecture/design.md §1 §5 §14.B", "spec/feature/mask-audit.md"],
+  "rationale": "第一原則 (マスク原則) をゲーム実装側へ延長する層。バンドルのローダ (guide-bundle) の上に乗り、ゲームリポの読み取りは ScanSource ポートと fs アダプタに閉じる。"
+}

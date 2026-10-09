@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { openBundleDir } from '../../src/adapters/fs/open-bundle-dir.ts';
 import { openReplayFile } from '../../src/adapters/fs/replay-open-file.ts';
+import { fsScanSource } from '../../src/audit/fs-scan-source.ts';
 import type { CliIo } from '../../src/cli/cli-io.ts';
 import { runCli } from '../../src/cli/run-cli.ts';
 import { SAMPLE_DIR } from '../support/bundles.ts';
@@ -28,6 +29,7 @@ function capture(): Captured {
       },
       openReplay: openReplayFile,
       importIo: testImportIo(),
+      scanSource: fsScanSource,
     },
     stdout: () => out,
     stderr: () => err,
