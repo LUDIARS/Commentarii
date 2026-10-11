@@ -22,6 +22,8 @@ export interface RunCommand {
   readonly purpose: ObservationPurpose;
   readonly seed: number;
   readonly ticks: number;
+  /** Intent-assisted test (design 7.4, spec/feature/engine.md §4.1): the designer's intent scores candidates. Off = player knowledge only. */
+  readonly intentAssist: boolean;
   readonly recordPath?: string;
   /** Reflect into this observation file (observations/runs/<run-slug>.jsonl, design 7.5). */
   readonly observePath?: string;
@@ -36,13 +38,16 @@ export interface BenchCommand {
   readonly purpose: ObservationPurpose;
   readonly seed: number;
   readonly ticks: number;
+  readonly intentAssist: boolean;
   readonly withoutTactics: boolean;
+  /** bench/<label>.json under the bundle directory (spec/feature/balance-gate.md §2). */
+  readonly savePath?: string;
 }
 
 export type AutoplayCommand = RunCommand | BenchCommand;
 
-export const AUTOPLAY_USAGE = `  guide run --game <bundle-dir> [--adapter sim|stdio] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--record <out.jsonl>] [--observe <observations.jsonl>]
-  guide bench --game <bundle-dir> [--runs <n>] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--no-tactics]
+export const AUTOPLAY_USAGE = `  guide run --game <bundle-dir> [--adapter sim|stdio] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--intent-assist] [--record <out.jsonl>] [--observe <observations.jsonl>]
+  guide bench --game <bundle-dir> [--runs <n>] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--intent-assist] [--no-tactics] [--save <bench/label.json>]
 `;
 
 function nonNegativeInteger(text: string, option: string): number {
@@ -63,6 +68,7 @@ const COMMON_OPTIONS = {
   purpose: { type: 'string', default: 'efficiency' },
   seed: { type: 'string', default: String(DEFAULT_SEED) },
   ticks: { type: 'string', default: String(DEFAULT_TICKS) },
+  'intent-assist': { type: 'boolean' },
 } as const;
 
 interface CommonValues {
@@ -72,6 +78,7 @@ interface CommonValues {
   readonly purpose: string;
   readonly seed: string;
   readonly ticks: string;
+  readonly 'intent-assist'?: boolean | undefined;
 }
 
 function common(values: CommonValues, verb: string): Omit<RunCommand, 'name' | 'adapter' | 'recordPath'> {
@@ -85,6 +92,7 @@ function common(values: CommonValues, verb: string): Omit<RunCommand, 'name' | '
     purpose: values.purpose,
     seed: nonNegativeInteger(values.seed, '--seed'),
     ticks: positiveInteger(values.ticks, '--ticks'),
+    intentAssist: values['intent-assist'] === true,
   };
 }
 
@@ -111,8 +119,15 @@ export function parseBenchCommand(args: readonly string[]): BenchCommand {
   const { values, positionals } = parseArgs({
     args: [...args],
     allowPositionals: true,
-    options: { ...COMMON_OPTIONS, runs: { type: 'string', default: String(DEFAULT_BENCH_RUNS) }, 'no-tactics': { type: 'boolean' } },
+    options: { ...COMMON_OPTIONS, runs: { type: 'string', default: String(DEFAULT_BENCH_RUNS) }, 'no-tactics': { type: 'boolean' }, save: { type: 'string' } },
   });
   if (positionals.length > 0) throw new Error('bench takes no positional arguments');
-  return { name: 'bench', ...common(values, 'bench'), runs: positiveInteger(values.runs, '--runs'), withoutTactics: values['no-tactics'] === true };
+  if (values.save !== undefined && !/^[^/\:][^:]*.json$/.test(values.save)) throw new Error('--save needs a relative path ending in .json (under the bundle directory)');
+  return {
+    name: 'bench',
+    ...common(values, 'bench'),
+    runs: positiveInteger(values.runs, '--runs'),
+    withoutTactics: values['no-tactics'] === true,
+    ...(values.save === undefined ? {} : { savePath: values.save }),
+  };
 }

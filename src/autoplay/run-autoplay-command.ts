@@ -19,9 +19,11 @@ import { buildReflectWorld } from '../engine/reflect/reflect-world.ts';
 import type { Persona } from '../engine/persona/persona.ts';
 import { applyOverlay } from '../learn/overlay/apply-overlay.ts';
 import { readOverlay } from '../learn/overlay/read-overlay.ts';
+import type { ReplayRun } from '../replay/replay-record.ts';
 import type { AutoplayCommand, BenchCommand, RunCommand } from './autoplay-command.ts';
+import { saveBenchResult } from './save-bench-result.ts';
 
-type AutoplayIo = Pick<CliIo, 'stdout' | 'stderr' | 'openBundle' | 'engineIo' | 'learnIo'>;
+type AutoplayIo = Pick<CliIo, 'stdout' | 'stderr' | 'openBundle' | 'engineIo' | 'learnIo' | 'writeFiles' | 'verifyIo'>;
 
 function requireEngineIo(io: AutoplayIo, verb: string): EngineIo {
   if (io.engineIo === undefined) throw new Error(`guide ${verb}: no engine I/O is wired (main.ts must provide engineIo)`);
@@ -65,10 +67,10 @@ async function runOnce(command: RunCommand, io: AutoplayIo, engineIo: EngineIo):
       ? undefined
       : {
           writer: await engineIo.createReplayWriter(command.recordPath),
-          header: { run_id: id, seed: command.seed, manifest_version: version, purpose: command.purpose, persona: persona.slug },
+          header: { run_id: id, seed: command.seed, manifest_version: version, purpose: command.purpose, persona: persona.slug, ...(command.intentAssist ? { decision_mode: 'intent-assisted' as const } : {}) },
           now: () => engineIo.now(),
         };
-  const decider = createUtilityBtDecider({ bundle, persona }, command.seed);
+  const decider = createUtilityBtDecider({ bundle, persona, intentAssist: command.intentAssist }, command.seed);
   const reflect =
     command.observePath === undefined
       ? undefined
@@ -77,7 +79,8 @@ async function runOnce(command: RunCommand, io: AutoplayIo, engineIo: EngineIo):
           sink: createObservationSink(await engineIo.createReplayWriter(command.observePath), command.mode),
           acted: () => decider.lastOutcome?.acted,
         });
-  const report = await runDriver({ adapter, decider, mode: command.mode, maxTicks: command.ticks, ...(record ? { record } : {}), ...(reflect ? { reflect } : {}) });
+  const observationFields = bundle.manifest?.doc.observation?.fields ?? [];
+  const report = await runDriver({ adapter, decider, mode: command.mode, observationFields, maxTicks: command.ticks, ...(record ? { record } : {}), ...(reflect ? { reflect } : {}) });
   const out = command.adapter === 'stdio' ? io.stderr : io.stdout;
   const adapterId = command.adapter === 'sim' ? SIM_ADAPTER_ID : 'stdio';
   out(`${JSON.stringify({ run_id: id, adapter: adapterId, persona: persona.slug, mode: command.mode, purpose: command.purpose, seed: command.seed, ...report, ...(command.recordPath ? { record: command.recordPath } : {}), ...(command.observePath ? { observe: command.observePath } : {}) }, null, 2)}\n`);
@@ -87,6 +90,7 @@ async function runOnce(command: RunCommand, io: AutoplayIo, engineIo: EngineIo):
 async function bench(command: BenchCommand, io: AutoplayIo, engineIo: EngineIo): Promise<number> {
   const game = await openGame(io, command.gameDir, 'bench');
   const { bundle, persona } = await setupEngine(io, command.gameDir, game.gameId, game.bundle, await engineIo.loadPersona(command.gameDir, command.persona));
+  const runs: ReplayRun[] = [];
   const report = await runBench({
     bundle,
     persona,
@@ -96,8 +100,14 @@ async function bench(command: BenchCommand, io: AutoplayIo, engineIo: EngineIo):
     mode: command.mode,
     purpose: command.purpose,
     withoutTactics: command.withoutTactics,
+    intentAssist: command.intentAssist,
+    ...(command.savePath !== undefined && command.purpose === 'coverage' ? { onRun: (run: ReplayRun) => void runs.push(run) } : {}),
   });
   io.stdout(`${JSON.stringify(report, null, 2)}\n`);
+  if (command.savePath !== undefined) {
+    const saved = await saveBenchResult({ command: { ...command, savePath: command.savePath }, persona, report, runs, adapter: SIM_ADAPTER_ID }, io, engineIo);
+    io.stderr(`guide bench: wrote ${saved} (live balance, evidence: sim)\n`);
+  }
   return EXIT_OK;
 }
 

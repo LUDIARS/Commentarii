@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "approvals.schema.json",
+  "title": "Consolidate approvals: observations/approvals.json (spec/feature/learning.md §4.2)",
+  "description": "Human approvals of guide learn consolidate proposals, written by guide learn approve. Each approval binds the proposal's content hash and the guide version it was judged against; consolidate --apply applies a pending proposal only while both still match. Never part of the canonical bundle.",
+  "type": "object",
+  "required": ["game_id", "approvals"],
+  "properties": {
+    "game_id": { "$ref": "id.schema.json#/$defs/slug" },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["proposal", "content_hash", "manifest_version", "approved_by", "rationale", "approved_at"],
+        "properties": {
+          "proposal": { "type": "string", "pattern": "^(rewrite|promotion|entity-draft|human-tactic):\\S+$" },
+          "content_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "manifest_version": { "type": "string", "minLength": 1 },
+          "approved_by": { "type": "string", "pattern": "\\S" },
+          "rationale": { "type": "string", "pattern": "\\S" },
+          "approved_at": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

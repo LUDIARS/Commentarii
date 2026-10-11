@@ -290,6 +290,195 @@
       "module": "src/contracts/hash-identifier.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-50",
+      "criterion": "C-50 classifyIntents(input): omniscient の run は trace・判定・ズレのどこにも現れず、報告するズレは許容記録に一致せず、impossible は証明 (歩けない経路か攻略本に無い定石) があるときだけで、証明の無い再現 0 の route / teach は not-reproduced、未許容の望ましくないズレを持つ項目は (impossible / not-reproduced を除き) undesirable、未許容のズレを持つ項目は match にならない",
+      "symbol": "classifyIntents",
+      "file": "src/verify/intent/classify-intents.ts",
+      "module": "src/contracts/classify-intents.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-51",
+      "criterion": "C-51 mergeDivergences(store, gameId, found): 既存の項目は消えず人間の欄 (decision / decided_by / note) と根拠 run を保ち、見つかったズレは全て入り、新しい項目は pending で、ID は一意、並びは pending → allow → reject",
+      "symbol": "mergeDivergences",
+      "file": "src/verify/intent/divergence-store.ts",
+      "module": "src/contracts/merge-divergences.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-52",
+      "criterion": "C-52 acceptDivergence(input): 対象ステージの intent で変わるのは allowed_divergences への最大 1 件の追加だけで、その項目はズレ ID と判定者を持ち、ストアの対象項目は判定者による allow になり、他の項目は変わらず、定石は返さない (昇格は報告のみ)",
+      "symbol": "acceptDivergence",
+      "file": "src/verify/intent/accept-divergence.ts",
+      "module": "src/contracts/accept-divergence.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-53",
+      "criterion": "C-53 assignBands(input): impossible は地図が経路を歩けないと証明するときだけ。それ以外で完了した試行が無ければ not-observed、成功があれば feasible / skill-gated / extreme、無ければ visible で完了試行が十分 (95% 上限が zero_success_upper 未満) のときだけ illusory、他は insufficient-evidence。feasible は min_runs 以上の完了試行を持つ全ペルソナが feasible_success 以上のときだけ、中断 run は分母に入らず、by_design は illusory にだけ付く",
+      "symbol": "assignBands",
+      "file": "src/verify/feasibility/assign-bands.ts",
+      "module": "src/contracts/assign-bands.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-54",
+      "criterion": "C-54 buildFeasibility(input): omniscient の run は数えられず根拠にもならず、breadth はそのペルソナが成功した illusory / impossible でない解法の数で、convergence は breadth が 1 かつ design_stance が refined でないときだけ真、confusion_depth は負にならない",
+      "symbol": "buildFeasibility",
+      "file": "src/verify/feasibility/build-feasibility.ts",
+      "module": "src/contracts/build-feasibility.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-55",
+      "criterion": "C-55 drawHeatmap(input): SVG は well-formed で、入力の群ごとに 1 パネル、地図上の forbid 領域ごとに各パネルへ forbid 要素、地図上に 2 ノード以上ある route 意図ごとに各パネルへ intent-route 要素、地図ノード間の移動ごとに run-path 要素を持つ",
+      "symbol": "drawHeatmap",
+      "file": "src/render/heatmap/draw-heatmap.ts",
+      "module": "src/contracts/draw-heatmap.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-56",
+      "criterion": "C-56 clusterSolutions(stageSlug, traces, intended): 全足跡はちょうど 1 つの解法に入り、解法の中の足跡は解法と同じ定石列で経路が解法の経路の前方一致、ID は一意な sol:<stage-slug>:<n>、想定解は全てどれかの解法に名前が載る",
+      "symbol": "clusterSolutions",
+      "file": "src/verify/feasibility/cluster-solutions.ts",
+      "module": "src/contracts/cluster-solutions.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-60",
+      "criterion": "C-60 observationBoundaryProblems(frame, declarations): omniscient の観測は検査されず、player の観測では基本項目と masked でない宣言の外にある extra / resources / イベント項目が全て報告される (未登録は既定拒否)",
+      "symbol": "observationBoundaryProblems",
+      "file": "src/observation/check-observation-boundary.ts",
+      "module": "src/contracts/observation-boundary.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-61",
+      "criterion": "C-61 classifyDraw(draw, pass, frame): visible は scene / ui pass で、不透明かつ viewport 上にあり、scene は遮蔽クエリ通過、ui は hidden でなく clip 内のときだけ。shadow / reflection / depth / post の draw と遮蔽の根拠が無い scene draw は visible にならない",
+      "symbol": "classifyDraw",
+      "file": "src/render-tap/classify-draw.ts",
+      "module": "src/contracts/classify-draw.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-62",
+      "criterion": "C-62 identifyAppearance(draw, index): entity は asset-name か content-hash の draw で外見が 1 entity にだけ対応するときだけ名付けられ、count-hash は識別されず、同じ外見の別種は ambiguous になる",
+      "symbol": "identifyAppearance",
+      "file": "src/render-tap/identify-appearance.ts",
+      "module": "src/contracts/identify-appearance.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-63",
+      "criterion": "C-63 selectPlayerDraws(frame, signatures): 見えた個体は遮蔽クエリを通過した不透明な scene draw からだけ出て、外見が一意なときだけ entity を持ち、全ての draw は見えた / UI / 除外 / 不明のどれかに数えられる",
+      "symbol": "selectPlayerDraws",
+      "file": "src/render-tap/select-player-draws.ts",
+      "module": "src/contracts/select-player-draws.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-64",
+      "criterion": "C-64 approvalState(proposal, approvals): 最新の承認が提案の現在の内容ハッシュと攻略本の版に一致するときだけ approved、どちらかが違えば stale、承認が無ければ none",
+      "symbol": "approvalState",
+      "file": "src/learn/approval/approvals.ts",
+      "module": "src/contracts/approval-state.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-65",
+      "criterion": "C-65 intentTouch(intents, tactics, measuredNodes, change): 定石のステージに掛かる意図で、teach の参照・forbid 領域・時間変化のある time・置換を伴う open / mixed の design_stance・illusory_by_design・許容ズレの参照は必ず「意図に触れる」と報告される",
+      "symbol": "intentTouch",
+      "file": "src/learn/consolidate/intent-touch.ts",
+      "module": "src/contracts/intent-touch.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-66",
+      "criterion": "C-66 sealProposal(draft, context): 封をした提案はパッチ・根拠・判定を保ち、basis はゲーム・版・ビルド・条件・単位を持ち、内容ハッシュは status / reason に依らずファイルの変更で変わる",
+      "symbol": "sealProposal",
+      "file": "src/learn/approval/seal-proposal.ts",
+      "module": "src/contracts/seal-proposal.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-67",
+      "criterion": "C-67 humanTacticProposals(bundle, candidates): 人間の別解の提案は全て承認待ちで、tactics/ に draft でない learned 定石を 1 つ作り、候補の run を根拠に持ち、既存の定石 ID には提案しない",
+      "symbol": "humanTacticProposals",
+      "file": "src/learn/consolidate/human-tactic-proposals.ts",
+      "module": "src/contracts/human-tactic-proposals.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-68",
+      "criterion": "C-68 sampleEvidence(members): 分母は完了した試行だけ (中断した run は別に数える)、成功は試行を超えず、95% 区間は成功率を含む (試行が無ければどちらも null)",
+      "symbol": "sampleEvidence",
+      "file": "src/verify/feasibility/sample-evidence.ts",
+      "module": "src/contracts/sample-evidence.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-69",
+      "criterion": "C-69 matchAllowed(allowed, divergence, manifestVersion): 許容記録がズレを抑えるのはズレ ID か同じ意図と署名を名指しし、別の攻略本版で判定されていないときだけ。run や定石だけを名指しする記録は抑えない",
+      "symbol": "matchAllowed",
+      "file": "src/verify/intent/allowed-match.ts",
+      "module": "src/contracts/match-allowed.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-70",
+      "criterion": "C-70 selectRuns(runs, persona): omniscient の run と意図支援 (decision_mode intent-assisted) の run は数えられず、全ての run はちょうど 1 つの一覧に入る",
+      "symbol": "selectRuns",
+      "file": "src/verify/runs/select-runs.ts",
+      "module": "src/contracts/select-runs.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-71",
+      "criterion": "C-71 compareBench(base, head, thresholds): 比較可能性のキー (ペルソナ・seed 集合・予算・mode・purpose・decision_mode・定石・アダプタ) が違う結果は理由つきで拒否し指標も候補も持たない。比較できる結果は全指標を持ち、候補は閾値を超えた指標と新しい望ましくないズレだけ",
+      "symbol": "compareBench",
+      "file": "src/gate/compare-bench.ts",
+      "module": "src/contracts/compare-bench.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-72",
+      "criterion": "C-72 gateBalance(comparison, failOn): 比較不能なら常に失敗、それ以外は候補があり failOn が block のときだけ失敗し、判定が示さないこと (sim の証跡・体験の未検証) を常に添える",
+      "symbol": "gateBalance",
+      "file": "src/gate/gate-balance.ts",
+      "module": "src/contracts/gate-balance.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-73",
+      "criterion": "C-73 extractPraeformaRef(markdown, explicitScene): 明示したシーン ID が常に優先し、返す値は全て文書に現れる (または明示した) 正しい形の Praeforma ID で、文書に何も無く明示も無ければ何も返さない",
+      "symbol": "extractPraeformaRef",
+      "file": "src/praeforma/praeforma-ref.ts",
+      "module": "src/contracts/extract-praeforma-ref.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }

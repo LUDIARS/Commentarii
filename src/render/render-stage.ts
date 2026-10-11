@@ -1,4 +1,5 @@
-// One stage: objectives, clear conditions, spawn table, events and map.
+// One stage: objectives, clear conditions, spawn table, events and map, plus an optional extra
+// section (the heatmap and feasibility bands of guide verify intent).
 
 import type { StageFiles } from '../bundle/bundle.ts';
 import type { Spawn } from '../domain/documents.ts';
@@ -11,7 +12,7 @@ function spawnRows(spawns: readonly Spawn[], origin: string): string[][] {
   return spawns.map((spawn) => [origin, spawn.entity, formatValue(spawn.count), spawn.at ?? '-', spawn.wave === undefined ? '-' : String(spawn.wave)]);
 }
 
-export function renderStage(stage: StageFiles): string {
+export function renderStage(stage: StageFiles, extra?: string): string {
   const doc = stage.stage?.doc;
   const title = doc ? `# ${localize(doc.name)} (${doc.id})` : `# stages/${stage.slug}`;
   const objectives = doc ? doc.objectives.map((objective) => `- ${formatValue(objective)}`).join('\n') : '';
@@ -35,5 +36,6 @@ export function renderStage(stage: StageFiles): string {
     spawns.length === 0 ? '' : `## 出現表\n\n${table(['契機', 'エンティティ', '数', '場所', 'ウェーブ'], spawns)}`,
     eventRows.length === 0 ? '' : `## イベント\n\n${table(['ID', '契機', '内容'], eventRows)}`,
     stage.map ? renderMap(stage.map.doc) : '',
+    extra ?? '',
   ]);
 }

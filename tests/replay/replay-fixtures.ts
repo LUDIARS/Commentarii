@@ -45,6 +45,7 @@ export function headerFields(mode: ObservationMode = 'player'): Omit<ReplayHeade
     adapter_id: 'bestia-render-tap',
     mode,
     purpose: 'efficiency',
+    observation_fields: [{ path: 'self.resources.boost', knowledge: 'shown', origin: 'boost gauge on the HUD' }],
     started_at: '2026-10-09T00:00:00.000Z',
   };
 }

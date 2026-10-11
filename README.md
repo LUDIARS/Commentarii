@@ -20,6 +20,7 @@
 段階 2: 取り込み `import masters` (CSV / JSON / SQLite + mapping)・`import map` (grid / navgraph / zones)・`import spec` / `intent import` (LLM 下書き)。仕様は [spec/feature/import.md](spec/feature/import.md)。
 段階 3 (+3E): `export` (`bundle.json` + 索引、既定 player)、判断エンジン (Utility が狙いを選び BT が手順を実行、decider `utility-bt`)、アダプタ契約 (TypeScript + JSON Lines プロトコル + C++ 最小ヘッダ)、模擬アダプタ `sim`、ペルソナ (`novice` / `expert` / `explorer`)、`run` / `bench`。仕様は [spec/feature/engine.md](spec/feature/engine.md) と [spec/feature/adapter-protocol.md](spec/feature/adapter-protocol.md)。
 段階 4D: 人間プレイログの取り込み `import plays` (テレメトリ → リプレイ形式、HMAC で匿名化、別解候補 `candidates.json`) と `report plays` (人間 vs オートプレイヤーの数表)。仕様は [spec/feature/human-plays.md](spec/feature/human-plays.md)。
+段階 5 (+5H・5P): 意図ズレ検証 `verify intent` (coverage / 人間 run を `intent/` と突き合わせて 一致・面白いズレ・望ましくないズレ・不可能 に分類、`--accept` で許容)、行動可能性の帯 (`feasibility/<stage>.json`: feasible / extreme / illusory / impossible) と良い遊びの 2 軸 (解法の広さ・迷いの深さ)、経路・死亡ヒートマップ (SVG)、`report feasibility`。仕様は [spec/feature/intent-verify.md](spec/feature/intent-verify.md)。
 
 | 置き場所 | 中身 |
 |---|---|
@@ -82,6 +83,16 @@ node dist/cli/main.js bench --game samples/bestia --runs 20 --persona novice --s
 COMMENTARII_PLAYER_SALT=<secret> node dist/cli/main.js import plays --game <bundle> --from tests/fixtures/plays/telemetry.jsonl --map tests/fixtures/plays/plays-mapping.json
 # 人間 run と observations/runs/ のオートプレイヤー run (run --record) をステージ別に並べる (Markdown、--json で JSON)
 node dist/cli/main.js report plays --game <bundle>
+```
+
+```sh
+# 意図ズレ検証: coverage / 人間 run (ディレクトリかファイル) を intent と突き合わせる。omniscient run は使わない。
+# observations/divergences.json (人間の判定欄)、observations/verify/ (レポートと SVG)、feasibility/<stage>.json を書く。正本は書かない
+node dist/cli/main.js verify intent --game <bundle> --runs tests/fixtures/verify/runs
+# ズレを許容して intent の allowed_divergences へ移す (正本を書くのはこれだけ。以後そのズレは再報告されない)
+node dist/cli/main.js verify intent --game <bundle> --accept <div-...> --by <name>
+# 行動可能性の帯 (illusory が先頭) と良い遊びの 2 軸
+node dist/cli/main.js report feasibility --game <bundle>
 ```
 
 `npm run guide -- validate samples/bestia` でも同じ。パッケージとして入れた場合は `guide` コマンドになる。

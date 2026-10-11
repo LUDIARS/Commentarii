@@ -74,23 +74,63 @@ run の観測ファイルを取り込み、オーバーレイを更新し、差�
 - **重みの微調整**: `min_runs` 以上測った変種のうち、`min_gain` を満たしたものを勝ち、ゲインが負のものを負けとして、探索の重みに
   `1 + 0.2 × (勝ち - 負け) / 比べた数` を掛ける (0.8〜1.2 に収める)。比べられる変種が無ければ係数を置かない。
 
-## 4. `guide learn consolidate --game <bundle-dir> [--apply] [--json]`
+## 4. `guide learn consolidate --game <bundle-dir> [--apply] [--json]` / `guide learn approve`
 
 オーバーレイから正本の更新案を出す。各案はファイルごとの JSON Patch (RFC 6902、新規ファイルはルートへの `add`) と、Markdown
 (旧 → 新、実測比較、根拠 run) を持つ。`--json` は案の一覧と JSON Patch をそのまま出す。契約 C-32。
 
 | 種類 | 中身 | 自動反映 |
 |---|---|---|
-| 定石の書き換え (`rewrite:<元の定石>`) | 変種を `tactics/<変種の slug>.json` (learned、実測つき) として足し、元の定石の `superseded_by` を変種の ID にする (旧定石は消さない。`test` で `superseded_by: null` を確かめてから置き換える)。1 つの定石に候補が複数あればゲイン最大のもの | `learning.policy.rewrite.auto_apply: true` で、かつ意図に触れないものだけ |
+| 定石の書き換え (`rewrite:<元の定石>`) | 変種を `tactics/<変種の slug>.json` (learned、実測つき) として足し、元の定石の `superseded_by` を変種の ID にする (旧定石は消さない。`test` で `superseded_by: null` を確かめてから置き換える)。1 つの定石に候補が複数あればゲイン最大のもの | `learning.policy.rewrite.auto_apply: true` で、`relax` でなく、かつ意図に触れないものだけ |
 | 境界の昇格候補 (`promotion:<値の参照>`) | `.masked.json` の値で、player run の推定が `promotion.discoverable_requires` (`player_runs` 本以上、一致率 `agreement` 以上) を満たしたもの。値を `.masked.json` から entity ファイルへ `discoverable` として移し、`source.ref` に根拠 run を足す | しない (人間承認) |
 | 未知 entity の雛形 (`entity-draft:<キー>`) | `entities/<group>/<slug>.json` の新規。ID の無いものは `enemy:<game>:observed-<キーのハッシュ 8 桁>` (仮定: 画面に映る正体不明のものは敵として起こす) | しない (人間承認) |
+| 人間プレイの別解 (`human-tactic:<定石 ID>`) | `observations/human/candidates.json` の候補を `tactics/<slug>.json` (learned、`draft: false`) として足す。既にある定石 ID は出さない (§4.3) | しない (人間承認) |
 
-- **意図に触れる**: 旧 / 新の定石を `intent` の `teach` が参照している、または旧 / 新の定石が `forbid` の領域を通る (`do` の `move_to`、
-  `when` の `at_node`、実測で通ったノード)。ドラフトの意図も含めて見る (安全側)。
 - **昇格の根拠**: オーバーレイが player run として載せた run の推定だけを数える。omniscient の観測は根拠にならない (原則 2)。
-- **`--apply`**: 自動反映できる案だけを書き、何を書いたか・何を残したかを出す。パッチは全て当たるか全く当たらないか
-  (`JsonPatchError`、契約 C-35)、書く前に全文書をそのパスのスキーマで検査する。バンドルにスキーマ違反があれば `--apply` を拒否する。
-  `--apply` なしでは何も書かない。
+- **`--apply`**: 自動反映できる案と、**有効な承認** (§4.2) を持つ承認待ちの案だけを書き、何を書いたか・何を残したか・失効した承認を出す。
+  パッチは全て当たるか全く当たらないか (`JsonPatchError`、契約 C-35)、書く前に全文書をそのパスのスキーマで検査する。
+  バンドルにスキーマ違反があれば `--apply` を拒否する。`--apply` なしでは何も書かない。
+
+### 4.1 自動反映の条件 (Astra レビュー P1-5 で補正、2026-10-09)
+
+効率差だけの書き換えは規則で反映してよいが、設計者の意図に関わる更新は人間が行う (設計原則 5)。teach / forbid だけでなく、
+**全ての種類の意図** への影響を判定する (`src/learn/consolidate/intent-touch.ts`、契約 C-65)。
+
+| 意図 | 触れる条件 |
+|---|---|
+| `teach` | 旧 / 新の定石を参照している |
+| `forbid` | 旧 / 新の定石がその領域を通る (`do` の `move_to`、`when` の `at_node` / `stage.node`、新定石の実測で通ったノード) |
+| `route` | 旧と新で、想定経路上のどのノードを踏むか (`move_to` / `at_node`) が変わる |
+| `time` | ステージに時間の範囲があり、変種の実測時間 (`time_sec.p50`) が旧定石と違う (クリア時間が設計者の範囲に対して動く) |
+| `design_stance` | `open` / `mixed` のステージで旧定石を `superseded_by` にする (解法の広さ breadth を削る)。`refined` は絞り込みが意図なので触れない |
+| `illusory_by_design` | 旧 / 新の定石、またはそのノードが宣言された「見かけ上の解」に含まれる |
+| `allowed_divergences` | 許容したズレが旧 / 新の定石を名指ししている |
+
+- 意図はそのステージで定石が使えるときだけ数える。`when` が `stage.id` を名指しする定石はそのステージだけ、名指ししない定石は全ステージ (安全側)。
+- **`relax` の変種は自動反映しない**: `when` を緩めた変種は、元の定石が動かない状況でも動く。ゲインは同じ条件での効率比較ではないので、
+  規則の範囲外 (人間承認)。`reorder` / `substitute` は同じ `when` の上での比較。
+- ドラフトの意図も含めて見る (安全側)。
+
+### 4.2 承認と失効 (`guide learn approve`)
+
+```
+guide learn approve --game <bundle-dir> --proposal <id> --by <name> --reason <text>
+```
+
+- 各提案は **basis** (ゲーム ID、攻略本の版 `manifest.version`、`builds`、比較した条件 = 元の定石の `when`、指標の単位) と
+  **内容ハッシュ** (`sha256:` + 正規化 JSON。パッチ・根拠 run・実測比較・basis を含み、ツールの判定 `status` / `reason` は含めない) を持つ (C-66)。
+- `approve` は今の consolidate を作り直し、指定の提案の内容ハッシュと版を、承認者・理由・時刻とともに `observations/approvals.json`
+  (`schema/approvals.schema.json`) に追記する。正本には触らない。自動反映の案と存在しない ID は承認できない。
+- `consolidate --apply` は、最新の承認が **提案の現在の内容ハッシュと版の両方に一致** するときだけその案を書く (C-64)。根拠 run が増えた、
+  パッチが変わった、攻略本の版が上がった、などで一致しなくなった承認は **失効** (`stale`) として報告し、書かない。再承認が必要。
+- 単位 (`METRIC_UNITS`): 時間 = 秒 (`time_sec.p50`)、資源 = 消費量の合計、リスク = 被ダメ (HP バーの % 、満タン 100) の p50、成功率 = 期待を満たした割合。
+
+### 4.3 人間の別解の正本化
+
+`guide import plays` (段階 4D) が作る `observations/human/candidates.json` を consolidate が読み、候補ごとに `human-tactic` 提案を出す。
+人間の解法は「意図した経路か・釣りか・不具合か」の設計判断なので常に承認待ち (C-67)。承認 → `--apply` で `tactics/` に
+`draft: false` の learned 定石として入る (承認がドラフトを外すレビューに当たる)。境界の昇格根拠には人間 run を数えない
+(人間 run から値の推定を作る段が未実装。[human-plays.md](human-plays.md) §4)。
 
 ## 5. 探索の混入 (段階 3 の確認と補い)
 

@@ -11,6 +11,11 @@ export interface UtilityContext {
   readonly purpose: ObservationPurpose;
   /** Exploration bonus active this tick (always in coverage, exploration_rate of efficiency ticks). */
   readonly exploring: boolean;
+  /**
+   * Intent-assisted test (spec/feature/engine.md §4.1): the designer's intent may score candidates.
+   * Off by default: the decider judges from approved player knowledge only; intent is the evaluator.
+   */
+  readonly intentAssist: boolean;
 }
 
 /** A consideration scores a candidate in 0..1, or undefined when it has nothing to say about it. */

@@ -9,7 +9,7 @@ import type { SchemaViolation } from '../schema/schema-registry.ts';
 import { isJsonObject } from '../domain/value-node.ts';
 
 /** Schema files the replay line schema needs, in dependency order. */
-export const REPLAY_SCHEMA_FILES = ['id.schema.json', 'value.schema.json', 'observation-frame.schema.json', 'replay.schema.json'] as const;
+export const REPLAY_SCHEMA_FILES = ['id.schema.json', 'value.schema.json', 'observation-fields.schema.json', 'observation-frame.schema.json', 'replay.schema.json'] as const;
 
 const LINE_SCHEMA = 'replay.schema.json';
 const LINE_TYPES = ['header', 'tick', 'footer'] as const;

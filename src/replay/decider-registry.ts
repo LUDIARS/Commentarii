@@ -35,6 +35,6 @@ export function createDecider(id: DeciderId, run: ReplayRun, engine?: EngineSetu
       return createWaitDecider();
     case UTILITY_BT_DECIDER_ID:
       if (engine === undefined) throw new Error('the utility-bt decider needs the bundle and a persona (--game)');
-      return createUtilityBtDecider(engine, run.header.seed);
+      return createUtilityBtDecider({ ...engine, intentAssist: run.header.decision_mode === 'intent-assisted' }, run.header.seed);
   }
 }

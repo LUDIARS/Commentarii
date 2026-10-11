@@ -16,12 +16,12 @@ export type ImportCommand =
       readonly neighbors: 4 | 8;
     }
   | { readonly name: 'import-spec'; readonly bundleDir: string; readonly from: string; readonly kind: 'rules' | 'states' }
-  | { readonly name: 'intent-import'; readonly bundleDir: string; readonly stage: string; readonly from: string };
+  | { readonly name: 'intent-import'; readonly bundleDir: string; readonly stage: string; readonly from: string; readonly praeforma?: string };
 
 export const IMPORT_USAGE = `  guide import masters --game <bundle-dir> --from <csv|json|sqlite> --map <mapping.json> [--dry-run]
   guide import map --game <bundle-dir> --stage <slug> --from <path> --kind grid|navgraph|zones [--map <mapping.json>] [--neighbors 4|8]
   guide import spec --game <bundle-dir> --from <md> --kind rules|states
-  guide intent import --game <bundle-dir> --stage <slug> --from <md>
+  guide intent import --game <bundle-dir> --stage <slug> --from <md> [--praeforma <scene-id>]
 `;
 
 const SLUG = /^[a-z0-9][a-z0-9_-]*$/;
@@ -96,13 +96,14 @@ function parseSpec(args: string[]): ImportCommand {
 }
 
 function parseIntentImport(args: string[]): ImportCommand {
-  const { values } = parseArgs({ args, options: { game: { type: 'string' }, stage: { type: 'string' }, from: { type: 'string' } } });
+  const { values } = parseArgs({ args, options: { game: { type: 'string' }, stage: { type: 'string' }, from: { type: 'string' }, praeforma: { type: 'string' } } });
   const command = 'intent import';
   return {
     name: 'intent-import',
     bundleDir: required(values, 'game', command),
     stage: stageSlug(values, command),
     from: required(values, 'from', command),
+    ...(values.praeforma === undefined ? {} : { praeforma: values.praeforma }),
   };
 }
 

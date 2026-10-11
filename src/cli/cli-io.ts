@@ -8,6 +8,7 @@ import type { ReplayLoad } from '../replay/parse-replay.ts';
 import type { EngineIo } from './engine-io.ts';
 import type { ImportIo } from './import-io.ts';
 import type { LearnIo } from '../learn/cli/learn-io.ts';
+import type { VerifyIo } from '../verify/cli/verify-io.ts';
 
 export interface CliIo {
   stdout(text: string): void;
@@ -25,6 +26,8 @@ export interface CliIo {
   readonly learnIo?: LearnIo;
   /** guide import plays / guide report plays only. */
   readonly playsIo?: PlaysIo;
+  /** guide verify intent / guide report feasibility, and the verification report guide render embeds. */
+  readonly verifyIo?: VerifyIo;
 }
 
 export const EXIT_OK = 0;

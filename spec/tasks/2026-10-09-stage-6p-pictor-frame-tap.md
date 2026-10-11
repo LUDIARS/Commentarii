@@ -2,6 +2,19 @@
 
 対象リポ: `E:/Document/Ars/Pictor` (Pc、public、C++、CI は GCC)。設計正本は Commentarii の `E:/Document/Ars/Commentarii/spec/architecture/design.md` §7.1 (段 2 の仕組み) と、Commentarii 段階 6 が定める契約 `E:/Document/Ars/Commentarii/spec/feature/render-tap-contract.md` + `schema/render-frame.schema.json`。契約がまだ main に無い場合は、段階 6 の依頼文 `E:/Document/Ars/Commentarii/spec/tasks/2026-10-09-stage-6-render-tap-receiver.md` の「1. 描画リストの契約」を仕様として読む (同じ内容)。
 
+## 補正 (Astra レビュー P0-2 / P1-7、2026-10-09)
+
+契約は Commentarii に **確定済み** (`spec/feature/render-tap-contract.md` = `render-tap/1`、`schema/render-frame.schema.json`、golden
+`tests/fixtures/render-tap/golden-v1.jsonl`)。本文の出力内容より契約が優先する。追加で必須の項目:
+
+- 行ごとに `contract: "render-tap/1"` と `seq` (捨てたフレームも数える)、`observer {id, viewport}` (プレイヤーのカメラは `player-camera`)、
+  任意 `tick`、遮蔽クエリ結果が何フレーム前か (`visibility_lag_frames`)、記録しきれなかった draw の `dropped`、終了時の end 行。
+- draw ごとに `identity` (`asset-name` / `content-hash` / `count-hash`)、`generation` (ハンドル再利用で +1)、`visibility`
+  (`occlusion-passed` / `occlusion-failed` / `frustum-only` / `unknown`。GPU を待たずに取れる範囲。取れなければ `frustum-only` か `unknown`)、
+  `alpha`、ui pass では `clip` と `ui` (`bar` の fill / `glyph` の文字)。pass の `kind` は `scene` / `ui` / `shadow` / `reflection` / `depth-prepass` / `postprocess` / `other`。
+- アセット名が取れない draw は内容ハッシュ (`content-hash`) を優先する。頂点数 + インデックス数の指紋は `count-hash` とし、Commentarii 側では識別に使われない。
+- テストは golden と同じ形の行を出すこと (Commentarii の `schema/render-frame.schema.json` で検証できる形)。
+
 ## 目的
 
 Pictor がコマンドバッファを組む場所に「フレームタップ」を 1 つ足し、フレームごとの描画リストを構造化データで外へ出す。画素の読み戻し (readback) をしない。既定は OFF で、フレームレートに影響しない。

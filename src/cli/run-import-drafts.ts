@@ -10,12 +10,15 @@ import { applyFileChanges } from './apply-file-changes.ts';
 import { EXIT_OK, type CliIo } from './cli-io.ts';
 import { openImportTarget, type ImportTarget } from './open-import-target.ts';
 import type { ImportCommand } from './parse-import-command.ts';
+import { extractPraeformaRef } from '../praeforma/praeforma-ref.ts';
 
 type DraftCommand = Extract<ImportCommand, { name: 'import-spec' | 'intent-import' }>;
 
 function draftRequest(command: DraftCommand, target: ImportTarget, document: string): DraftRequest {
   const base = { document, sourceName: basename(command.from), gameId: target.gameId };
-  return command.name === 'intent-import' ? { ...base, kind: 'intent', stageSlug: command.stage } : { ...base, kind: command.kind };
+  if (command.name !== 'intent-import') return { ...base, kind: command.kind };
+  const praeforma = extractPraeformaRef(document, command.praeforma);
+  return { ...base, kind: 'intent', stageSlug: command.stage, ...(praeforma === undefined ? {} : { praeforma }) };
 }
 
 export async function runImportDrafts(command: DraftCommand, io: CliIo): Promise<number> {

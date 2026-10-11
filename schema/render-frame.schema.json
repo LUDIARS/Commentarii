@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "render-frame.schema.json",
+  "title": "Render tap line, contract render-tap/1 (spec/feature/render-tap-contract.md)",
+  "description": "One JSON line a renderer frame tap emits: a frame (what was submitted for drawing) or the end of the stream. A raw tap line is NOT a player observation: the receiver selects player-visible draws by the rules of the contract (pass, visibility evidence, alpha, clip, identifiability) before anything reaches an Observation frame.",
+  "type": "object",
+  "required": ["contract", "seq"],
+  "properties": {
+    "contract": { "const": "render-tap/1" },
+    "seq": { "description": "Tap output counter: +1 for every frame the tap produced, emitted or dropped. A gap = frames lost to backpressure.", "type": "integer", "minimum": 0 }
+  },
+  "oneOf": [
+    { "$ref": "#/$defs/frame" },
+    { "$ref": "#/$defs/end" }
+  ],
+  "$defs": {
+    "matrix4": {
+      "description": "4x4 matrix, column-major (element 12..14 = translation), right-handed, Y up, world units of manifest coordinates.unit.",
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 16,
+      "maxItems": 16
+    },
+    "rect": {
+      "description": "[x, y, width, height] in viewport pixels, origin top-left, y down.",
+      "type": "array",
+      "prefixItems": [{ "type": "number" }, { "type": "number" }, { "type": "number", "minimum": 0 }, { "type": "number", "minimum": 0 }],
+      "items": false,
+      "minItems": 4
+    },
+    "end": {
+      "type": "object",
+      "required": ["contract", "seq", "end"],
+      "properties": {
+        "contract": true,
+        "seq": true,
+        "end": { "description": "Why the stream ends. A stream that closes without an end line is a disconnect.", "enum": ["shutdown", "error"] }
+      },
+      "additionalProperties": false
+    },
+    "frame": {
+      "type": "object",
+      "required": ["contract", "seq", "frame", "t", "observer", "camera", "passes"],
+      "properties": {
+        "contract": true,
+        "seq": true,
+        "frame": { "description": "Renderer frame index, strictly increasing.", "type": "integer", "minimum": 0 },
+        "tick": { "description": "Game tick this frame shows, when the game tells the renderer; never decreases.", "type": "integer", "minimum": 0 },
+        "t": { "description": "Game clock (seconds) of the frame; never decreases. Not wall time.", "type": "number", "minimum": 0 },
+        "observer": {
+          "type": "object",
+          "required": ["id", "viewport"],
+          "properties": {
+            "id": { "description": "Whose eyes: the camera the frame is rendered for (player-camera for the player view).", "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$" },
+            "viewport": {
+              "type": "array",
+              "prefixItems": [{ "type": "integer", "minimum": 1 }, { "type": "integer", "minimum": 1 }],
+              "items": false,
+              "minItems": 2
+            }
+          },
+          "additionalProperties": false
+        },
+        "camera": {
+          "type": "object",
+          "required": ["view", "projection"],
+          "properties": { "view": { "$ref": "#/$defs/matrix4" }, "projection": { "$ref": "#/$defs/matrix4" } },
+          "additionalProperties": false
+        },
+        "visibility_lag_frames": { "description": "How many frames old the occlusion evidence is (query results read without a GPU stall). 0 when exact.", "type": "integer", "minimum": 0 },
+        "passes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "kind", "draws"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "kind": { "description": "Only scene and ui can show something to the observer; the other kinds are kept for diagnosis and never become observations.", "enum": ["scene", "ui", "shadow", "reflection", "depth-prepass", "postprocess", "other"] },
+              "draws": { "type": "array", "items": { "$ref": "#/$defs/draw" } }
+            },
+            "additionalProperties": false
+          }
+        },
+        "dropped": {
+          "description": "Draws the tap could not record in this frame (backpressure): the frame is incomplete and absent instances are unknown, not gone.",
+          "type": "object",
+          "required": ["draws", "reason"],
+          "properties": { "draws": { "type": "integer", "minimum": 1 }, "reason": { "enum": ["backpressure", "buffer-full", "other"] } },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "draw": {
+      "type": "object",
+      "required": ["mesh", "material", "identity", "instance", "generation", "world", "screen_bbox", "depth_order", "visibility"],
+      "properties": {
+        "mesh": { "type": "string", "minLength": 1 },
+        "material": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "identity": { "description": "How mesh / material were named: asset-name (stable asset ID), content-hash (hash of vertex/index/texture contents), count-hash (vertex + index counts only: collides, never identifies).", "enum": ["asset-name", "content-hash", "count-hash"] },
+        "instance": { "description": "Renderer instance handle.", "type": "integer", "minimum": 0 },
+        "generation": { "description": "Bumped whenever the renderer reuses the instance handle for another object.", "type": "integer", "minimum": 0 },
+        "world": { "$ref": "#/$defs/matrix4" },
+        "screen_bbox": { "$ref": "#/$defs/rect" },
+        "depth_order": { "description": "Submission order within the pass after sorting (0 = first drawn).", "type": "integer", "minimum": 0 },
+        "visibility": { "description": "Evidence the draw reached the observer's screen: occlusion-passed / occlusion-failed (occlusion query), frustum-only (inside the frustum, occlusion unknown), unknown.", "enum": ["occlusion-passed", "occlusion-failed", "frustum-only", "unknown"] },
+        "alpha": { "description": "Final opacity of the draw (material x instance). Absent = 1.", "type": "number", "minimum": 0, "maximum": 1 },
+        "clip": { "$ref": "#/$defs/rect" },
+        "ui": {
+          "description": "UI semantics of a ui-pass draw.",
+          "oneOf": [
+            { "type": "object", "required": ["role", "fill"], "properties": { "role": { "const": "bar" }, "element": { "type": "string", "minLength": 1 }, "fill": { "type": "number", "minimum": 0, "maximum": 1 } }, "additionalProperties": false },
+            { "type": "object", "required": ["role", "glyph"], "properties": { "role": { "const": "glyph" }, "element": { "type": "string", "minLength": 1 }, "glyph": { "type": "string", "minLength": 1 } }, "additionalProperties": false }
+          ]
+        },
+        "tags": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]*$" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

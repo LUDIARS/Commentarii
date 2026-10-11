@@ -24,6 +24,8 @@ export type RenderKnowledge = 'player' | 'full';
 
 export interface RenderOptions {
   readonly knowledge: RenderKnowledge;
+  /** Stage slug -> extra section for stages/<slug>.md (guide verify intent's heatmap and bands). */
+  readonly stageSections?: ReadonlyMap<string, string>;
 }
 
 const PAGES = [
@@ -65,7 +67,7 @@ export function renderBundle(load: LoadResult, options: RenderOptions): Map<stri
   for (const stage of view.stages) {
     const path = `stages/${stage.slug}.md`;
     stagePaths.push(path);
-    files.set(path, renderStage(stage));
+    files.set(path, renderStage(stage, options.stageSections?.get(stage.slug)));
   }
   if (options.knowledge === 'full') files.set('masked.md', renderMasked(load.bundle));
   files.set('README.md', renderIndex(load, stagePaths, options));

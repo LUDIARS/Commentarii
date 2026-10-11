@@ -18,11 +18,25 @@ export interface LearnConsolidateCommand {
   readonly json: boolean;
 }
 
-export type LearnCommand = LearnIngestCommand | LearnConsolidateCommand;
+export interface LearnApproveCommand {
+  readonly name: 'learn-approve';
+  readonly gameDir: string;
+  readonly proposal: string;
+  readonly by: string;
+  readonly reason: string;
+}
+
+export type LearnCommand = LearnIngestCommand | LearnConsolidateCommand | LearnApproveCommand;
 
 export const LEARN_USAGE = `  guide learn ingest --game <bundle-dir> <runs.jsonl...> [--json]
   guide learn consolidate --game <bundle-dir> [--apply] [--json]
+  guide learn approve --game <bundle-dir> --proposal <id> --by <name> --reason <text>
 `;
+
+function requiredText(value: string | undefined, flag: string): string {
+  if (value === undefined || value.trim() === '') throw new Error(`learn approve needs ${flag}`);
+  return value;
+}
 
 function gameDirOf(game: string | undefined, verb: string): string {
   if (game === undefined || game === '') throw new Error(`learn ${verb} needs --game <bundle-dir>`);
@@ -45,5 +59,20 @@ export function parseLearnCommand(args: readonly string[]): LearnCommand {
     if (positionals.length > 0) throw new Error('learn consolidate takes no positional arguments');
     return { name: 'learn-consolidate', gameDir: gameDirOf(values.game, verb), apply: values.apply === true, json: values.json === true };
   }
-  throw new Error('learn supports: learn ingest, learn consolidate');
+  if (verb === 'approve') {
+    const { values, positionals } = parseArgs({
+      args: rest,
+      allowPositionals: true,
+      options: { game: { type: 'string' }, proposal: { type: 'string' }, by: { type: 'string' }, reason: { type: 'string' } },
+    });
+    if (positionals.length > 0) throw new Error('learn approve takes no positional arguments');
+    return {
+      name: 'learn-approve',
+      gameDir: gameDirOf(values.game, verb),
+      proposal: requiredText(values.proposal, '--proposal <id>'),
+      by: requiredText(values.by, '--by <name>'),
+      reason: requiredText(values.reason, '--reason <text>'),
+    };
+  }
+  throw new Error('learn supports: learn ingest, learn consolidate, learn approve');
 }

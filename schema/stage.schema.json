@@ -6,6 +6,7 @@
   "required": ["id", "name", "objectives"],
   "properties": {
     "id": { "$ref": "id.schema.json#/$defs/stageId" },
+    "praeforma": { "description": "The Praeforma scene of this stage (spec/feature/praeforma-link.md).", "$ref": "praeforma-ref.schema.json#/$defs/ref" },
     "name": { "$ref": "id.schema.json#/$defs/localizedText" },
     "objectives": { "type": "array", "minItems": 1, "items": { "$ref": "value.schema.json#/$defs/textValue" } },
     "clear_conditions": { "type": "array", "items": { "$ref": "value.schema.json#/$defs/textValue" } },

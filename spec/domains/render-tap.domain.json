@@ -1,0 +1,15 @@
+{
+  "name": "render-tap",
+  "description": "描画タップ契約 render-tap/1: raw tap の行の型、流れの不変条件 (seq の飛び・順序・ハンドル再利用・切断)、draw が観測者に見えたかの判定、外見からの識別、raw tap から player に見えた draw だけを選ぶ分離境界。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)src/render-tap/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)tests/render-tap/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/fixtures/render-tap/[^/]+\\.jsonl$" },
+    { "pathPattern": "(^|/)spec/feature/render-tap-contract\\.md$" }
+  ],
+  "cardTemplate": "Summarise the \"render-tap\" domain: tap line (render-tap/1) -> sequence invariants -> classifyDraw (visible / excluded / unknown) -> identifyAppearance -> selectPlayerDraws (the only input of a render-tap Observation).",
+  "specRefs": ["spec/architecture/design.md §7.1", "spec/feature/render-tap-contract.md"],
+  "rationale": "Pictor (6P) と受信アダプタ (段 6) の間の契約層。受信アダプタ (src/adapters/render-tap/) は段 6 でこの層の結果だけから Observation を組む。スキーマ (schema/render-frame.schema.json) は guide-bundle の所属パターンに含まれる。"
+}

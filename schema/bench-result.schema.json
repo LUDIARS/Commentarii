@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bench-result.schema.json",
+  "title": "Live bench result: bench/<label>.json (spec/feature/balance-gate.md)",
+  "description": "What one live bench of the sim measured, with the keys that decide whether two results are comparable. A live balance result of the simulated game (evidence: sim), not a statement about people or the real build. Never contains names or paths: hashes and IDs only.",
+  "type": "object",
+  "required": ["format", "kind", "evidence", "game_id", "compatibility", "versions", "metrics", "divergences", "per_run"],
+  "properties": {
+    "format": { "const": "bench-result/1" },
+    "kind": { "const": "live-balance" },
+    "evidence": { "const": "sim" },
+    "game_id": { "$ref": "id.schema.json#/$defs/slug" },
+    "compatibility": {
+      "description": "Two results are compared only when every key here is equal.",
+      "type": "object",
+      "required": ["adapter", "persona", "persona_hash", "seed", "seeds", "runs", "ticks", "mode", "purpose", "decision_mode", "tactics"],
+      "properties": {
+        "adapter": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$" },
+        "persona": { "$ref": "id.schema.json#/$defs/slug" },
+        "persona_hash": { "$ref": "#/$defs/hash" },
+        "seed": { "anyOf": [{ "type": "integer", "minimum": 0 }, { "type": "string", "minLength": 1 }] },
+        "seeds": { "type": "array", "items": { "type": "integer", "minimum": 0 } },
+        "runs": { "type": "integer", "minimum": 1 },
+        "ticks": { "type": "integer", "minimum": 1 },
+        "mode": { "enum": ["player", "omniscient"] },
+        "purpose": { "enum": ["efficiency", "coverage"] },
+        "decision_mode": { "enum": ["player-knowledge", "intent-assisted"] },
+        "tactics": { "enum": ["guide", "none"] }
+      },
+      "additionalProperties": false
+    },
+    "versions": {
+      "description": "What was measured; may differ between base and head (the change under test).",
+      "type": "object",
+      "required": ["manifest_version", "game_builds", "bundle_hash", "overlay_hash", "engine_version"],
+      "properties": {
+        "manifest_version": { "type": "string", "minLength": 1 },
+        "game_builds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "bundle_hash": { "$ref": "#/$defs/hash" },
+        "overlay_hash": { "anyOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] },
+        "engine_version": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["clear_rate", "clear_interval", "time_p50", "time_p90", "damage_p50", "tactic_share"],
+      "properties": {
+        "clear_rate": { "$ref": "#/$defs/ratio" },
+        "clear_interval": { "type": "array", "prefixItems": [{ "$ref": "#/$defs/ratio" }, { "$ref": "#/$defs/ratio" }], "items": false, "minItems": 2 },
+        "time_p50": { "anyOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }] },
+        "time_p90": { "anyOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }] },
+        "damage_p50": { "type": "number", "minimum": 0 },
+        "tactic_share": { "type": "object", "propertyNames": { "pattern": "^tactic:" }, "additionalProperties": { "$ref": "#/$defs/ratio" } }
+      },
+      "additionalProperties": false
+    },
+    "divergences": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["classes", "undesirable"],
+          "properties": {
+            "classes": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+            "undesirable": { "type": "array", "items": { "type": "string", "pattern": "^div-[0-9a-f]{12}$" } }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "per_run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["seed", "result", "ticks", "time_sec", "damage_taken"],
+        "properties": {
+          "seed": { "type": "integer", "minimum": 0 },
+          "result": { "enum": ["success", "fail", "abort"] },
+          "ticks": { "type": "integer", "minimum": 0 },
+          "time_sec": { "type": "number", "minimum": 0 },
+          "damage_taken": { "type": "number", "minimum": 0 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "ratio": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}

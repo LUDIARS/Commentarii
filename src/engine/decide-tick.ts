@@ -43,6 +43,8 @@ export interface TickInput {
   readonly state: EngineState;
   readonly observation: ObservationFrame;
   readonly rolls: TickRolls;
+  /** Intent-assisted test (spec/feature/engine.md §4.1); absent = player knowledge only. */
+  readonly intentAssist?: boolean;
 }
 
 export interface TickOutcome {
@@ -128,7 +130,7 @@ export function decideTick(input: TickInput): TickOutcome {
 
   const candidates = generateCandidates({ world, persona, observation: perceived, memory, ...(running ? { running: running.candidate } : {}) });
   const exploring = perceived.purpose === 'coverage' || rolls.explore < persona.exploration_rate;
-  const context = { observation: perceived, world, stage: world.stages.get(perceived.stage.id), purpose: perceived.purpose, exploring };
+  const context = { observation: perceived, world, stage: world.stages.get(perceived.stage.id), purpose: perceived.purpose, exploring, intentAssist: input.intentAssist === true };
   const scored = candidates.map((candidate) => scoreCandidate(candidate, persona, context));
 
   let chosen: string | undefined;

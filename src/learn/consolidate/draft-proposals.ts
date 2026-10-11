@@ -4,9 +4,9 @@
 
 import type { Bundle } from '../../bundle/bundle.ts';
 import type { Overlay } from '../overlay/overlay.ts';
-import type { Proposal } from './proposal.ts';
+import type { ProposalDraft } from './proposal.ts';
 
-export function draftProposals(bundle: Bundle, overlay: Overlay): Proposal[] {
+export function draftProposals(bundle: Bundle, overlay: Overlay): ProposalDraft[] {
   const ids = new Set(bundle.entities.map(({ doc }) => doc.id));
   const paths = new Set(bundle.entities.map(({ path }) => path));
   return overlay.unknown_entities

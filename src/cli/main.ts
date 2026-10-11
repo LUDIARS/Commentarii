@@ -3,6 +3,7 @@
 
 import { readFile } from 'node:fs/promises';
 import { loadPersona } from '../adapters/fs/load-persona.ts';
+import { readEngineVersion } from '../adapters/fs/read-engine-version.ts';
 import { openBundleDir } from '../adapters/fs/open-bundle-dir.ts';
 import { readPlayRunFiles } from '../adapters/fs/plays-read-runs.ts';
 import { readSchemaDocuments } from '../adapters/fs/read-schema-documents.ts';
@@ -16,6 +17,7 @@ import { readPromptTemplate } from '../adapters/llm/read-prompt-template.ts';
 import { createSchemaRegistry } from '../schema/schema-registry.ts';
 import { fsScanSource } from '../audit/fs-scan-source.ts';
 import { createFsLearnIo } from '../learn/io/fs-learn-io.ts';
+import { createFsVerifyIo } from '../adapters/fs/verify-io-fs.ts';
 import { PLAYER_SALT_ENV } from '../import/plays/player-salt.ts';
 import { runCli } from './run-cli.ts';
 
@@ -42,6 +44,7 @@ try {
       // guide run --adapter stdio: the game process owns guide's stdin / stdout (protocol only).
       openStdioChannel: () => createStreamLineChannel(process.stdin, process.stdout),
       now: () => new Date(),
+      engineVersion: readEngineVersion,
     },
     learnIo: createFsLearnIo(),
     playsIo: {
@@ -50,6 +53,7 @@ try {
       playerSaltFromEnv: () => process.env[PLAYER_SALT_ENV],
       now: () => new Date(),
     },
+    verifyIo: createFsVerifyIo(),
   });
 } catch (cause) {
   process.stderr.write(`guide: ${(cause as Error).message}\n`);

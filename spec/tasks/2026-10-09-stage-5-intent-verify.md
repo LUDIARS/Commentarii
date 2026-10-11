@@ -36,3 +36,57 @@
 - ビルドとテストはフォアグラウンドで待つ。
 - 完了 = コミット → Revisor local PR 提出 (`node E:/Document/Ars/command-runner.mjs rv:submit --repo <worktree>`) → **PR 番号と検証結果を報告してから** 終了指示を待つ。マージはしない。ブロック所見は直して再提出する。
 - 不明点は推測で埋めず、報告に「仮定」として書く。
+
+## 実装記録 (PR 説明)
+
+Actio タスク: `actio:1cf5d580-78b4-45d6-8ab7-918ea345ae4a`。仕様は `spec/feature/intent-verify.md`。
+
+### 変更した境界
+
+- CLI: `guide verify intent --game <bundle> --runs <dir|file>... [--persona <slug>] [--json]`、`guide verify intent --game <bundle> --accept <id> --by <name> [--note <text>]`、`guide report feasibility --game <bundle> [--json]` を追加。共有ファイル (`src/cli/parse-command.ts` / `run-cli.ts` / `cli-io.ts` / `main.ts`) への追加は verify の配線と任意の `verifyIo` だけ。
+- `guide render`: `verifyIo` があり `observations/verify/report.json` があるときだけ、ステージの頁にヒートマップ節を足し `stages/<slug>.heatmap.svg` を書く (player view から描くので masked の意図項目は出ない)。無ければ従来と同じ出力。`renderBundle` の options に任意の `stageSections`、`renderStage` に任意の `extra` を追加。
+- 書き込み: 検証は overlay 側 (`observations/divergences.json`、`observations/verify/` の report.json / report.md / SVG) と `feasibility/<stage>.json` だけを書く。正本 (`intent/`) を書くのは `--accept` だけで、対象ステージの `allowed_divergences` に 1 件足すだけ。定石は書かない (learned → authored は報告のみ)。
+- スキーマ: `schema/divergences.schema.json` と `schema/feasibility.schema.json` を追加しレジストリへ登録。`intent.schema.json` に任意の `design_stance`・`illusory_by_design`、`allowed_divergences` に任意の `intent` / `reason` / `divergence` / `signature` を追加。`manifest.schema.json` に任意の `feasibility.thresholds`。既存の文書はそのまま有効。
+- bundle loader: `feasibility/` を無視する接頭辞に追加 (派生データ。V01 の misplaced にならない)。
+- サンプル: `samples/bestia/intent/dome-arena.json` に `design_stance: "open"` を追加 (route / teach / time / forbid は元から 1 つずつ)。
+- 契約 C-50〜C-56 (`augur.contracts.json`、`src/contracts/*.contract.ts`) と注入行。
+- domain: `spec/domains/intent-verify.domain.json` を新設 (`src/verify/`、`src/render/heatmap/`、`tests/verify/`、`tests/fixtures/verify/`、`spec/feature/intent-verify.md`)。
+
+### 復旧方法
+
+コミット `feat(stage-5): ...` を revert すれば段階 4 (+4D) の状態に戻る。追加したスキーマ項目は全て任意なので、revert 前に書かれた intent に `design_stance` / `allowed_divergences[].signature` 等が残っていると旧スキーマでは V01 になる。その場合は該当項目を消す。検証結果だけを捨てるなら、バンドルの `observations/divergences.json`・`observations/verify/`・`feasibility/` を消せばよい (どれも正本ではない)。`--accept` で足した許容は、intent の `allowed_divergences` から該当項目 (`divergence` が ID) を消せば元に戻る。
+
+### 実施した検証
+
+- `npm install --include=dev && npm run typecheck && npm test`: 302 件すべて成功 (段階 5 の新規テストは 29 件: `tests/verify/*.test.ts`)。
+- `npm run build` 後、サンプルのコピーで `verify intent` → `--accept` → 再検証 → `validate` (OK、warning 0) → `render` → `report feasibility` を手で通した。
+- `augur inject check`: applied=39、orphaned=0。`augur contracts report --acceptance` (テスト実行のログ): C-1〜C-56 の 39 件すべて covered・違反 0。
+- 受入条件のテスト:
+  - 4 分類がそれぞれ出る: `tests/verify/classify-intents.test.ts` (主フィクスチャで route = 面白いズレ、teach = 望ましくないズレ、time = 一致、forbid = 望ましくないズレ。想定解法を封じた `runs-sealed` で route / teach = 不可能)。
+  - `--accept` 後は同じズレを再報告しない: `tests/verify/verify-cli.test.ts` (accept → 再検証で ID が出ず route が一致に戻る、divergences.json の allow と note が残る、2 度目の accept は変更なし)、`classify-intents.test.ts` (ID / run / 署名の各照合)。
+  - `omniscient` は帯にも分類にも使わない: `classify-intents.test.ts`、`feasibility.test.ts` (fixture の omniscient run が counted・根拠・解法に現れない)、`verify-cli.test.ts`。
+  - `illusory` は候補生成 + 成功 0 のときだけ: `feasibility.test.ts` (kite の `when` が成り立つフレーム → illusory、成り立たない → impossible、成功あり → feasible、illusory_by_design は別扱い)。
+  - `refined` 未宣言の収束が「収束」として出て推奨文言を含まない: `verify-cli.test.ts` (verify と report feasibility の出力を `推奨` / `すべき` / `recommend` / `should` 等で文字列検索)、`feasibility.test.ts` (refined なら convergence false)。
+  - SVG が well-formed で forbid と経路の要素を含む: `tests/verify/heatmap.test.ts` (zones / grid / navgraph、散布図、壊れた XML の検出)、`verify-cli.test.ts` (書き出したファイル)。
+
+### 未実施
+
+- 実際の `guide run --purpose coverage --record` による実走ログでの検証 (フィクスチャは手書きのリプレイ)。sim の coverage 実走でも同じ形式なので読めるはずだが、本 run では手で走らせていない。
+- 時間の想定差で「上限超過 = 望ましくないズレ」「下限未満 = 面白いズレ」以外 (経済の崩壊・詰み) の検出は、観測に該当する指標が無いため入れていない。
+- ヒートマップの zones は位置情報が無いので横 1 列の矩形に並べた (隣接の形は描かない)。
+- Web 画面での判定 (段階 7)、Praeforma のシーン ID (段階 5K)、バランス回帰ゲートへの分類変化の掲載 (段階 5C)。サービスの起動・起動テスト (常駐サービスの変更は無い)。
+- Anatomia は Commentarii を未登録 (`unknown project`) のため使わず、再利用探索は grep と既存コードの読解で行った。
+
+### 再利用探索の採否
+
+- 採用: `stageVisits` (到達・時間・経路を 4D と同じ規則で)、`tacticCandidates` + `buildEngineWorld(bundle, 'player')` + `EMPTY_RUN_MEMORY` (illusory の「候補として生成される」を段階 3 のエンジンと同じ関数で判定)、`parseReplay` / `replaySchema` (run の読み込み)、`chosenCandidate`、`toPlayerView` (player 地図と render)、`quantile` (到達時間の中央値)、`parseRef`、`document` / `table` (Markdown)、`writeOutputFiles`、スキーマレジストリ。
+- 不採用: `classifyPlayRuns` はバンドル内の `observations/human` / `observations/runs` の相対パスで人間 / オートを分け、coverage と efficiency を分けないため、任意パスの `--runs` に合わせて `select-runs.ts` を置いた。`buildPlaysReport` はステージ別の到達率の数表で、ペルソナ別・ノード別の集計を持たないため、到達率だけ同じ考えで `build-stage-report.ts` に持った。SVG は依存を足さない指示のため `src/render/heatmap/svg.ts` の文字列組み立てにした。
+
+### 仮定
+
+- Actio の本文取得 (`/v1/taskflow/tasks/content`) は `actio_unavailable` で失敗した。親がこのブランチにコミットした本ファイル (委託依頼文) を本文として実装した。
+- teach は「その定石を選んだ」(判断ログの chosen) で判定し、変種 (`<定石>--<変異>`) は使用に数えない。判断ログの無い人間 run は teach の判定対象から外す。
+- route の一致は経路が `path` を順序どおり含むこと (間に他のノードがあってよい)。route の別解・時間の下限未満を面白いズレ、teach 飛ばし・時間超過・forbid 侵入を望ましくないズレとした。
+- 帯の `extreme` は「成功はあるが feasible の条件を満たさない」とした (設計の「上級者のみ低い成功率」を、ペルソナ別の帯で読み取れる形に一般化)。
+- confusion depth の単位を揃えるため、失敗 1 回 = 1、滞留 1 秒 = 0.1 (`stall_weight`)、意図経路外のノード 1 つ = 1 とし、足跡あたりの平均にした。到達した run の最後の区間 (ステージを終えた場所) は滞留に数えない。
+- `--persona` 指定時は人間 run を外す (人間はペルソナを持たない)。

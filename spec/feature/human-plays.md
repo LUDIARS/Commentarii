@@ -84,7 +84,13 @@ mapping が名指しした列がテレメトリに無ければ、何も読まず
 - `purpose` の語彙に `human`、観測の `source` に `telemetry`、header に任意の `source: "human"` を足した (`schema/replay.schema.json`、`schema/observation-frame.schema.json`)。
 - **masked の禁止**: 人間の観測は `player` モードなので masked を含められない (設計原則 2)。境界を宣言しない値は masked (原則 1) なので、`hp` / `resources` の `knowledge` を書き忘れた mapping、`masked` と書いた mapping は、`find-masked-pointers` で検出して失敗する (mapping の誤り)。
 - 同じテレメトリと同じ salt で再実行すると同じファイルを同じ内容で書き直す (`started_at` 列があるとき)。
-- 人間の観測を昇格根拠に使うか (§14.D「manifest で選ぶ」) は段階 4 の consolidate の判断で、本段は `mode: player` として置くだけ。
+- header には観測項目の宣言 `observation_fields` を書く: manifest `observation.fields` に、mapping が `knowledge` を明示した resource
+  (`self.resources.<name>`、出所は telemetry の列) を足したもの。`knowledge` の無い resource は masked と宣言され、取り込みは失敗する。
+  mapping の `extra` 列には宣言が付かないので、manifest で宣言しない限り取り込めない ([observation-boundary.md](observation-boundary.md))。
+- 人間ログの使い道 (§14.D「昇格根拠に使うかは manifest で選ぶ」) は [learning.md](learning.md) §4.3 で manifest と整合させた:
+  人間 run は (1) 別解候補 `candidates.json` → `guide learn consolidate` の `human-tactic` 提案 → `guide learn approve` → `--apply` で正本の
+  `tactics/` へ移る経路と、(2) 意図ズレの比較対象 (段階 5) に使う。境界の昇格根拠には、人間 run から値の推定 (value-estimate) を作る
+  段がまだ無いので **現在は数えない** (manifest に選択肢を置くのはその段と同時。未実装として記録)。
 
 ## 5. 別解候補 `observations/human/candidates.json`
 

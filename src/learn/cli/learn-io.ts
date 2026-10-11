@@ -7,4 +7,6 @@ export interface LearnIo {
   /** UTF-8 text of a file, or undefined when it does not exist (any other failure throws). */
   readText(path: string): Promise<string | undefined>;
   schemaRegistry(): Promise<SchemaRegistry>;
+  /** Clock for approval timestamps (injected by tests); the system clock when absent. */
+  now?(): Date;
 }

@@ -14,6 +14,9 @@ import { runValidation } from '../validate/run-validation.ts';
 import { EXIT_INVALID, EXIT_OK, EXIT_USAGE, type CliIo } from './cli-io.ts';
 import { parseCommand, USAGE, UsageError, type Command } from './parse-command.ts';
 import { runImportCommand } from './run-import-command.ts';
+import { runVerifyCommand } from '../verify/cli/run-verify-command.ts';
+import { runGateCommand } from '../gate/cli/run-gate-command.ts';
+import { readStageExtras } from '../verify/cli/read-stage-extras.ts';
 
 async function execute(command: Command, io: CliIo): Promise<number> {
   switch (command.name) {
@@ -30,7 +33,9 @@ async function execute(command: Command, io: CliIo): Promise<number> {
       if (load.issues.length > 0) {
         io.stderr(`guide render: ${load.issues.length} schema issue(s); invalid files are left out (run guide validate)\n`);
       }
-      const files = renderBundle(load, { knowledge: command.knowledge });
+      const extras = await readStageExtras(io, command.bundleDir, load);
+      const files = renderBundle(load, { knowledge: command.knowledge, ...(extras === undefined ? {} : { stageSections: extras.sections }) });
+      for (const [path, text] of extras?.files ?? []) files.set(path, text);
       await io.writeFiles(command.outDir, files);
       io.stderr(`guide render: wrote ${files.size} file(s) to ${command.outDir} (knowledge=${command.knowledge})\n`);
       return EXIT_OK;
@@ -57,10 +62,19 @@ async function execute(command: Command, io: CliIo): Promise<number> {
       return runAutoplayCommand(command, io);
     case 'learn-ingest':
     case 'learn-consolidate':
+    case 'learn-approve':
       return runLearnCommand(command, io);
+    case 'bench-compare':
+    case 'bench-replay':
+    case 'gate-balance':
+      return runGateCommand(command, io);
     case 'import-plays':
     case 'report-plays':
       return runPlaysCommand(command, io);
+    case 'verify-intent':
+    case 'verify-accept':
+    case 'report-feasibility':
+      return runVerifyCommand(command, io);
   }
 }
 

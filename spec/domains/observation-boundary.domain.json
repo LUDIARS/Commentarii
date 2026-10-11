@@ -1,0 +1,14 @@
+{
+  "name": "observation-boundary",
+  "description": "観測境界: player の観測フレームが持ってよい場所の許可表 (基本項目 + manifest observation.fields の宣言) と、表に無い場所を既定拒否する判定。ドライバ・記録器・読み込み・人間ログ取り込みが同じ判定を使う。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)src/observation/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)tests/observation/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)spec/feature/observation-boundary\\.md$" }
+  ],
+  "cardTemplate": "Summarise the \"observation-boundary\" domain: field registry (meta / shown / declared) -> observationBoundaryProblems -> used by driver, tick invariants (R7), import plays.",
+  "specRefs": ["spec/architecture/design.md §1 §7.2", "spec/feature/observation-boundary.md"],
+  "rationale": "第一原則 (境界の無い値は masked) を観測の場所に適用する層。replay / engine / import plays が共有するので、どれにも属さない独立の domain に置く。スキーマ (schema/observation-fields.schema.json) は guide-bundle の所属パターンに含まれる。"
+}

@@ -39,6 +39,7 @@
 | R4 | `observation.mode` / `observation.purpose` は header の `mode` / `purpose` と一致 (player の run に omniscient の観測を混ぜない) |
 | R5 | `decision` の候補は重複せず、`chosen: true` は高々 1 つ |
 | R6 | **`mode: player` の run には、どの行のどの深さにも `knowledge: masked` が無い** (設計原則 2、§7.2) |
+| R7 | **`mode: player` の観測は、観測項目の許可表 (基本項目 + header `observation_fields` の宣言) の外に場所を持たない** ([observation-boundary.md](observation-boundary.md)、`unregistered-in-player`)。ラベルの有無ではなく場所で判定するので、ラベルの無い `extra.secret_hp` も拒否される。header に宣言の無い旧リプレイは基本項目だけで検査される |
 
 R6 は第一原則の構造上の担保: 記録器は player モードで masked を含む観測を decider に渡す前に拒否し、decider の出力
 (判断ログ・行動) とフッタの `summary` に masked があれば書く前に拒否する (`RecordingError`、`isMaskedInPlayer`)。拒否した行は書かない。

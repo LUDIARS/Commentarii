@@ -18,6 +18,7 @@ import type { PlaysMapping } from './plays-mapping.ts';
 import { readAction, type ResolveOperand } from './read-action.ts';
 import { readEntities } from './read-entities.ts';
 import { readEvents } from './read-events.ts';
+import { humanRunDeclarations } from './observation-declarations.ts';
 import { readExtra } from './read-extra.ts';
 import { readCount, readTimestamp } from './read-row-values.ts';
 import { readSelf } from './read-self.ts';
@@ -154,6 +155,7 @@ export function buildHumanRun(input: HumanRunInput): HumanRun {
     mode: 'player',
     purpose: 'human',
     source: 'human',
+    observation_fields: humanRunDeclarations(context.observationFields, mapping),
     started_at: (started ?? now).toISOString(),
   };
   const footer: ReplayFooter = {

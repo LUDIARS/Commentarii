@@ -12,9 +12,13 @@ async function bench(slug: string, overrides: Partial<BenchOptions> = {}): Promi
   return runBench({ bundle, persona: await shippedPersona(slug), seed: 1, runs: RUNS, ticks: 2000, mode: 'player', purpose: 'efficiency', ...overrides });
 }
 
-test('generic actions alone still play the sample through; the guide\'s tactics do better', async () => {
-  const guided = await bench('novice');
-  const generic = await bench('novice', { withoutTactics: true });
+// Measured without the intent-assisted test (Astra review P1-4): the designer's intent is not
+// handed to the decider. In the sim the guide's tactics shorten the expert's clear time; for the
+// novice (authored tactics only, slow reactions) they do not (recorded in
+// spec/tasks/2026-10-09-astra-review-completion.md). Sim evidence only, not a claim about people.
+test('generic actions alone still play the sample through; the guide\'s tactics do better for the expert', async () => {
+  const guided = await bench('expert');
+  const generic = await bench('expert', { withoutTactics: true });
   assert.equal(generic.tactics, 'none');
   assert.deepEqual(generic.tactic_share, {});
   assert.ok(generic.clear_rate > 0, 'generic actions alone still clear some runs');

@@ -2,6 +2,7 @@
 // source of truth; these types describe documents that already passed schema validation.
 
 import type { Knowledge } from './knowledge.ts';
+import type { PraeformaRef } from '../praeforma/praeforma-ref.ts';
 
 export type LocalizedText = Readonly<Record<string, string>>;
 
@@ -30,6 +31,12 @@ export interface Manifest {
   readonly coordinates: { readonly system: 'grid' | 'world-xy' | 'world-xyz'; readonly unit: string };
   readonly lexicon?: { readonly version: string };
   readonly learning?: { readonly policy: unknown };
+  /** Game-declared observation fields (spec/feature/observation-boundary.md). */
+  readonly observation?: { readonly fields: readonly { readonly path: string; readonly knowledge: Knowledge; readonly origin: string }[] };
+  /** Balance gate thresholds (spec/feature/balance-gate.md §3); defaults when absent. */
+  readonly bench?: { readonly thresholds?: Readonly<Record<string, number>> };
+  /** Feasibility band thresholds (spec/feature/intent-verify.md 6.3); defaults when absent. */
+  readonly feasibility?: { readonly thresholds?: Readonly<Record<string, number>> };
 }
 
 export interface Glossary {
@@ -75,6 +82,8 @@ export interface Spawn {
 
 export interface Stage {
   readonly id: string;
+  /** Praeforma scene of the stage (spec/feature/praeforma-link.md). */
+  readonly praeforma?: PraeformaRef;
   readonly name: LocalizedText;
   readonly objectives: readonly GuideValue<LocalizedText>[];
   readonly clear_conditions?: readonly GuideValue<LocalizedText>[];
@@ -192,6 +201,8 @@ interface IntentCommon {
   readonly id: string;
   readonly note?: string;
   readonly knowledge?: Knowledge;
+  /** Praeforma scene / specification of the item (spec/feature/praeforma-link.md). */
+  readonly praeforma?: PraeformaRef;
 }
 
 export type IntendedItem =
@@ -200,17 +211,45 @@ export type IntendedItem =
   | (IntentCommon & { readonly kind: 'time'; readonly range_sec: readonly [number, number] })
   | (IntentCommon & { readonly kind: 'forbid'; readonly area: string });
 
+export type DivergenceReason = 'alt-route' | 'shortcut' | 'teach-skipped' | 'over-time' | 'forbid-entered';
+
+/** Tactic sequence + map node route of the runs a divergence groups (spec/feature/intent-verify.md 4.1). */
+export interface DivergenceSignature {
+  readonly tactics: readonly string[];
+  readonly route: readonly string[];
+}
+
 export interface AllowedDivergence {
   readonly run: string;
   readonly summary: string;
   readonly decided_by: string;
   readonly tactic?: string;
+  /** Set by guide verify intent --accept. */
+  readonly intent?: string;
+  readonly reason?: DivergenceReason;
+  readonly divergence?: string;
+  readonly signature?: DivergenceSignature;
+  /** Guide version the acceptance was judged under (set by guide verify intent --accept). */
+  readonly manifest_version?: string;
+  readonly praeforma?: PraeformaRef;
+}
+
+export type DesignStance = 'open' | 'refined' | 'mixed';
+
+/** A solution meant to look possible but fail (design 8.5). */
+export interface IllusoryByDesign {
+  readonly tactics?: readonly string[];
+  readonly route?: readonly string[];
+  readonly rationale: string;
+  readonly decided_by: string;
 }
 
 export interface Intent {
   readonly stage: string;
   readonly intended: readonly IntendedItem[];
   readonly allowed_divergences: readonly AllowedDivergence[];
+  readonly design_stance?: DesignStance;
+  readonly illusory_by_design?: readonly IllusoryByDesign[];
   /** Set on intents drafted by `guide intent import` (source.kind = llm-draft, draft: true). */
   readonly source?: Source;
   readonly draft?: boolean;

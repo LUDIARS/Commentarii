@@ -5,6 +5,7 @@
 import type { ObservationFrame } from './observation-frame.ts';
 import type { ReplayHeader, ReplayTick } from './replay-record.ts';
 import { findMaskedPointers } from './find-masked-pointers.ts';
+import { observationBoundaryProblems } from '../observation/check-observation-boundary.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:1e5f4490 */
 import augurContract_d1bc47f3 from '../contracts/check-tick-record.contract.ts'; /* augur-inject:contract-predicate:b8f4c335 */
 
@@ -15,7 +16,8 @@ export type TickProblemCode =
   | 'mode-mismatch'
   | 'purpose-mismatch'
   | 'decision'
-  | 'masked-in-player';
+  | 'masked-in-player'
+  | 'unregistered-in-player';
 
 export interface TickProblem {
   readonly code: TickProblemCode;
@@ -50,7 +52,17 @@ export function checkObservation(header: ReplayHeader, previous: ReplayTick | un
     problems.push({ code: 'purpose-mismatch', pointer: '/observation/purpose', message: `observation purpose ${observation.purpose} differs from run purpose ${header.purpose}` });
   }
   problems.push(...maskedProblems(header, observation, '/observation'));
+  if (header.mode === 'player') problems.push(...boundaryProblems(header, observation));
   return problems;
+}
+
+/** Places of a player observation outside the field registry (R7, spec/feature/observation-boundary.md). */
+function boundaryProblems(header: ReplayHeader, observation: ObservationFrame): TickProblem[] {
+  return observationBoundaryProblems(observation, header.observation_fields ?? [], '/observation').map((problem) => ({
+    code: 'unregistered-in-player',
+    pointer: problem.pointer,
+    message: problem.message,
+  }));
 }
 
 function decisionProblems(record: ReplayTick): TickProblem[] {
