@@ -78,11 +78,26 @@ GPU と同期して厳密な可視性を保証することは約束しない。�
 - 選択結果にアセット ID (`mesh:` / `mat:` / 指紋) が現れない。
 - 流れ: seq の飛び、frame・t・tick の逆行、世代を上げないハンドル再利用、end 後の行、end 無しの切断。
 
-## 8. 段 6 以降への引き継ぎ
+## 8. 受信アダプタ (段 6、`src/adapters/render-tap/`)
 
-- 段 6 の受信アダプタ (`src/adapters/render-tap/`) は `selectPlayerDraws` の結果から Observation を組む。入力の CLI は
-  `guide run --adapter render-tap --frames <frames.jsonl|pipe> --act stdio|none` とし、既存の `--observe` (reflect の出力先) は変えない。
+- `guide run --adapter render-tap --frames <frames.jsonl|-> [--act stdio|none] [--stage <stage-id>]`。既存の `--observe` (reflect の出力先) は変えない。
+- 1 フレーム → 1 観測 (`tapToObservation`、契約 C-74): `tick` は `frame.tick` (無ければ `frame.frame`)、`t` は `frame.t`、entities は `selectPlayerDraws` の見えた個体
+  (外見が一意なら entity ID と `confidence: 1`、それ以外は entity 無しで `confidence: 0` = reflect が未知の entity として記録)、`self.pos` は manifest
+  `render_tap.self` の外見のアバター (無ければカメラの位置 = 列優先 view 行列の -Rᵀt)、`stage.node` は地図ノードの最寄り。
+- UI: manifest `render_tap.ui[]` (`element` → `read: fill|number` → `path`)。`path` は `self.hp` (ラベル `shown`) か `self.resources.<name>` / `extra.<key>`
+  (観測境界で宣言した場所。宣言の無い場所はエンジンが止める)。非表示・clip 外の UI は読まない。
+- 流れの問題 (欠損・逆行・ハンドル再利用) は stderr に出して続け、schema 違反の行はプロトコル誤りで止める。end 行で終わり、end 無しの終端は切断 (`abort`)。
+- 描画器のアセット ID は player 観測に入れない。正体不明の外見をメーカーに渡すのは §9 の別経路。
 - UI の値 (HP バーの fill、数字の glyph) を観測のどの場所に置くかは `glossary` の UI 対応表で決め、[observation-boundary.md](observation-boundary.md)
   の許可表 (`self.hp` は基本項目、それ以外は manifest 宣言) に従う。
 - 6P (Pictor) は §2 の形を出す。アセット名が取れない draw は `content-hash` を優先し、取れなければ `count-hash` (識別不能) にする。
 - 6B (Bestia) の観測は段 1 (ゲーム内 API) の経路であり、render-tap 契約ではなく [adapter-protocol.md](adapter-protocol.md) に従う。
+
+## 9. メーカー窓口: 名前の付かない外見 (`guide report signatures`、契約 C-80)
+
+- `guide report signatures <frames.jsonl> --game <bundle-dir> [--json] [--out <file>]`。記録した render-tap/1 フレームを読み (schema 違反は止める、end 行は飛ばす)、
+  player-camera の scene パスで **見えた** (`classifyDraw` が visible) draw のうち、攻略本の `render_signature` で一意に名前が付かない外見を集計する。
+- 種類: `unknown-signature` (どのエンティティにも無い → `render_signature` を足す / 新しい敵の雛形)、`ambiguous` (複数のエンティティが同じ外見 → 候補を列挙)、
+  `unidentifiable` (count-hash → タップ側でアセット名か content-hash を出す)。外見ごとに見えたフレーム数・初出フレーム・1 フレームの最大数。
+- 索引は攻略本全体 (masked のエンティティも含む) から作る。メーカー向けの内部資料で、アセット ID を含む。公開版の攻略本・プレイヤー観測・LLM 入力には入れない。
+- エンジンはこの経路を読まない。エンジンから見えるのは常に「entity の無い個体」(§8) だけで、名前を付けるのは攻略本の更新 (人間の編集) を通る。

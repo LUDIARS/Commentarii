@@ -14,7 +14,7 @@ export interface VerifyIntentCommand {
 }
 
 export interface VerifyAcceptCommand {
-  readonly name: 'verify-accept';
+  readonly name: 'verify-accept' | 'verify-reject';
   readonly gameDir: string;
   readonly id: string;
   readonly by: string;
@@ -32,6 +32,7 @@ export type VerifyCommand = VerifyIntentCommand | VerifyAcceptCommand | ReportFe
 
 export const VERIFY_USAGE = `  guide verify intent --game <bundle-dir> --runs <dir|file> [--runs ...] [--persona <slug>] [--json]
   guide verify intent --game <bundle-dir> --accept <divergence-id> --by <name> [--note <text>] [--json]
+  guide verify intent --game <bundle-dir> --reject <divergence-id> --by <name> [--note <text>] [--json]
   guide report feasibility --game <bundle-dir> [--json]
 `;
 
@@ -51,6 +52,7 @@ export function parseVerifyCommand(args: readonly string[]): VerifyCommand {
       runs: { type: 'string', multiple: true },
       persona: { type: 'string' },
       accept: { type: 'string' },
+      reject: { type: 'string' },
       by: { type: 'string' },
       note: { type: 'string' },
       json: { type: 'boolean' },
@@ -58,18 +60,21 @@ export function parseVerifyCommand(args: readonly string[]): VerifyCommand {
   });
   const gameDir = nonEmpty(values.game, 'verify intent --game');
   const json = values.json === true;
-  if (values.accept !== undefined) {
-    if ((values.runs ?? []).length > 0 || positionals.length > 0 || values.persona !== undefined) throw new Error('verify intent --accept takes no runs and no --persona');
+  if (values.accept !== undefined && values.reject !== undefined) throw new Error('verify intent takes --accept or --reject, not both');
+  const decided = values.accept ?? values.reject;
+  if (decided !== undefined) {
+    const flag = values.accept !== undefined ? '--accept' : '--reject';
+    if ((values.runs ?? []).length > 0 || positionals.length > 0 || values.persona !== undefined) throw new Error(`verify intent ${flag} takes no runs and no --persona`);
     return {
-      name: 'verify-accept',
+      name: values.accept !== undefined ? 'verify-accept' : 'verify-reject',
       gameDir,
-      id: nonEmpty(values.accept, '--accept'),
-      by: nonEmpty(values.by, 'verify intent --accept --by'),
+      id: nonEmpty(decided, flag),
+      by: nonEmpty(values.by, `verify intent ${flag} --by`),
       ...(values.note === undefined ? {} : { note: nonEmpty(values.note, '--note') }),
       json,
     };
   }
-  if (values.by !== undefined || values.note !== undefined) throw new Error('--by / --note go with --accept');
+  if (values.by !== undefined || values.note !== undefined) throw new Error('--by / --note go with --accept or --reject');
   const runs = [...(values.runs ?? []), ...positionals];
   if (runs.length === 0) throw new Error('verify intent needs --runs <dir|file>');
   return { name: 'verify-intent', gameDir, runs, ...(values.persona === undefined ? {} : { persona: nonEmpty(values.persona, '--persona') }), json };

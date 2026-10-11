@@ -1,0 +1,23 @@
+{
+  "name": "web-editor",
+  "description": "Web 編集画面 (段階 7): 攻略本の文書を読み書きする HTTP API と画面。独自 DB を持たず、保存はスキーマ検査 → 書き込み → validate、判断 (承認・反映・ズレの許容 / 却下) は CLI をそのまま呼ぶ。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    {
+      "pathPattern": "(^|/)src/web/[^/]+[.]ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/web/[^/]+[.]test[.]ts$"
+    },
+    {
+      "pathPattern": "(^|/)spec/feature/web-editor[.]md$"
+    }
+  ],
+  "cardTemplate": "Summarise the web-editor domain: EditorRequest -> handleEditorRequest (doc read / schema-checked save / CLI decisions) -> EditorResponse; served by src/health/main.ts when COMMENTARII_BUNDLE is set.",
+  "specRefs": [
+    "spec/architecture/design.md §6 §11",
+    "spec/feature/web-editor.md"
+  ],
+  "rationale": "正本はファイル、操作口は CLI という設計を崩さない薄い層。サーバ (src/health/) と IO 組み立て (src/cli/main-io.ts) は既存の所属のまま。"
+}

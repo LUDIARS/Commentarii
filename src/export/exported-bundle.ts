@@ -21,7 +21,7 @@ export const EXPORT_FORMAT_VERSION = 1;
 
 export type ExportKnowledge = 'player' | 'full';
 /** Targets of export. Only the engine runtime exists today (design 14.G adds ingame). */
-export const EXPORT_TARGETS = ['runtime'] as const;
+export const EXPORT_TARGETS = ['runtime', 'ingame'] as const;
 export type ExportTarget = (typeof EXPORT_TARGETS)[number];
 
 export interface ExportedDocument<T> {

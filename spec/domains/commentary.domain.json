@@ -1,0 +1,23 @@
+{
+  "name": "commentary",
+  "description": "判断ログの実況 (段 7J): player モードの run の判断の切り替わりを、masked の定石を伏せた入力にして narrator (組み込み文面または外部プログラム) に渡し、observations/commentary/ に書く。判断には関与しない。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    {
+      "pathPattern": "(^|/)src/commentary/[^/]+[.]ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/commentary/[^/]+[.]test[.]ts$"
+    },
+    {
+      "pathPattern": "(^|/)spec/feature/commentary[.]md$"
+    }
+  ],
+  "cardTemplate": "Summarise the commentary domain: ReplayRun + Bundle -> buildCommentaryInput (player-mode only, masked tactics hidden) -> narrator (formatCommentary or external program via stdin) -> observations/commentary/<run>.md + <run>.input.json.",
+  "specRefs": [
+    "spec/architecture/design.md §14.J",
+    "spec/feature/commentary.md"
+  ],
+  "rationale": "外部 LLM に渡る入力を 1 か所 (buildCommentaryInput) に絞り、player-filter と送信内容の記録を構造で保証する。"
+}

@@ -1,0 +1,32 @@
+{
+  "id": "enemy:konbini-dominant:store-seban_ileban",
+  "name": {
+    "ja": "デイラーク の店 (他チェーン)",
+    "en": "DAYLARK store (rival)"
+  },
+  "stats": {
+    "build_cost": {
+      "value": 800,
+      "unit": "credits",
+      "knowledge": "shown",
+      "source": {
+        "kind": "master",
+        "ref": "KonbiniDominant data/content/first-playable.json chains[2].buildCostCredits"
+      }
+    },
+    "zoc_radius": {
+      "value": 18,
+      "unit": "m",
+      "knowledge": "shown",
+      "source": {
+        "kind": "master",
+        "ref": "KonbiniDominant data/content/first-playable.json chains[2].zocRadiusMeters"
+      }
+    }
+  },
+  "behavior": "state:konbini-dominant:store",
+  "tags": [
+    "store",
+    "seban_ileban"
+  ]
+}

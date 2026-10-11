@@ -9,7 +9,7 @@ import { createRng } from '../../engine/rng.ts';
 import type { FighterStats, SimConfig } from './sim-config.ts';
 import { createSimLayout, type Point } from './sim-layout.ts';
 import { statsOf } from './sim-rules.ts';
-import type { SimEnemy, SimWorld } from './sim-world.ts';
+import type { SimEnemy, SimWorld, SimEnemyBrains } from './sim-world.ts';
 
 export class SimSetupError extends Error {
   override readonly name = 'SimSetupError';
@@ -56,6 +56,8 @@ export interface SimSetup {
   readonly config: SimConfig;
   /** Stage to play; the first stage of the bundle when absent. */
   readonly stageId?: string;
+  /** Enemies the engine drives (stage 6F). */
+  readonly enemyBrains?: SimEnemyBrains;
 }
 
 export function createSimWorld(setup: SimSetup): SimWorld {
@@ -127,6 +129,7 @@ export function createSimWorld(setup: SimSetup): SimWorld {
     hazardNodes: new Set((files.map?.doc.annotations ?? []).filter((note) => note.kind === 'hazard').map((note) => note.target)),
     rules,
     ...(damageRule === undefined ? {} : { damageRule }),
+    ...(setup.enemyBrains === undefined ? {} : { enemyBrains: setup.enemyBrains }),
     config,
     rng: createRng(setup.seed),
     events: [],

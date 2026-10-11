@@ -43,6 +43,7 @@
    - `met`: `entity_state` の全項目で、束縛したインスタンスの `state_guess` が期待どおり。
    - `broken`: `within_sec` を過ぎても met でない。→ その定石を `HOLD_BACK_SEC` (5 秒) 候補から外し、実行中なら即中断して再評価。
    - `pending`: それ以外 (観測できない状態は「不明」で、破れたとは扱わない)。
+   - `expect: { "reflex": true }` (待つ結果が無い反射的な定石) は即座に `met`。次のティックに再提案できる (射程内なら撃つ・射程外なら追う。6F)。
    - 判定が出ていない定石は再提案しない (結果を見る前に同じ定石を繰り返さない)。met なら即座に再提案できる。
 3. **候補生成** (§3)、**効用** (§4)、**選択**: 効用の高い順に BT を 1 歩進め、行動を出せた最初の候補を選ぶ。行動を出せない候補
    (束縛した敵が消えた・目的地に既に居る) は `skipped` として次点へ。どれも行動を出せなければ `wait 0`。
@@ -220,3 +221,16 @@ samples/bestia (seed 1、20 run、2000 ティック) の実測:
 - `--record` は新しいファイルに段階 2A の形式で記録する (既存ファイルは拒否)。
 - 結果 (JSON) は stdout、`--adapter stdio` のときは stdout がプロトコル専用なので stderr。
 - 終了コード: masked 検出・mode 不一致で止まったら 1、それ以外 (ゲームの勝敗・ティック上限) は 0。
+
+## 11. 敵 AI としての再利用 (段階 6F、設計 §14.F)
+
+- 同じ utility-bt エンジンを敵個体の脳にする (`src/engine/enemy/enemy-brain.ts`)。敵専用のコードは持たず、違いは攻略本 (敵から見た攻略本) とアダプタの視点だけ。
+- sim は `enemyBrains` (敵インスタンス → 脳、`mode`、プレイヤーの entity ID) を受け、脳を持つ敵は固定の状態機械の代わりに、自分の視点の観測
+  (`observeAsEnemy`: self = その敵、entities = 視界内のプレイヤー (instance 0) と他の敵、`extra.reach` = 自分の射程、撃たれたら `shot-at` イベント、
+  契約 C-75) から脳が決めた行動 (`applyEnemyAction`: 固定 BT と同じ移動・攻撃・回避・後退) をとる。既定は `player` (視界内だけ)。全知の敵は `omniscient` と明示する。
+- 敵用の攻略本の例 (`tests/fixtures/enemy-ai/`): プレイヤーを `actor:bestia:player` とし、固定 BT の Return / Dodge / Retreat / Attack / Chase を定石 5 本で書く。
+  互いに排他な `when` (`not` で優先順位を表す) と `expect: { "reflex": true }` (毎ティック再提案できる反射的な定石)。
+- 語彙の追加: entity 葉の `within_reach` (自分の `extra.reach` と比べる。種別ごとの射程を定石に書かずに済む)。
+- テスト: 状況ごと (射程外・射程内・瀕死で近い・撃たれた・リング外・瀕死で遠い) に固定 BT と同じ分岐を選ぶ。sim で敵 2 体をエンジンで動かし
+  (プレイヤーは待つだけ)、固定 BT のときと同じ勝敗になり、敵の観測に masked も観測境界の違反も無い。**sim での実証であり、Bestia 実機の 5 体 AI での
+  実証 (設計 §14.F の受入) は Bestia アダプタ (6B) の後**。

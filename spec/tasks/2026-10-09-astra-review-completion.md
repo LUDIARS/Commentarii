@@ -71,9 +71,22 @@
 1. (完了) 段階 5 補正 (P1-3 / P1-4 / P2-8)。
 2. (第 3 PR) 5C バランス回帰ゲート: `spec/feature/balance-gate.md`。P1-6 を反映 (live balance と decision regression を分離、互換性キーで非互換比較を拒否、
    `evidence: sim` の明示)。実測で、kite 定石を外すと expert の p50 は改善 (20.6 → 17.4 秒) するが p90 は悪化 (21.4 → 29 秒) したため、p90 も比較対象にした。
-   5K Praeforma 連携も同じ第 3 PR 系列で実装 (`spec/feature/praeforma-link.md`、ID の保持・取り込み・レポート付与・公開契約。Praeforma 側の表示 PR は残件)。
-3. 5C バランス回帰ゲート (P1-6 を反映) → 5K Praeforma 連携 (`2026-10-09-stage-5c-balance-gate.md` / `2026-10-09-stage-5k-praeforma-link.md`)。
-3. 段 6 render-tap 受信・正規化 + 6F 敵 AI (確定契約に固定) と、6P Pictor フレームタップ・6B Bestia 実機アダプタ (各リポの別 Opus 委託、契約参照を同梱)。
-4. 段 7 Web 編集 (エンティティ / 地図注記 / 定石 / 意図 / 観測差分の採否 / ズレ判定)、7G ゲーム内図鑑・解放済み知識 export、7I 意味差分説明、
-   7J read-only LLM 解説 (player-filter 済み入力のみ)、Praeforma 側シーン表示、段 8 第 2 ゲームアダプタ。
-5. 最終受入: 実物 tap → 判断 → 入力 → 次フレーム、Bestia 5 体敵 AI、同一エンジン 2 ゲーム差し替え、情報境界、学習提案 → 承認 → 正本反映。
+   5K Praeforma 連携は #2634 (branch feat/astra-review-completion、head 8ad0e33)。Test OK だが Revisor の判定が needs_human (riskReassessment held) で人間判断待ち。
+   Praeforma 側の表示 PR は 5K のマージ後。
+3. (第 5 PR、branch feat/render-tap-receiver、origin/main 起点で 5K を含まない。提出は #2634 のマージ後: origin/main の domain JSON 3 件の修正が #2634 にあるため)
+   - 段 6 受信 + 6F: `src/adapters/render-tap/` (`guide run --adapter render-tap --frames ... --act stdio|none`、`selectPlayerDraws` の結果だけから player 観測、
+     manifest `render_tap` で UI 要素 → 観測の場所、アセット ID を観測に入れない、C-74) と `src/engine/enemy/` + sim の `enemyBrains` (敵視点の観測で同じエンジンを敵の脳に、C-75)。
+     語彙に `within_reach`、tactic `expect.reflex`。**sim と golden での実証。実物 tap → 判断 → 入力 → 次フレーム、Bestia 5 体 AI の実機実証は残件 (6P #2625/#2637、6B #2635/#2636 はマージ済み)**。
+   - 段 7 Web 編集 (`spec/feature/web-editor.md`、C-76)、7G ゲーム内 export (`--target ingame --unlocked`、C-77)。
+   - 7I 意味差分 `guide diff --explain` (`spec/feature/semantic-diff.md`、C-78)。数値は差分から機械的に出し、LLM は呼ばない。
+   - 7J 判断ログの実況 `guide commentary` (`spec/feature/commentary.md`、C-79)。player モードの run だけ、masked の定石は伏せて narrator に渡す。
+   - 段 8 KonbiniDominant: 契約 `spec/feature/adapter-konbini-dominant.md`、攻略本 `samples/konbini-dominant/`、ゴールデン、同じエンジンが KD の行動を返す試験。
+     tactic の `do` に `params` (ゲーム固有の operand) を追加。KD 側アダプタは子委託 (Concordia run 8bb925ea、branch feat/commentarii-adapter)。
+   - メーカー窓口 `guide report signatures` (render-tap-contract.md §9、C-80): 見えたのに名前の付かない外見を内部資料として集計。エンジンは読まない。
+4. 残件
+   - #2634 (5K) の再審査投入: rv:submit は test_ok を再キューしない、Revisor retry は token が要る。人間 (Revisor test forum) か Revisor 環境での `revisor pr retry 2634` 待ち。
+   - Praeforma 側シーン表示 (5K のマージ後に Praeforma リポへ子委託)。
+   - KD 側アダプタ (子委託中) と KD headless 実走。
+   - 最終受入 (実機): 実物 tap → 判断 → 入力 → 次フレーム (Pictor)、Bestia 5 体敵 AI、同一エンジン 2 ゲーム差し替え (Bestia / KD)、情報境界、学習提案 → 承認 → 正本反映。
+   - 共有 `E:/Document/Ars/logs/contracts.jsonl` (1.6GB 超) で Concordia の完了判定 (Augur 集計) が落ちる。Concordia は `--logs` を渡さず、プロセスの
+     `VESTIGIUM_LOGS_DIR` (共有) を読む。ローテーション可否は人間判断。

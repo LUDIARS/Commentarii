@@ -4,12 +4,29 @@
   "presetRules": [],
   "templateRules": [],
   "membership": [
-    { "pathPattern": "(^|/)src/render-tap/[^/]+\\.ts$" },
-    { "pathPattern": "(^|/)tests/render-tap/[^/]+\\.test\\.ts$" },
-    { "pathPattern": "(^|/)tests/fixtures/render-tap/[^/]+\\.jsonl$" },
-    { "pathPattern": "(^|/)spec/feature/render-tap-contract\\.md$" }
+    {
+      "pathPattern": "(^|/)src/render-tap/.+\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/render-tap/[^/]+\\.test\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/fixtures/render-tap/[^/]+\\.jsonl$"
+    },
+    {
+      "pathPattern": "(^|/)spec/feature/render-tap-contract\\.md$"
+    },
+    {
+      "pathPattern": "(^|/)src/adapters/render-tap/[^/]+\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/adapters/render-tap/[^/]+\\.test\\.ts$"
+    }
   ],
   "cardTemplate": "Summarise the \"render-tap\" domain: tap line (render-tap/1) -> sequence invariants -> classifyDraw (visible / excluded / unknown) -> identifyAppearance -> selectPlayerDraws (the only input of a render-tap Observation).",
-  "specRefs": ["spec/architecture/design.md §7.1", "spec/feature/render-tap-contract.md"],
+  "specRefs": [
+    "spec/architecture/design.md §7.1",
+    "spec/feature/render-tap-contract.md"
+  ],
   "rationale": "Pictor (6P) と受信アダプタ (段 6) の間の契約層。受信アダプタ (src/adapters/render-tap/) は段 6 でこの層の結果だけから Observation を組む。スキーマ (schema/render-frame.schema.json) は guide-bundle の所属パターンに含まれる。"
 }

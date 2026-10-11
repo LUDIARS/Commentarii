@@ -1,16 +1,19 @@
 // Entity leaf of a `when` condition (design 4.4):
 //   { "entity": "<entity ID>" | "$binding", "visible": bool, "distance_lt": n, "distance_gt": n,
-//     "state": "<state ref>", "min_confidence": 0..1, "as": "$name" }
+//     "state": "<state ref>", "min_confidence": 0..1, "within_reach": bool, "as": "$name" }
+// within_reach compares the distance with the observer's own reach (extra.reach, shown), so one
+// tactic serves every body without writing a species' range into it (6F: the engine as an enemy).
 // An ID matches the nearest visible instance that satisfies every key and binds it (as `as`, or
 // `$<kind>`); a binding re-checks the instance bound earlier. visible:false holds when no
 // instance satisfies the rest. Unknown keys never match (the vocabulary is closed).
 
 import { isJsonObject } from '../../domain/value-node.ts';
 import type { ObservationFrame, ObservedEntity } from '../../replay/observation-frame.ts';
+import { reach as reachOf } from '../observation/self-readings.ts';
 import { distanceTo, findInstance, sortByDistance } from '../observation/visible-entities.ts';
 import { defaultBindingName, isBindingName, matched, unmatched, type Bindings, type MatchResult } from './bindings.ts';
 
-const ENTITY_KEYS = new Set(['entity', 'visible', 'distance_lt', 'distance_gt', 'state', 'min_confidence', 'as']);
+const ENTITY_KEYS = new Set(['entity', 'visible', 'distance_lt', 'distance_gt', 'state', 'min_confidence', 'within_reach', 'as']);
 
 function satisfies(observation: ObservationFrame, entity: ObservedEntity, leaf: Readonly<Record<string, unknown>>): boolean {
   const d = distanceTo(observation, entity);
@@ -18,6 +21,10 @@ function satisfies(observation: ObservationFrame, entity: ObservedEntity, leaf: 
   if (typeof leaf.distance_gt === 'number' && !(d !== undefined && d > leaf.distance_gt)) return false;
   if (typeof leaf.state === 'string' && entity.state_guess !== leaf.state) return false;
   if (typeof leaf.min_confidence === 'number' && (entity.confidence ?? 1) < leaf.min_confidence) return false;
+  if (typeof leaf.within_reach === 'boolean') {
+    const reach = reachOf(observation);
+    if (reach === undefined || d === undefined || (d <= reach) !== leaf.within_reach) return false;
+  }
   return true;
 }
 

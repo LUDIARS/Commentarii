@@ -1,0 +1,21 @@
+{
+  "stage": "stage:konbini-dominant:first-playable",
+  "intended": [
+    {
+      "id": "intent:konbini-dominant:first-playable:learn-expand",
+      "kind": "teach",
+      "tactic": "tactic:konbini-dominant:expand-to-lot",
+      "note": "資金が貯まったら出店を重ねることを覚えてほしい"
+    },
+    {
+      "id": "intent:konbini-dominant:first-playable:time",
+      "kind": "time",
+      "range_sec": [
+        120,
+        300
+      ]
+    }
+  ],
+  "allowed_divergences": [],
+  "design_stance": "open"
+}

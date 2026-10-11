@@ -1,0 +1,14 @@
+{
+  "id": "enemy:konbini-dominant:store-seban_ileban",
+  "stats": {
+    "revenue_per_person": {
+      "value": 0.4,
+      "unit": "credits",
+      "knowledge": "masked",
+      "source": {
+        "kind": "master",
+        "ref": "KonbiniDominant data/content/first-playable.json chains[2].revenueMilliCreditsPerPerson"
+      }
+    }
+  }
+}

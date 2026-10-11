@@ -1,0 +1,50 @@
+{
+  "id": "tactic:bestia:enemy-retreat",
+  "name": {
+    "ja": "瀕死で相手が近ければ下がる",
+    "en": "Back off when wounded and the foe is close"
+  },
+  "when": {
+    "all": [
+      {
+        "self": {
+          "hp_ratio_lt": 0.25
+        }
+      },
+      {
+        "entity": "actor:bestia:player",
+        "visible": true,
+        "within_reach": true,
+        "as": "$player"
+      },
+      {
+        "not": {
+          "event": "shot-at"
+        }
+      },
+      {
+        "not": {
+          "self": {
+            "at_node": "node:outside"
+          }
+        }
+      }
+    ]
+  },
+  "do": [
+    {
+      "custom": "retreat",
+      "target": "$player"
+    }
+  ],
+  "expect": {
+    "reflex": true
+  },
+  "because": [
+    "state:bestia:battle-ai",
+    "rule:bestia:wounded-retreat"
+  ],
+  "knowledge": "discoverable",
+  "confidence": "authored",
+  "superseded_by": null
+}

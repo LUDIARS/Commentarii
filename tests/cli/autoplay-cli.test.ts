@@ -70,7 +70,7 @@ test('guide export writes bundle.json, masked-free by default', async () => {
     const full = capture();
     assert.equal(await runCli(['export', SAMPLE_DIR, '--out', join(directory, 'full'), '--knowledge', 'full'], full.io), 0);
     assert.match(await readFile(join(directory, 'full', 'bundle.json'), 'utf8'), /"masked"/);
-    assert.equal(await runCli(['export', SAMPLE_DIR, '--out', directory, '--target', 'ingame'], capture().io), 2);
+    assert.equal(await runCli(['export', SAMPLE_DIR, '--out', directory, '--target', 'nope'], capture().io), 2);
   });
 });
 

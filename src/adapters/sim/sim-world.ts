@@ -1,8 +1,9 @@
 // Mutable state of one simulated game. The sim owns it and changes it in place, tick by tick;
 // every change goes through step-sim.ts, and the only randomness is the sim's seeded PRNG.
 
+import type { ReplayAction } from '../../replay/replay-action.ts';
 import type { Entity, MaskedEntity, Rule, StateMachine } from '../../domain/documents.ts';
-import type { ObservedEvent } from '../../replay/observation-frame.ts';
+import type { ObservationFrame, ObservationMode, ObservedEvent } from '../../replay/observation-frame.ts';
 import type { Rng } from '../../engine/rng.ts';
 import type { SimConfig } from './sim-config.ts';
 import type { Point, SimLayout } from './sim-layout.ts';
@@ -42,6 +43,21 @@ export interface SimEnemy extends SimFighter {
 
 export type SimOutcome = 'running' | 'success' | 'fail';
 
+/** Something that decides an enemy's action from its own observation (stage 6F: the engine). */
+export interface SimEnemyBrain {
+  decide(observation: ObservationFrame): ReplayAction;
+}
+
+/** Enemies driven by a brain instead of their fixed state machine. */
+export interface SimEnemyBrains {
+  /** Enemy instance -> its brain. Enemies without one keep the fixed tree. */
+  readonly brains: ReadonlyMap<number, SimEnemyBrain>;
+  /** What the brains see: player (sight only, the default) or omniscient. */
+  readonly mode: ObservationMode;
+  /** The player's entity ID in the enemies' guide. */
+  readonly playerEntity: string;
+}
+
 export interface SimWorld {
   tick: number;
   t: number;
@@ -60,4 +76,6 @@ export interface SimWorld {
   damageTaken: number;
   damageDealt: number;
   outcome: SimOutcome;
+  /** Enemies the engine drives (stage 6F); absent = every enemy keeps its fixed tree. */
+  readonly enemyBrains?: SimEnemyBrains;
 }

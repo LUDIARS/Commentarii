@@ -13,6 +13,8 @@ export interface EngineIo {
   /** The engine process's own stdin / stdout as the adapter protocol channel. */
   openStdioChannel(): LineChannel;
   now(): Date;
+  /** A render tap frame stream: a JSON Lines file, or - for stdin (guide run --adapter render-tap). */
+  openFrameSource?(path: string): LineChannel;
   /** The engine's version (package.json), recorded in bench results; absent = unknown. */
   engineVersion?(): Promise<string>;
 }

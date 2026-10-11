@@ -3,15 +3,13 @@
 // runs, JSON report). Both start from the bundle with its learning overlay applied (stage 4). With --adapter stdio the
 // process's stdout is the protocol channel, so the run report goes to stderr instead.
 
-import { createSimAdapter, SIM_ADAPTER_ID } from '../adapters/sim/sim-adapter.ts';
-import { createStdioAdapter } from '../adapters/stdio/stdio-adapter.ts';
+import { SIM_ADAPTER_ID } from '../adapters/sim/sim-adapter.ts';
 import type { GameAdapter } from '../adapter/game-adapter.ts';
 import { runBench } from '../bench/run-bench.ts';
 import type { Bundle } from '../bundle/bundle.ts';
 import { EXIT_INVALID, EXIT_OK, type CliIo } from '../cli/cli-io.ts';
 import type { EngineIo } from '../cli/engine-io.ts';
 import { runDriver } from '../engine/driver.ts';
-import { deriveSeed } from '../engine/rng.ts';
 import { createUtilityBtDecider } from '../engine/utility-bt-decider.ts';
 import { createObservationSink } from '../engine/reflect/observation-sink.ts';
 import { createReflector } from '../engine/reflect/create-reflector.ts';
@@ -22,8 +20,9 @@ import { readOverlay } from '../learn/overlay/read-overlay.ts';
 import type { ReplayRun } from '../replay/replay-record.ts';
 import type { AutoplayCommand, BenchCommand, RunCommand } from './autoplay-command.ts';
 import { saveBenchResult } from './save-bench-result.ts';
+import { createRunAdapter } from './create-run-adapter.ts';
 
-type AutoplayIo = Pick<CliIo, 'stdout' | 'stderr' | 'openBundle' | 'engineIo' | 'learnIo' | 'writeFiles' | 'verifyIo'>;
+type AutoplayIo = Pick<CliIo, 'stdout' | 'stderr' | 'openBundle' | 'engineIo' | 'learnIo' | 'writeFiles' | 'verifyIo' | 'importIo'>;
 
 function requireEngineIo(io: AutoplayIo, verb: string): EngineIo {
   if (io.engineIo === undefined) throw new Error(`guide ${verb}: no engine I/O is wired (main.ts must provide engineIo)`);
@@ -57,10 +56,14 @@ async function runOnce(command: RunCommand, io: AutoplayIo, engineIo: EngineIo):
   const game = await openGame(io, command.gameDir, 'run');
   const { gameId, version } = game;
   const { bundle, persona } = await setupEngine(io, command.gameDir, gameId, game.bundle, await engineIo.loadPersona(command.gameDir, command.persona));
-  const adapter: GameAdapter =
-    command.adapter === 'sim'
-      ? createSimAdapter({ bundle, mode: command.mode, purpose: command.purpose, seed: deriveSeed(command.seed, 'sim') })
-      : createStdioAdapter(engineIo.openStdioChannel());
+  const adapter: GameAdapter = await createRunAdapter({
+    command,
+    bundle,
+    gameId,
+    engineIo,
+    registry: () => (io.verifyIo === undefined ? io.importIo.schemaRegistry() : io.verifyIo.schemaRegistry()),
+    diagnostic: (text) => io.stderr(text),
+  });
   const id = runId(gameId, persona.slug, command.seed);
   const record =
     command.recordPath === undefined
@@ -81,8 +84,8 @@ async function runOnce(command: RunCommand, io: AutoplayIo, engineIo: EngineIo):
         });
   const observationFields = bundle.manifest?.doc.observation?.fields ?? [];
   const report = await runDriver({ adapter, decider, mode: command.mode, observationFields, maxTicks: command.ticks, ...(record ? { record } : {}), ...(reflect ? { reflect } : {}) });
-  const out = command.adapter === 'stdio' ? io.stderr : io.stdout;
-  const adapterId = command.adapter === 'sim' ? SIM_ADAPTER_ID : 'stdio';
+  const out = command.adapter === 'stdio' || command.act === 'stdio' || command.framesPath === '-' ? io.stderr : io.stdout;
+  const adapterId = command.adapter === 'sim' ? SIM_ADAPTER_ID : command.adapter;
   out(`${JSON.stringify({ run_id: id, adapter: adapterId, persona: persona.slug, mode: command.mode, purpose: command.purpose, seed: command.seed, ...report, ...(command.recordPath ? { record: command.recordPath } : {}), ...(command.observePath ? { observe: command.observePath } : {}) }, null, 2)}\n`);
   return report.stop.reason === 'masked-in-player' || report.stop.reason === 'mode-mismatch' ? EXIT_INVALID : EXIT_OK;
 }

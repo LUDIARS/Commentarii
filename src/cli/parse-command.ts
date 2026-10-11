@@ -3,6 +3,9 @@
 import { parseArgs } from 'node:util';
 import { AUDIT_USAGE, parseAuditArgs, type AuditMaskCommand } from '../audit/parse-audit-mask-args.ts';
 import { AUTOPLAY_USAGE, parseBenchCommand, parseRunCommand, type AutoplayCommand } from '../autoplay/autoplay-command.ts';
+import { parseReportSignaturesCommand, REPORT_SIGNATURES_USAGE, type ReportSignaturesCommand } from '../render-tap/cli/report-signatures-command.ts';
+import { COMMENTARY_USAGE, parseCommentaryCommand, type CommentaryCommand } from '../commentary/commentary-command.ts';
+import { DIFF_USAGE, parseDiffCommand, type DiffCommand } from '../diff/diff-command.ts';
 import { EXPORT_USAGE, parseExportCommand, type ExportCommand } from '../export/export-command.ts';
 import { parseImportPlaysCommand, parseReportPlaysCommand, PLAYS_USAGE, type PlaysCommand } from '../import/plays/plays-command.ts';
 import type { RenderKnowledge } from '../render/render-bundle.ts';
@@ -23,6 +26,9 @@ export type Command =
   | ImportCommand
   | AuditMaskCommand
   | ExportCommand
+  | DiffCommand
+  | CommentaryCommand
+  | ReportSignaturesCommand
   | AutoplayCommand
   | LearnCommand
   | GateCommand
@@ -34,7 +40,7 @@ export const USAGE = `usage:
   guide validate <bundle-dir> [--json]
   guide render <bundle-dir> --out <dir> [--knowledge player|full]
   guide report knowledge <bundle-dir> [--json]
-${EXPORT_USAGE}${AUTOPLAY_USAGE}${REPLAY_USAGE}${IMPORT_USAGE}${PLAYS_USAGE}${AUDIT_USAGE}${LEARN_USAGE}${VERIFY_USAGE}${GATE_USAGE}`;
+${EXPORT_USAGE}${DIFF_USAGE}${COMMENTARY_USAGE}${REPORT_SIGNATURES_USAGE}${AUTOPLAY_USAGE}${REPLAY_USAGE}${IMPORT_USAGE}${PLAYS_USAGE}${AUDIT_USAGE}${LEARN_USAGE}${VERIFY_USAGE}${GATE_USAGE}`;
 
 function single(positionals: readonly string[], what: string): string {
   if (positionals.length !== 1 || positionals[0] === undefined) throw new UsageError(`${what} needs exactly one <bundle-dir>`);
@@ -61,10 +67,11 @@ export function parseCommand(argv: readonly string[]): Command {
     }
     if (name === 'report' && rest[0] === 'plays') return parseReportPlaysCommand(rest.slice(1));
     if (name === 'report' && rest[0] === 'feasibility') return parseReportFeasibilityCommand(rest.slice(1));
+    if (name === 'report' && rest[0] === 'signatures') return parseReportSignaturesCommand(rest.slice(1));
     if (name === 'import' && rest[0] === 'plays') return parseImportPlaysCommand(rest.slice(1));
     if (name === 'report') {
       const [topic, ...options] = rest;
-      if (topic !== 'knowledge') throw new UsageError('report supports: report knowledge | report plays | report feasibility');
+      if (topic !== 'knowledge') throw new UsageError('report supports: report knowledge | report plays | report feasibility | report signatures');
       const { values, positionals } = parseArgs({ args: options, allowPositionals: true, options: { json: { type: 'boolean' } } });
       return { name: 'report-knowledge', bundleDir: single(positionals, 'report knowledge'), json: values.json === true };
     }
@@ -72,6 +79,8 @@ export function parseCommand(argv: readonly string[]): Command {
     if (name === 'import' || name === 'intent') return parseImportCommand(name, rest);
     if (name === 'audit') return parseAuditArgs(rest);
     if (name === 'export') return parseExportCommand(rest);
+    if (name === 'diff') return parseDiffCommand(rest);
+    if (name === 'commentary') return parseCommentaryCommand(rest);
     if (name === 'run') return parseRunCommand(rest);
     if (name === 'bench' && rest[0] === 'compare') return parseBenchCompare(rest.slice(1));
     if (name === 'bench' && rest[0] === 'replay') return parseBenchReplay(rest.slice(1));

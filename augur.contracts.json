@@ -479,6 +479,69 @@
       "module": "src/contracts/extract-praeforma-ref.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-74",
+      "criterion": "C-74 tapToObservation(frame, context): 観測は player の render-tap 観測で、観測した個体は全て遮蔽クエリを通過した scene draw のもの、描画器のアセット ID (どの draw の mesh / material も) は観測のどこにも現れない",
+      "symbol": "tapToObservation",
+      "file": "src/adapters/render-tap/tap-to-observation.ts",
+      "module": "src/contracts/tap-to-observation.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-75",
+      "criterion": "C-75 observeAsEnemy(world, enemy, mode, playerEntity): 敵は自分を self として観測し entity としては観測せず、player モードでは観測した相手が全て視界内、観測に masked の値が無い",
+      "symbol": "observeAsEnemy",
+      "file": "src/adapters/sim/enemy-observation.ts",
+      "module": "src/contracts/observe-as-enemy.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-76",
+      "criterion": "C-76 editablePath(raw): 編集できるのは攻略本相対 (絶対パス・ドライブ・空 / . / .. の区切りなし) で、ローダーが文書と認めるパスだけ。返すスキーマはその文書の種類のもの",
+      "symbol": "editablePath",
+      "file": "src/web/doc-path.ts",
+      "module": "src/contracts/editable-path.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-77",
+      "criterion": "C-77 buildIngameExport(load, unlocked): masked の値はゲーム内 export に入らず、図鑑の値は全て攻略本で shown か、discoverable でプレイヤーが解放したもの",
+      "symbol": "buildIngameExport",
+      "file": "src/export/build-ingame-export.ts",
+      "module": "src/contracts/build-ingame-export.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-78",
+      "criterion": "C-78 semanticDiff(before, after): 両側は同じ knowledge で書き出したもので、公開用 (player) の差分には masked の記録も、変更前後どちらかが masked の境界変更も現れない",
+      "symbol": "semanticDiff",
+      "file": "src/diff/semantic-diff.ts",
+      "module": "src/contracts/semantic-diff.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-79",
+      "criterion": "C-79 buildCommentaryInput(run, bundle): 読むのは player モードの run だけで、player view に無い (masked の) 定石は narrator に渡す入力のどこにも現れない",
+      "symbol": "buildCommentaryInput",
+      "file": "src/commentary/commentary-input.ts",
+      "module": "src/contracts/build-commentary-input.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-80",
+      "criterion": "C-80 collectUnknownSignatures(frames, signatures): 報告する外見は攻略本で一意に名前が付かないもの (unknown-signature は該当なし、ambiguous は 2 つ以上) だけで、どの外見も読んだ player-camera フレーム数より多く数えない",
+      "symbol": "collectUnknownSignatures",
+      "file": "src/render-tap/collect-unknown-signatures.ts",
+      "module": "src/contracts/collect-unknown-signatures.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }

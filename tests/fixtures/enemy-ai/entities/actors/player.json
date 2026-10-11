@@ -1,0 +1,7 @@
+{
+  "id": "actor:bestia:player",
+  "name": {
+    "ja": "プレイヤー (敵から見た相手)",
+    "en": "The player (as the enemies see it)"
+  }
+}

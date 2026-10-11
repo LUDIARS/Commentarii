@@ -1,15 +1,83 @@
 {
   "game_id": "bestia",
-  "title": { "ja": "Bestia 攻略本 (サンプル)", "en": "Bestia guide (sample)" },
+  "title": {
+    "ja": "Bestia 攻略本 (サンプル)",
+    "en": "Bestia guide (sample)"
+  },
   "version": "0.1.0",
-  "builds": ["main"],
-  "coordinates": { "system": "world-xyz", "unit": "m" },
-  "lexicon": { "version": "0" },
+  "builds": [
+    "main"
+  ],
+  "coordinates": {
+    "system": "world-xyz",
+    "unit": "m"
+  },
+  "lexicon": {
+    "version": "0"
+  },
+  "observation": {
+    "fields": [
+      {
+        "path": "self.resources.weapon_cooldown",
+        "knowledge": "discoverable",
+        "origin": "main weapon reload: read from the muzzle flash and shot interval (Bestia spec/feature/commentarii-adapter.md)"
+      },
+      {
+        "path": "self.resources.boost_cooldown",
+        "knowledge": "shown",
+        "origin": "boost volley reload on the HUD"
+      },
+      {
+        "path": "self.resources.auxiliary_cooldown",
+        "knowledge": "discoverable",
+        "origin": "auxiliary weapon reload: read from its firing interval"
+      },
+      {
+        "path": "extra.weapon",
+        "knowledge": "shown",
+        "origin": "main weapon name on the HUD"
+      },
+      {
+        "path": "extra.auxiliary",
+        "knowledge": "shown",
+        "origin": "auxiliary weapon name on the HUD"
+      },
+      {
+        "path": "extra.ring_radius",
+        "knowledge": "shown",
+        "origin": "ring size on the HUD and the drawn ring"
+      },
+      {
+        "path": "extra.survivors",
+        "knowledge": "shown",
+        "origin": "survivor count on the HUD"
+      },
+      {
+        "path": "events.eliminated.instance",
+        "knowledge": "shown",
+        "origin": "survivor count and per-monster defeat display on the HUD"
+      }
+    ]
+  },
   "learning": {
     "policy": {
       "exploration_rate": 0.15,
-      "rewrite": { "min_runs": 20, "min_gain": 0.1, "metric_weights": { "time": 0.5, "resource": 0.2, "risk": 0.3 }, "auto_apply": true },
-      "promotion": { "discoverable_requires": { "player_runs": 5, "agreement": 0.9 } }
+      "rewrite": {
+        "min_runs": 20,
+        "min_gain": 0.1,
+        "metric_weights": {
+          "time": 0.5,
+          "resource": 0.2,
+          "risk": 0.3
+        },
+        "auto_apply": true
+      },
+      "promotion": {
+        "discoverable_requires": {
+          "player_runs": 5,
+          "agreement": 0.9
+        }
+      }
     }
   }
 }

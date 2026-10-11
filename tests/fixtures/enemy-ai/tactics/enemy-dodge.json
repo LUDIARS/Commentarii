@@ -1,0 +1,36 @@
+{
+  "id": "tactic:bestia:enemy-dodge",
+  "name": {
+    "ja": "撃たれたら横へ避ける",
+    "en": "Sidestep when shot at"
+  },
+  "when": {
+    "all": [
+      {
+        "event": "shot-at"
+      },
+      {
+        "not": {
+          "self": {
+            "at_node": "node:outside"
+          }
+        }
+      }
+    ]
+  },
+  "do": [
+    {
+      "custom": "dodge"
+    }
+  ],
+  "expect": {
+    "reflex": true
+  },
+  "because": [
+    "state:bestia:battle-ai",
+    "rule:bestia:dodge-window"
+  ],
+  "knowledge": "discoverable",
+  "confidence": "authored",
+  "superseded_by": null
+}

@@ -1,0 +1,32 @@
+{
+  "id": "enemy:konbini-dominant:store-losan",
+  "name": {
+    "ja": "ムーンパントリー の店 (他チェーン)",
+    "en": "MOONPANTRY store (rival)"
+  },
+  "stats": {
+    "build_cost": {
+      "value": 1000,
+      "unit": "credits",
+      "knowledge": "shown",
+      "source": {
+        "kind": "master",
+        "ref": "KonbiniDominant data/content/first-playable.json chains[0].buildCostCredits"
+      }
+    },
+    "zoc_radius": {
+      "value": 18,
+      "unit": "m",
+      "knowledge": "shown",
+      "source": {
+        "kind": "master",
+        "ref": "KonbiniDominant data/content/first-playable.json chains[0].zocRadiusMeters"
+      }
+    }
+  },
+  "behavior": "state:konbini-dominant:store",
+  "tags": [
+    "store",
+    "losan"
+  ]
+}
