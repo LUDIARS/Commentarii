@@ -23,8 +23,8 @@
 
 ## 作業の進め方・注意
 
-- 作業場所は親が渡した worktree とブランチ (`feat/ingenium-r0a-sdk`)。`main` を直接編集しない。
-- 並行ブランチ `feat/render-tap-receiver` (段 6、未提出) が `src/render-tap/` と `src/adapters/render-tap/` に触っている。本段は `src/render-tap/` を **移動しない** (R0-B で Ingenium へ移す)。render-tap が import している replay / observation の型は SDK 入口経由に書き換えてよい (そのブランチは後で親が取り込み直す)。
+- 作業場所は親が渡した worktree とブランチ。`main` を直接編集しない。
+- 段 6 の描画タップ受信の並行ブランチ (未提出) が `src/render-tap/` と `src/adapters/render-tap/` に触っている。本段は `src/render-tap/` を **移動しない** (R0-B で Ingenium へ移す)。render-tap が import している replay / observation の型は SDK 入口経由に書き換えてよい (そのブランチは後で親が取り込み直す)。
 - 判断エンジン (`src/engine/` の実行側)、アダプタ、sim、bench、gate、replay の実行側は **本段では動かさない** (R0-B)。
 - ビルドとテストはフォアグラウンドで待つ (バックグラウンドで待つと session-end される)。
 - 完了 = コミット → Revisor local PR 提出 (`node E:/Document/Ars/command-runner.mjs rv:submit --repo <worktree>`) → **PR 番号と検証結果を報告してから** 終了指示を待つ。マージはしない。ブロック所見は直して再提出する。
