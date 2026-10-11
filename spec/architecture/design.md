@@ -500,7 +500,7 @@ neco 指示 (2026-10-09): 攻略本には「人間がやってやれそうなこ
 - データ形式は Cm の SDK が所有し、依存は Ingenium → Cm SDK の一方向。adapter/2 (receipt つき) は Ingenium が所有。
 - 段: R0 分離 → R1 ルールブック + 前向きモデル → R2 定石なしで Bestia をクリア → R3 MCTS・相手 5 方式・敵 AI 再利用。
 
-### 16.9 Commentarii からの切り離しと名前 (neco 2026-10-11)
+### 16.3 Commentarii からの切り離しと名前 (neco 2026-10-11)
 
 - オートプレイヤーは Commentarii から切り離した別プロジェクトで運用する (neco 指示)。境界・契約・移行は設計委託 (Fable / Astra) の結果で確定する。
 - 名前は **Ingenium** (略称 `Ig`、ラテン語で「才知・工夫する力」)。neco: 「Ingenium が思想には近い」= 定石に頼らず、ルールと自分の能力から手を考え出す頭脳。候補は Lusor / Sollers / Tentator / Ingenium / Peritus (名前・略称とも既存と衝突なしを確認済み)。
