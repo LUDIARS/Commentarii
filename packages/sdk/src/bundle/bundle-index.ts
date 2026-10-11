@@ -54,6 +54,10 @@ export function buildBundleIndex(bundle: Bundle): BundleIndex {
     subStates.set(doc.id, new Set(doc.states.map((state) => state.id)));
   }
   for (const { path, doc } of bundle.tactics) register(doc.id, { path, knowledge: doc.knowledge });
+  // Masked action overrides share the visible action's ID and are never a record of their own.
+  for (const { path, doc } of [...bundle.rulebook.actions, ...bundle.rulebook.processes, ...bundle.rulebook.behaviors]) {
+    register(doc.id, { path, knowledge: doc.knowledge });
+  }
   for (const { path, doc } of bundle.intents) {
     for (const item of doc.intended) register(item.id, item.knowledge ? { path, knowledge: item.knowledge } : { path });
   }

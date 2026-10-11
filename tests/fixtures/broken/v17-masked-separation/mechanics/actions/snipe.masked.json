@@ -1,0 +1,30 @@
+{
+  "id": "action:bestia:snipe",
+  "override": {
+    "effects": [
+      {
+        "at": "start",
+        "outcomes": [
+          { "p": 1, "assign": [{ "var": "ready_at", "of": "actor", "expr": "t + cooldown(actor)" }, { "var": "shot_at", "of": "$target", "expr": "1" }] }
+        ]
+      },
+      {
+        "at": "start",
+        "when": "mode($target) != state:bestia:battle-ai#dodge && !($target == self && moved(self))",
+        "outcomes": [
+          { "p": 1, "label": "hit", "assign": [{ "var": "hp", "of": "$target", "expr": "hp($target) - rule(rule:bestia:damage)" }, { "var": "last_damaged_at", "of": "$target", "expr": "t" }] }
+        ]
+      },
+      {
+        "at": "start",
+        "when": "$target == self && moved(self)",
+        "outcomes": [
+          { "p": 0.5, "label": "evaded", "assign": [] },
+          { "p": 0.5, "label": "hit", "assign": [{ "var": "hp", "of": "$target", "expr": "hp($target) - rule(rule:bestia:damage)" }, { "var": "last_damaged_at", "of": "$target", "expr": "t" }] }
+        ]
+      }
+    ]
+  },
+  "knowledge": "masked",
+  "source": { "kind": "master", "ref": "Bestia src/behavior.cpp aim lead: a moving player evades half of the hits (movingEvasion 0.5)" }
+}

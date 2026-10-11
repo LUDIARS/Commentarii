@@ -1,0 +1,22 @@
+{
+  "id": "rule:bestia:damage",
+  "name": { "ja": "1 発のダメージ", "en": "Damage of one hit" },
+  "expression": "power * cooldown",
+  "result_unit": "hp",
+  "variables": {
+    "power": {
+      "description": { "ja": "撃ち続けたときの毎秒ダメージ" },
+      "unit": "hp/s",
+      "range": [0, 100],
+      "example": 30
+    },
+    "cooldown": {
+      "description": { "ja": "次の射撃までの秒数" },
+      "unit": "s",
+      "range": [0, 5],
+      "example": 0.4
+    }
+  },
+  "knowledge": "discoverable",
+  "source": { "kind": "master", "ref": "Bestia src/world.cpp attack() damage = power * cooldown" }
+}

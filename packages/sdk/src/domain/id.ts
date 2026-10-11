@@ -6,7 +6,7 @@ const ID_PATTERN = new RegExp(`^([a-z][a-z0-9-]*):(${SEGMENT}):(${SEGMENT}(?::${
 const NODE_PATTERN = new RegExp(`^node:${SEGMENT}$`);
 
 /** Kinds whose records live in the bundle and must therefore resolve (validate V02). */
-export const BUNDLE_KINDS = ['enemy', 'item', 'skill', 'actor', 'stage', 'rule', 'state', 'tactic', 'intent'] as const;
+export const BUNDLE_KINDS = ['enemy', 'item', 'skill', 'actor', 'stage', 'rule', 'state', 'tactic', 'intent', 'action', 'process', 'behavior'] as const;
 export type BundleKind = (typeof BUNDLE_KINDS)[number];
 
 export const ENTITY_KINDS = ['enemy', 'item', 'skill', 'actor'] as const;

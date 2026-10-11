@@ -1,0 +1,32 @@
+{
+  "variables": {
+    "t": { "owner": "world", "type": "time", "unit": "s", "observe": "t", "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia engine tick (world time)" } },
+    "shot_speed": { "owner": "world", "type": "number", "unit": "m/s", "range": [0, 200], "init": 30, "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp projectile speed" } },
+    "pos": { "owner": ["self", "entity"], "type": "vec3", "unit": "m", "observe": { "self": "self.pos", "entity": "pos" }, "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia src/world.cpp Fighter::pos" } },
+    "max_hp": { "owner": ["self", "entity"], "type": "number", "unit": "hp", "range": [1, 1000], "from": "stats.health", "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp archetype health" } },
+    "hp": { "owner": ["self", "entity"], "type": "number", "unit": "hp", "range": [0, "max_hp"], "init": "max_hp", "observe": { "self": "self.hp.value * max_hp(self)" }, "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp Fighter::hp" } },
+    "speed": { "owner": ["self", "entity"], "type": "number", "unit": "m/s", "range": [0, 20], "from": "stats.speed", "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp archetype speed" } },
+    "range": { "owner": ["self", "entity"], "type": "number", "unit": "m", "range": [0, 40], "from": "stats.range", "observe": { "self": "extra.reach" }, "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp archetype range" } },
+    "cooldown": { "owner": ["self", "entity"], "type": "number", "unit": "s", "range": [0, 5], "from": "stats.cooldown", "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp archetype cooldown" } },
+    "power": { "owner": ["self", "entity"], "type": "number", "unit": "hp/s", "range": [0, 100], "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp weapon power" } },
+    "ready_at": { "owner": ["self", "entity"], "type": "time", "unit": "s", "init": 0, "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp Fighter::readyAt" } },
+    "last_damaged_at": { "owner": ["self", "entity"], "type": "time", "unit": "s", "init": 0, "observe": { "self": "event:hit -> t" }, "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/world.cpp Fighter::lastDamaged" } },
+    "moved": { "owner": ["self", "entity"], "type": "bool", "init": 0, "decay": "tick", "description": { "ja": "この 1 ティックで位置が変わった", "en": "Changed position during this tick" }, "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia src/world.cpp step" } },
+    "shot_at": { "owner": ["self", "entity"], "type": "bool", "init": 0, "decay": "tick", "description": { "ja": "この 1 ティックで撃たれた", "en": "Was shot at during this tick" }, "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/behavior.cpp shotAt" } },
+    "target": { "owner": "entity", "type": "entity", "description": { "ja": "いま狙っている相手 (最も近い他の個体)", "en": "The fighter it attacks now (the nearest other one)" }, "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/behavior.cpp nearest target" } },
+    "closing_time": { "owner": "entity", "type": "time", "unit": "s", "range": [0, 5], "derive": "dist(actor, target(actor)) / shot_speed", "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/behavior.cpp decide() closing time" } },
+    "mode": { "owner": "entity", "type": "state", "machine": "state:bestia:battle-ai", "observe": { "entity": "state_guess" }, "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia src/behavior.cpp tree" } },
+    "alive": { "owner": ["self", "entity"], "type": "bool", "init": 1, "derive": "hp > 0", "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia src/world.cpp elimination" } }
+  },
+  "sets": {
+    "hostile": {
+      "of": "entity",
+      "where": "alive($e)",
+      "description": { "ja": "生きている他の全個体 (バトルロイヤル)", "en": "Every other living fighter (free-for-all)" },
+      "knowledge": "shown",
+      "source": { "kind": "master", "ref": "Bestia spec/feature/battle.md last monster standing" }
+    }
+  },
+  "knowledge": "shown",
+  "source": { "kind": "master", "ref": "Bestia src/world.cpp" }
+}

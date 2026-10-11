@@ -66,9 +66,53 @@
         "t": { "type": "number", "minimum": 0 },
         "observation": { "$ref": "observation-frame.schema.json" },
         "decision": { "type": "array", "items": { "$ref": "#/$defs/decisionEntry" } },
-        "action": { "$ref": "#/$defs/action" }
+        "action": { "$ref": "#/$defs/action" },
+        "model": { "$ref": "#/$defs/modelSummary" }
       },
       "additionalProperties": false
+    },
+    "modelSummary": {
+      "description": "Optional (SDK 0.3.0, Ingenium R1): the decider's belief and affordances at this tick. A player run holds only what the player rulebook and the observations give (the masked check covers it like every line).",
+      "type": "object",
+      "properties": {
+        "belief": {
+          "type": "object",
+          "required": ["tracked", "unknown"],
+          "properties": {
+            "tracked": { "description": "Owner variables the belief holds.", "type": "integer", "minimum": 0 },
+            "unknown": { "description": "Of those, how many are a non-point interval.", "type": "integer", "minimum": 0 },
+            "intervals": {
+              "description": "<owner>.<variable> -> [lo, hi], for the ones the decider chose to log.",
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "prefixItems": [{ "type": "number" }, { "type": "number" }],
+                "items": false,
+                "minItems": 2
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "affordances": {
+          "description": "Own action IDs by class: now, uncertain (needs an experiment), reachable (in k steps), not_found (within the search bound), impossible.",
+          "type": "object",
+          "properties": {
+            "now": { "$ref": "#/$defs/actionIds" },
+            "uncertain": { "$ref": "#/$defs/actionIds" },
+            "reachable": { "$ref": "#/$defs/actionIds" },
+            "not_found": { "$ref": "#/$defs/actionIds" },
+            "impossible": { "$ref": "#/$defs/actionIds" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "actionIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^action:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" }
     },
     "footer": {
       "type": "object",

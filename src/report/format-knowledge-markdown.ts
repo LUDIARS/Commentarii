@@ -30,6 +30,14 @@ export function formatKnowledgeMarkdown(report: KnowledgeReport): string {
     report.tactics_referencing_masked.length === 0
       ? '該当なし。'
       : table(['定石', 'masked 参照数'], report.tactics_referencing_masked.map((entry) => [entry.tactic, entry.masked_refs]));
+  const rulebook = report.rulebook;
+  const rulebookSections =
+    rulebook.rows.length === 0
+      ? ['ルールブックはありません。']
+      : [
+          table(['種類', 'ID', 'knowledge', 'masked の上書き', 'ファイル'], rulebook.rows.map((row) => [row.kind, row.id, row.knowledge, row.masked_overrides, row.path])),
+          `全体: shown ${rulebook.totals.shown} / discoverable ${rulebook.totals.discoverable} / masked (要素 + 上書き) ${rulebook.totals.masked} / 計 ${rulebook.totals.total}`,
+        ];
   return document([
     '# 知識境界レポート',
     `ゲーム: ${report.game_id ?? '(manifest なし)'}`,
@@ -40,5 +48,7 @@ export function formatKnowledgeMarkdown(report: KnowledgeReport): string {
     ungrounded,
     '## masked を参照する定石',
     tactics,
+    '## ルールブックの境界',
+    ...rulebookSections,
   ]);
 }

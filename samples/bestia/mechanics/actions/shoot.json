@@ -1,0 +1,28 @@
+{
+  "id": "action:bestia:shoot",
+  "name": { "ja": "射撃", "en": "Shoot" },
+  "actor": ["self", "entity"],
+  "params": {
+    "target": { "kind": "entity", "where": "hostile($target) && visible($target)" }
+  },
+  "maps_to": { "attack": "$target" },
+  "pre": "t >= ready_at(actor) && dist(actor, $target) <= range(actor)",
+  "duration": "0",
+  "effects": [
+    {
+      "at": "start",
+      "outcomes": [
+        { "p": 1, "assign": [{ "var": "ready_at", "of": "actor", "expr": "t + cooldown(actor)" }, { "var": "shot_at", "of": "$target", "expr": "1" }] }
+      ]
+    },
+    {
+      "at": "start",
+      "when": "mode($target) != state:bestia:battle-ai#dodge",
+      "outcomes": [
+        { "p": 1, "label": "hit", "assign": [{ "var": "hp", "of": "$target", "expr": "hp($target) - rule(rule:bestia:damage)" }, { "var": "last_damaged_at", "of": "$target", "expr": "t" }] }
+      ]
+    }
+  ],
+  "knowledge": "discoverable",
+  "source": { "kind": "master", "ref": "Bestia src/world.cpp attack()" }
+}

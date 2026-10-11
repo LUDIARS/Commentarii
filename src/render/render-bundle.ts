@@ -13,6 +13,7 @@ import { renderCatalog } from './render-catalog.ts';
 import { renderEnemies } from './render-enemies.ts';
 import { renderIntents } from './render-intents.ts';
 import { renderMasked } from './render-masked.ts';
+import { renderRulebook } from './render-rulebook.ts';
 import { renderRules } from './render-rules.ts';
 import { renderStage } from './render-stage.ts';
 import { renderStates } from './render-states.ts';
@@ -33,6 +34,7 @@ const PAGES = [
   ['catalog.md', 'アイテム / スキル'],
   ['rules.md', 'ルール'],
   ['states.md', '状態機械'],
+  ['rulebook.md', 'ルールブック'],
   ['tactics.md', '定石'],
   ['intents.md', '意図'],
   ['knowledge.md', '知識境界レポート'],
@@ -60,6 +62,7 @@ export function renderBundle(load: LoadResult, options: RenderOptions): Map<stri
   files.set('catalog.md', renderCatalog(view));
   files.set('rules.md', renderRules(view));
   files.set('states.md', renderStates(view));
+  files.set('rulebook.md', renderRulebook(view));
   files.set('tactics.md', renderTactics(view));
   files.set('intents.md', renderIntents(view));
   files.set('knowledge.md', formatKnowledgeMarkdown(buildKnowledgeReport(load)));

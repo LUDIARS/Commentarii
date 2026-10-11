@@ -1,13 +1,13 @@
-// C-1 runValidation(load): the fixed V01-V12 list, status consistent with findings.
+// C-1 runValidation(load): the fixed V01-V20 list, status consistent with findings.
 
 import type { ValidationReport } from '../validate/run-validation.ts';
 
-const EXPECTED_IDS = ['V01', 'V02', 'V03', 'V04', 'V05', 'V06', 'V07', 'V08', 'V09', 'V10', 'V11', 'V12'];
+const EXPECTED_IDS = Array.from({ length: 20 }, (_, i) => `V${String(i + 1).padStart(2, '0')}`);
 
 export default {
   post: (report: ValidationReport) => {
     const ids = report.checks.map((check) => check.id);
-    if (ids.join(',') !== EXPECTED_IDS.join(',')) return 'check list is not V01-V12 in order';
+    if (ids.join(',') !== EXPECTED_IDS.join(',')) return 'check list is not V01-V20 in order';
     for (const check of report.checks) {
       const hasError = check.findings.some((finding) => finding.severity === 'error');
       const expected = hasError ? 'error' : check.findings.length > 0 ? 'warning' : 'ok';

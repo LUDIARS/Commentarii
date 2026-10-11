@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "behavior.schema.json",
+  "title": "Behavior model of an actor (mechanics/behaviors/<slug>.json)",
+  "description": "How an opponent or NPC decides, in one of the decision paradigms, written as data so the same interpreter predicts it and (later) drives it (spec/feature/rulebook.md §5). fsm: a state machine plus an act table; scripted: a timeline; bt: a tree; utility: scored candidates; goap: a goal over actions; mcts: search settings over actions.",
+  "type": "object",
+  "required": ["id", "paradigm", "knowledge", "source"],
+  "properties": {
+    "id": { "$ref": "id.schema.json#/$defs/behaviorId" },
+    "name": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "paradigm": { "enum": ["fsm", "bt", "utility", "goap", "mcts", "scripted"] },
+    "targeting": {
+      "description": "How the actor picks the entity bound to $target.",
+      "type": "object",
+      "required": ["var", "pick"],
+      "properties": {
+        "var": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "pick": { "$ref": "id.schema.json#/$defs/expression" }
+      },
+      "additionalProperties": false
+    },
+    "machine": { "$ref": "id.schema.json#/$defs/stateId" },
+    "act": {
+      "description": "fsm: state -> the action taken while in it.",
+      "type": "object",
+      "propertyNames": { "$ref": "id.schema.json#/$defs/slug" },
+      "additionalProperties": { "$ref": "#/$defs/actionCall" }
+    },
+    "timeline": {
+      "description": "scripted: actions at fixed times (seconds from the start, repeating every `loop` seconds when set).",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["at", "action"],
+        "properties": {
+          "at": { "type": "number", "minimum": 0 },
+          "action": { "$ref": "id.schema.json#/$defs/actionId" },
+          "params": { "$ref": "#/$defs/callParams" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "loop": { "type": "number", "exclusiveMinimum": 0 },
+    "tree": { "$ref": "#/$defs/btNode" },
+    "candidates": {
+      "description": "utility: each candidate action scored by its considerations.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["action", "considerations"],
+        "properties": {
+          "action": { "$ref": "id.schema.json#/$defs/actionId" },
+          "params": { "$ref": "#/$defs/callParams" },
+          "considerations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["expr", "weight"],
+              "properties": {
+                "expr": { "$ref": "id.schema.json#/$defs/expression" },
+                "weight": { "type": "number" },
+                "curve": { "enum": ["linear", "quadratic", "logistic", "step"] }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "goal": { "description": "goap: the goal predicate.", "$ref": "id.schema.json#/$defs/expression" },
+    "heuristic": { "description": "goap: optional distance-to-goal estimate.", "$ref": "id.schema.json#/$defs/expression" },
+    "actions": {
+      "description": "goap / mcts: the actions the planner may use.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "id.schema.json#/$defs/actionId" }
+    },
+    "search": {
+      "description": "mcts: search budget in logical iterations (never wall-clock).",
+      "type": "object",
+      "required": ["iterations", "depth"],
+      "properties": {
+        "iterations": { "type": "integer", "minimum": 1 },
+        "depth": { "type": "integer", "minimum": 1 },
+        "exploration": { "type": "number", "minimum": 0 },
+        "evaluate": { "$ref": "id.schema.json#/$defs/expression" }
+      },
+      "additionalProperties": false
+    },
+    "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+    "source": { "$ref": "value.schema.json#/$defs/source" },
+    "draft": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    { "if": { "properties": { "paradigm": { "const": "fsm" } } }, "then": { "required": ["machine"] } },
+    { "if": { "properties": { "paradigm": { "const": "scripted" } } }, "then": { "required": ["timeline"] } },
+    { "if": { "properties": { "paradigm": { "const": "bt" } } }, "then": { "required": ["tree"] } },
+    { "if": { "properties": { "paradigm": { "const": "utility" } } }, "then": { "required": ["candidates"] } },
+    { "if": { "properties": { "paradigm": { "const": "goap" } } }, "then": { "required": ["goal", "actions"] } },
+    { "if": { "properties": { "paradigm": { "const": "mcts" } } }, "then": { "required": ["actions", "search"] } }
+  ],
+  "$defs": {
+    "callParams": {
+      "description": "Parameter bindings: a $param / variable name, an ID token, a node or a number (dt = one tick).",
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "number" }] }
+    },
+    "actionCall": {
+      "type": "object",
+      "required": ["action"],
+      "properties": {
+        "action": { "$ref": "id.schema.json#/$defs/actionId" },
+        "params": { "$ref": "#/$defs/callParams" }
+      },
+      "additionalProperties": false
+    },
+    "btNode": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["selector", "sequence", "condition", "action"] },
+        "children": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/btNode" } },
+        "pred": { "$ref": "id.schema.json#/$defs/expression" },
+        "action": { "$ref": "id.schema.json#/$defs/actionId" },
+        "params": { "$ref": "#/$defs/callParams" }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        { "if": { "properties": { "type": { "enum": ["selector", "sequence"] } } }, "then": { "required": ["children"] } },
+        { "if": { "properties": { "type": { "const": "condition" } } }, "then": { "required": ["pred"] } },
+        { "if": { "properties": { "type": { "const": "action" } } }, "then": { "required": ["action"] } }
+      ]
+    }
+  }
+}

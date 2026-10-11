@@ -3,6 +3,7 @@
 // overlay and bench results, with the small helpers that belong to those shapes.
 
 export * from './domain/documents.ts';
+export * from './domain/rulebook-documents.ts';
 export * from './domain/id.ts';
 export * from './domain/knowledge.ts';
 export * from './domain/localize.ts';

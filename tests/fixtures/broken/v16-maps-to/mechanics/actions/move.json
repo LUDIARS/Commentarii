@@ -1,0 +1,19 @@
+{
+  "id": "action:bestia:move",
+  "name": { "ja": "移動", "en": "Move" },
+  "actor": ["self", "entity"],
+  "params": {
+    "goal": { "kind": ["entity", "node", "point"] },
+    "keep": { "kind": "number", "unit": "m", "range": [0, 5], "step": 0.5, "default": 0 },
+    "for": { "kind": "number", "unit": "s", "range": [0.1, 2], "step": 0.1, "default": 0.1 }
+  },
+  "maps_to": { "teleport": "$goal" },
+  "pre": "1",
+  "duration": "$for",
+  "motion": { "kind": "toward", "goal": "$goal", "speed": "speed(actor)", "keep": "$keep" },
+  "effects": [
+    { "at": "start", "when": "dist(actor, $goal) > $keep", "outcomes": [{ "p": 1, "assign": [{ "var": "moved", "of": "actor", "expr": "1" }] }] }
+  ],
+  "knowledge": "discoverable",
+  "source": { "kind": "master", "ref": "Bestia src/world.cpp step (walk toward)" }
+}

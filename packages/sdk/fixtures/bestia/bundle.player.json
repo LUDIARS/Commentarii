@@ -1,9 +1,11 @@
 {
   "format": "commentarii.bundle",
-  "format_version": 1,
+  "format_version": 2,
   "game_id": "bestia",
   "manifest_version": "0.1.0",
   "knowledge": "player",
+  "view": "player",
+  "expression_language": "expr/2",
   "target": "runtime",
   "documents": {
     "manifest": {
@@ -531,6 +533,47 @@
     ],
     "rules": [
       {
+        "path": "mechanics/rules/damage.json",
+        "doc": {
+          "id": "rule:bestia:damage",
+          "name": {
+            "ja": "1 発のダメージ",
+            "en": "Damage of one hit"
+          },
+          "expression": "power * cooldown",
+          "result_unit": "hp",
+          "variables": {
+            "power": {
+              "description": {
+                "ja": "撃ち続けたときの毎秒ダメージ"
+              },
+              "unit": "hp/s",
+              "range": [
+                0,
+                100
+              ],
+              "example": 30
+            },
+            "cooldown": {
+              "description": {
+                "ja": "次の射撃までの秒数"
+              },
+              "unit": "s",
+              "range": [
+                0,
+                5
+              ],
+              "example": 0.4
+            }
+          },
+          "knowledge": "discoverable",
+          "source": {
+            "kind": "master",
+            "ref": "Bestia src/world.cpp attack() damage = power * cooldown"
+          }
+        }
+      },
+      {
         "path": "mechanics/rules/dodge-window.json",
         "doc": {
           "id": "rule:bestia:dodge-window",
@@ -643,50 +686,64 @@
             {
               "from": "chase",
               "to": "attack",
-              "on": "相手が射程内"
+              "on": "相手が射程内",
+              "when": "dist(actor, $target) <= range(actor)"
             },
             {
               "from": "attack",
               "to": "chase",
-              "on": "相手が射程外"
+              "on": "相手が射程外",
+              "when": "dist(actor, $target) > range(actor)"
             },
             {
               "from": "chase",
               "to": "dodge",
               "on": "弾が迫る",
-              "rule": "rule:bestia:dodge-window"
+              "rule": "rule:bestia:dodge-window",
+              "when": "shot_at(actor)",
+              "p": 0.25,
+              "hold": "rule(rule:bestia:dodge-window)"
             },
             {
               "from": "attack",
               "to": "dodge",
               "on": "弾が迫る",
-              "rule": "rule:bestia:dodge-window"
+              "rule": "rule:bestia:dodge-window",
+              "when": "shot_at(actor)",
+              "p": 0.25,
+              "hold": "rule(rule:bestia:dodge-window)"
             },
             {
               "from": "dodge",
               "to": "chase",
-              "on": "脅威が去る"
+              "on": "脅威が去る",
+              "when": "1"
             },
             {
               "from": "attack",
               "to": "retreat",
               "on": "瀕死で相手が近い",
-              "rule": "rule:bestia:wounded-retreat"
+              "rule": "rule:bestia:wounded-retreat",
+              "when": "hp(actor) <= rule(rule:bestia:wounded-retreat) && dist(actor, $target) <= range(actor)",
+              "hold": "2"
             },
             {
               "from": "retreat",
               "to": "chase",
-              "on": "攻撃準備が整う"
+              "on": "攻撃準備が整う",
+              "when": "1"
             },
             {
               "from": "chase",
               "to": "return",
-              "on": "リング外に出かけた"
+              "on": "リング外に出かけた",
+              "when": "node(actor) == node:outside"
             },
             {
               "from": "return",
               "to": "chase",
-              "on": "リング内に戻った"
+              "on": "リング内に戻った",
+              "when": "node(actor) != node:outside"
             }
           ],
           "knowledge": "discoverable",
@@ -803,7 +860,768 @@
           "design_stance": "open"
         }
       }
-    ]
+    ],
+    "mechanics": {
+      "variables": {
+        "path": "mechanics/variables.json",
+        "doc": {
+          "variables": {
+            "t": {
+              "owner": "world",
+              "type": "time",
+              "unit": "s",
+              "observe": "t",
+              "knowledge": "shown",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia engine tick (world time)"
+              }
+            },
+            "shot_speed": {
+              "owner": "world",
+              "type": "number",
+              "unit": "m/s",
+              "range": [
+                0,
+                200
+              ],
+              "init": 30,
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp projectile speed"
+              }
+            },
+            "pos": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "vec3",
+              "unit": "m",
+              "observe": {
+                "self": "self.pos",
+                "entity": "pos"
+              },
+              "knowledge": "shown",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp Fighter::pos"
+              }
+            },
+            "max_hp": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "number",
+              "unit": "hp",
+              "range": [
+                1,
+                1000
+              ],
+              "from": "stats.health",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype health"
+              }
+            },
+            "hp": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "number",
+              "unit": "hp",
+              "range": [
+                0,
+                "max_hp"
+              ],
+              "init": "max_hp",
+              "observe": {
+                "self": "self.hp.value * max_hp(self)"
+              },
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp Fighter::hp"
+              }
+            },
+            "speed": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "number",
+              "unit": "m/s",
+              "range": [
+                0,
+                20
+              ],
+              "from": "stats.speed",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype speed"
+              }
+            },
+            "range": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "number",
+              "unit": "m",
+              "range": [
+                0,
+                40
+              ],
+              "from": "stats.range",
+              "observe": {
+                "self": "extra.reach"
+              },
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype range"
+              }
+            },
+            "cooldown": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "number",
+              "unit": "s",
+              "range": [
+                0,
+                5
+              ],
+              "from": "stats.cooldown",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype cooldown"
+              }
+            },
+            "power": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "number",
+              "unit": "hp/s",
+              "range": [
+                0,
+                100
+              ],
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp weapon power"
+              }
+            },
+            "ready_at": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "time",
+              "unit": "s",
+              "init": 0,
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp Fighter::readyAt"
+              }
+            },
+            "last_damaged_at": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "time",
+              "unit": "s",
+              "init": 0,
+              "observe": {
+                "self": "event:hit -> t"
+              },
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp Fighter::lastDamaged"
+              }
+            },
+            "moved": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "bool",
+              "init": 0,
+              "decay": "tick",
+              "description": {
+                "ja": "この 1 ティックで位置が変わった",
+                "en": "Changed position during this tick"
+              },
+              "knowledge": "shown",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp step"
+              }
+            },
+            "shot_at": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "bool",
+              "init": 0,
+              "decay": "tick",
+              "description": {
+                "ja": "この 1 ティックで撃たれた",
+                "en": "Was shot at during this tick"
+              },
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/behavior.cpp shotAt"
+              }
+            },
+            "target": {
+              "owner": "entity",
+              "type": "entity",
+              "description": {
+                "ja": "いま狙っている相手 (最も近い他の個体)",
+                "en": "The fighter it attacks now (the nearest other one)"
+              },
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/behavior.cpp nearest target"
+              }
+            },
+            "closing_time": {
+              "owner": "entity",
+              "type": "time",
+              "unit": "s",
+              "range": [
+                0,
+                5
+              ],
+              "derive": "dist(actor, target(actor)) / shot_speed",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/behavior.cpp decide() closing time"
+              }
+            },
+            "mode": {
+              "owner": "entity",
+              "type": "state",
+              "machine": "state:bestia:battle-ai",
+              "observe": {
+                "entity": "state_guess"
+              },
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/behavior.cpp tree"
+              }
+            },
+            "alive": {
+              "owner": [
+                "self",
+                "entity"
+              ],
+              "type": "bool",
+              "init": 1,
+              "derive": "hp > 0",
+              "knowledge": "shown",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp elimination"
+              }
+            }
+          },
+          "sets": {
+            "hostile": {
+              "of": "entity",
+              "where": "alive($e)",
+              "description": {
+                "ja": "生きている他の全個体 (バトルロイヤル)",
+                "en": "Every other living fighter (free-for-all)"
+              },
+              "knowledge": "shown",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia spec/feature/battle.md last monster standing"
+              }
+            }
+          },
+          "knowledge": "shown",
+          "source": {
+            "kind": "master",
+            "ref": "Bestia src/world.cpp"
+          }
+        }
+      },
+      "actions": [
+        {
+          "path": "mechanics/actions/dodge.json",
+          "doc": {
+            "id": "action:bestia:dodge",
+            "name": {
+              "ja": "回避",
+              "en": "Dodge"
+            },
+            "actor": [
+              "entity"
+            ],
+            "params": {
+              "threat": {
+                "kind": "entity"
+              },
+              "for": {
+                "kind": "number",
+                "unit": "s",
+                "range": [
+                  0.1,
+                  2
+                ],
+                "step": 0.1,
+                "default": 0.1
+              }
+            },
+            "maps_to": {
+              "custom": "dodge",
+              "target": "$threat"
+            },
+            "pre": "1",
+            "duration": "$for",
+            "motion": {
+              "kind": "sideways",
+              "goal": "$threat",
+              "speed": "speed(actor)"
+            },
+            "effects": [
+              {
+                "at": "start",
+                "outcomes": [
+                  {
+                    "p": 1,
+                    "assign": [
+                      {
+                        "var": "moved",
+                        "of": "actor",
+                        "expr": "1"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "knowledge": "discoverable",
+            "source": {
+              "kind": "master",
+              "ref": "Bestia src/behavior.cpp Task::Dodge (sidestep)"
+            }
+          }
+        },
+        {
+          "path": "mechanics/actions/move.json",
+          "doc": {
+            "id": "action:bestia:move",
+            "name": {
+              "ja": "移動",
+              "en": "Move"
+            },
+            "actor": [
+              "self",
+              "entity"
+            ],
+            "params": {
+              "goal": {
+                "kind": [
+                  "entity",
+                  "node",
+                  "point"
+                ]
+              },
+              "keep": {
+                "kind": "number",
+                "unit": "m",
+                "range": [
+                  0,
+                  5
+                ],
+                "step": 0.5,
+                "default": 0
+              },
+              "for": {
+                "kind": "number",
+                "unit": "s",
+                "range": [
+                  0.1,
+                  2
+                ],
+                "step": 0.1,
+                "default": 0.1
+              }
+            },
+            "maps_to": {
+              "move_to": "$goal"
+            },
+            "pre": "1",
+            "duration": "$for",
+            "motion": {
+              "kind": "toward",
+              "goal": "$goal",
+              "speed": "speed(actor)",
+              "keep": "$keep"
+            },
+            "effects": [
+              {
+                "at": "start",
+                "when": "dist(actor, $goal) > $keep",
+                "outcomes": [
+                  {
+                    "p": 1,
+                    "assign": [
+                      {
+                        "var": "moved",
+                        "of": "actor",
+                        "expr": "1"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "knowledge": "discoverable",
+            "source": {
+              "kind": "master",
+              "ref": "Bestia src/world.cpp step (walk toward)"
+            }
+          }
+        },
+        {
+          "path": "mechanics/actions/retreat.json",
+          "doc": {
+            "id": "action:bestia:retreat",
+            "name": {
+              "ja": "後退",
+              "en": "Retreat"
+            },
+            "actor": [
+              "entity"
+            ],
+            "params": {
+              "threat": {
+                "kind": "entity"
+              },
+              "for": {
+                "kind": "number",
+                "unit": "s",
+                "range": [
+                  0.1,
+                  2
+                ],
+                "step": 0.1,
+                "default": 0.1
+              }
+            },
+            "maps_to": {
+              "custom": "retreat",
+              "target": "$threat"
+            },
+            "pre": "1",
+            "duration": "$for",
+            "motion": {
+              "kind": "away",
+              "goal": "$threat",
+              "speed": "speed(actor)"
+            },
+            "effects": [
+              {
+                "at": "start",
+                "outcomes": [
+                  {
+                    "p": 1,
+                    "assign": [
+                      {
+                        "var": "moved",
+                        "of": "actor",
+                        "expr": "1"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "knowledge": "discoverable",
+            "source": {
+              "kind": "master",
+              "ref": "Bestia src/behavior.cpp Task::Wounded (back away)"
+            }
+          }
+        },
+        {
+          "path": "mechanics/actions/return.json",
+          "doc": {
+            "id": "action:bestia:return",
+            "name": {
+              "ja": "リングへ戻る",
+              "en": "Return to the ring"
+            },
+            "actor": [
+              "self",
+              "entity"
+            ],
+            "params": {
+              "for": {
+                "kind": "number",
+                "unit": "s",
+                "range": [
+                  0.1,
+                  2
+                ],
+                "step": 0.1,
+                "default": 0.1
+              }
+            },
+            "maps_to": {
+              "move_to": "node:center"
+            },
+            "pre": "node(actor) != node:center",
+            "duration": "$for",
+            "motion": {
+              "kind": "to_node",
+              "goal": "node:center",
+              "speed": "speed(actor)"
+            },
+            "effects": [
+              {
+                "at": "start",
+                "outcomes": [
+                  {
+                    "p": 1,
+                    "assign": [
+                      {
+                        "var": "moved",
+                        "of": "actor",
+                        "expr": "1"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "knowledge": "discoverable",
+            "source": {
+              "kind": "master",
+              "ref": "Bestia src/behavior.cpp Task::ReturnToRing"
+            }
+          }
+        },
+        {
+          "path": "mechanics/actions/shoot.json",
+          "doc": {
+            "id": "action:bestia:shoot",
+            "name": {
+              "ja": "射撃",
+              "en": "Shoot"
+            },
+            "actor": [
+              "self",
+              "entity"
+            ],
+            "params": {
+              "target": {
+                "kind": "entity",
+                "where": "hostile($target) && visible($target)"
+              }
+            },
+            "maps_to": {
+              "attack": "$target"
+            },
+            "pre": "t >= ready_at(actor) && dist(actor, $target) <= range(actor)",
+            "duration": "0",
+            "effects": [
+              {
+                "at": "start",
+                "outcomes": [
+                  {
+                    "p": 1,
+                    "assign": [
+                      {
+                        "var": "ready_at",
+                        "of": "actor",
+                        "expr": "t + cooldown(actor)"
+                      },
+                      {
+                        "var": "shot_at",
+                        "of": "$target",
+                        "expr": "1"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "at": "start",
+                "when": "mode($target) != state:bestia:battle-ai#dodge",
+                "outcomes": [
+                  {
+                    "p": 1,
+                    "label": "hit",
+                    "assign": [
+                      {
+                        "var": "hp",
+                        "of": "$target",
+                        "expr": "hp($target) - rule(rule:bestia:damage)"
+                      },
+                      {
+                        "var": "last_damaged_at",
+                        "of": "$target",
+                        "expr": "t"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "knowledge": "discoverable",
+            "source": {
+              "kind": "master",
+              "ref": "Bestia src/world.cpp attack()"
+            }
+          }
+        }
+      ],
+      "masked_actions": [],
+      "processes": [
+        {
+          "path": "mechanics/processes/regen.json",
+          "doc": {
+            "id": "process:bestia:regen",
+            "name": {
+              "ja": "自然回復",
+              "en": "Regeneration"
+            },
+            "of": "self",
+            "when": "alive(self) && t - last_damaged_at(self) >= 1.5",
+            "rate": [
+              {
+                "var": "hp",
+                "expr": "min(max_hp(self), hp(self) + 8 * dt)"
+              }
+            ],
+            "knowledge": "discoverable",
+            "source": {
+              "kind": "master",
+              "ref": "Bestia src/world.cpp regen (8 hp/s after 1.5 s unhurt)"
+            }
+          }
+        }
+      ],
+      "behaviors": [
+        {
+          "path": "mechanics/behaviors/battle-ai.json",
+          "doc": {
+            "id": "behavior:bestia:battle-ai",
+            "name": {
+              "ja": "戦闘 AI",
+              "en": "Battle AI"
+            },
+            "paradigm": "fsm",
+            "machine": "state:bestia:battle-ai",
+            "targeting": {
+              "var": "target",
+              "pick": "nearest(hostile)"
+            },
+            "act": {
+              "chase": {
+                "action": "action:bestia:move",
+                "params": {
+                  "goal": "$target",
+                  "keep": 1.5,
+                  "for": "dt"
+                }
+              },
+              "attack": {
+                "action": "action:bestia:shoot",
+                "params": {
+                  "target": "$target"
+                }
+              },
+              "dodge": {
+                "action": "action:bestia:dodge",
+                "params": {
+                  "threat": "$target",
+                  "for": "dt"
+                }
+              },
+              "retreat": {
+                "action": "action:bestia:retreat",
+                "params": {
+                  "threat": "$target",
+                  "for": "dt"
+                }
+              },
+              "return": {
+                "action": "action:bestia:return",
+                "params": {
+                  "for": "dt"
+                }
+              }
+            },
+            "knowledge": "discoverable",
+            "source": {
+              "kind": "master",
+              "ref": "Bestia src/behavior.cpp tree"
+            }
+          }
+        }
+      ],
+      "objectives": {
+        "path": "mechanics/objectives.json",
+        "doc": {
+          "win": "count(hostile) == 0",
+          "lose": "!alive(self)",
+          "progress": [
+            {
+              "id": "hostile_hp",
+              "expr": "sum(hostile, hp)",
+              "better": "lower",
+              "scale": "sum(hostile, max_hp)",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia last monster standing"
+              }
+            },
+            {
+              "id": "own_hp",
+              "expr": "hp(self)",
+              "better": "higher",
+              "scale": "max_hp(self)",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia HP bar"
+              }
+            }
+          ],
+          "knowledge": "shown",
+          "source": {
+            "kind": "master",
+            "ref": "Bestia spec/feature/battle.md"
+          }
+        }
+      }
+    }
   },
   "index": {
     "ids": {
@@ -827,15 +1645,20 @@
         "path": "stages/dome-arena/stage.json",
         "pointer": "/documents/stages/0/stage"
       },
+      "rule:bestia:damage": {
+        "kind": "rule",
+        "path": "mechanics/rules/damage.json",
+        "pointer": "/documents/rules/0"
+      },
       "rule:bestia:dodge-window": {
         "kind": "rule",
         "path": "mechanics/rules/dodge-window.json",
-        "pointer": "/documents/rules/0"
+        "pointer": "/documents/rules/1"
       },
       "rule:bestia:wounded-retreat": {
         "kind": "rule",
         "path": "mechanics/rules/wounded-retreat.json",
-        "pointer": "/documents/rules/1"
+        "pointer": "/documents/rules/2"
       },
       "state:bestia:battle-ai": {
         "kind": "state",
@@ -866,6 +1689,41 @@
         "kind": "intent",
         "path": "intent/dome-arena.json",
         "pointer": "/documents/intents/0/doc/intended/3"
+      },
+      "action:bestia:dodge": {
+        "kind": "action",
+        "path": "mechanics/actions/dodge.json",
+        "pointer": "/documents/mechanics/actions/0"
+      },
+      "action:bestia:move": {
+        "kind": "action",
+        "path": "mechanics/actions/move.json",
+        "pointer": "/documents/mechanics/actions/1"
+      },
+      "action:bestia:retreat": {
+        "kind": "action",
+        "path": "mechanics/actions/retreat.json",
+        "pointer": "/documents/mechanics/actions/2"
+      },
+      "action:bestia:return": {
+        "kind": "action",
+        "path": "mechanics/actions/return.json",
+        "pointer": "/documents/mechanics/actions/3"
+      },
+      "action:bestia:shoot": {
+        "kind": "action",
+        "path": "mechanics/actions/shoot.json",
+        "pointer": "/documents/mechanics/actions/4"
+      },
+      "process:bestia:regen": {
+        "kind": "process",
+        "path": "mechanics/processes/regen.json",
+        "pointer": "/documents/mechanics/processes/0"
+      },
+      "behavior:bestia:battle-ai": {
+        "kind": "behavior",
+        "path": "mechanics/behaviors/battle-ai.json",
+        "pointer": "/documents/mechanics/behaviors/0"
       }
     },
     "render_signatures": {},
@@ -885,6 +1743,51 @@
         "node:outside": [
           "node:outer-ring"
         ]
+      }
+    },
+    "actions": {
+      "action:bestia:dodge": {
+        "path": "mechanics/actions/dodge.json",
+        "pointer": "/documents/mechanics/actions/0",
+        "actor": [
+          "entity"
+        ],
+        "maps_to": "custom"
+      },
+      "action:bestia:move": {
+        "path": "mechanics/actions/move.json",
+        "pointer": "/documents/mechanics/actions/1",
+        "actor": [
+          "self",
+          "entity"
+        ],
+        "maps_to": "move_to"
+      },
+      "action:bestia:retreat": {
+        "path": "mechanics/actions/retreat.json",
+        "pointer": "/documents/mechanics/actions/2",
+        "actor": [
+          "entity"
+        ],
+        "maps_to": "custom"
+      },
+      "action:bestia:return": {
+        "path": "mechanics/actions/return.json",
+        "pointer": "/documents/mechanics/actions/3",
+        "actor": [
+          "self",
+          "entity"
+        ],
+        "maps_to": "move_to"
+      },
+      "action:bestia:shoot": {
+        "path": "mechanics/actions/shoot.json",
+        "pointer": "/documents/mechanics/actions/4",
+        "actor": [
+          "self",
+          "entity"
+        ],
+        "maps_to": "attack"
       }
     }
   }

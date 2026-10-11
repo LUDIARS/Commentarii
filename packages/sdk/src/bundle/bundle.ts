@@ -13,6 +13,14 @@ import type {
   StateMachine,
   Tactic,
 } from '../domain/documents.ts';
+import type {
+  ActionDefinition,
+  BehaviorModel,
+  MaskedActionOverride,
+  Objectives,
+  ProcessDefinition,
+  RulebookVariables,
+} from '../domain/rulebook-documents.ts';
 import type { FileKind } from './classify-path.ts';
 
 /** A schema-valid document and the bundle-relative path it came from. */
@@ -28,6 +36,21 @@ export interface StageFiles {
   readonly events?: Located<StageEvents>;
 }
 
+/**
+ * The rulebook documents under mechanics/ besides rules/ and states/ (spec/feature/rulebook.md).
+ * maskedActions are the .masked.json overrides; only the omniscient view applies them.
+ */
+export interface RulebookFiles {
+  readonly variables?: Located<RulebookVariables>;
+  readonly actions: readonly Located<ActionDefinition>[];
+  readonly maskedActions: readonly Located<MaskedActionOverride>[];
+  readonly processes: readonly Located<ProcessDefinition>[];
+  readonly behaviors: readonly Located<BehaviorModel>[];
+  readonly objectives?: Located<Objectives>;
+}
+
+export const EMPTY_RULEBOOK_FILES: RulebookFiles = { actions: [], maskedActions: [], processes: [], behaviors: [] };
+
 /** Only documents that passed their schema. Invalid files stay visible through LoadedFile. */
 export interface Bundle {
   readonly manifest?: Located<Manifest>;
@@ -39,6 +62,7 @@ export interface Bundle {
   readonly states: readonly Located<StateMachine>[];
   readonly tactics: readonly Located<Tactic>[];
   readonly intents: readonly Located<Intent>[];
+  readonly rulebook: RulebookFiles;
 }
 
 /** Every parseable JSON file of the bundle, valid or not, for checks that walk raw JSON. */

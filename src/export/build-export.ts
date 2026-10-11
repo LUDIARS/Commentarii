@@ -1,8 +1,11 @@
 // `guide export`: the loaded bundle -> bundle.json. The player export goes through
 // toPlayerView, the same masked-free view render uses (principle 1), so a masked value cannot
-// reach it even when a bundle wrongly keeps one outside its .masked.json.
+// reach it even when a bundle wrongly keeps one outside its .masked.json. Format 2 adds the
+// rulebook (documents.mechanics): a player export has no masked override, a full export keeps
+// them apart (masked_actions), never applied (loadRulebook applies them for omniscient).
 
-import type { Bundle, LoadResult } from '@ludiars/commentarii-sdk/types';
+import type { Bundle, ExportedMechanics, LoadResult } from '@ludiars/commentarii-sdk/types';
+import { CURRENT_EXPRESSION_LANGUAGE } from '@ludiars/commentarii-sdk/expression';
 import { toPlayerView } from '@ludiars/commentarii-sdk/rulebook';
 import { buildExportIndex } from './build-export-index.ts';
 import {
@@ -23,6 +26,18 @@ export interface ExportOptions {
 
 export const EXPORT_FILE_NAME = 'bundle.json';
 
+function mechanicsOf(bundle: Bundle): ExportedMechanics {
+  const { rulebook } = bundle;
+  return {
+    ...(rulebook.variables ? { variables: rulebook.variables } : {}),
+    actions: rulebook.actions,
+    masked_actions: rulebook.maskedActions,
+    processes: rulebook.processes,
+    behaviors: rulebook.behaviors,
+    ...(rulebook.objectives ? { objectives: rulebook.objectives } : {}),
+  };
+}
+
 function documentsOf(bundle: Bundle): ExportedDocuments {
   return {
     ...(bundle.manifest ? { manifest: bundle.manifest } : {}),
@@ -34,6 +49,7 @@ function documentsOf(bundle: Bundle): ExportedDocuments {
     states: bundle.states,
     tactics: bundle.tactics,
     intents: bundle.intents,
+    mechanics: mechanicsOf(bundle),
   };
 }
 
@@ -46,6 +62,8 @@ export function buildExport(load: LoadResult, options: ExportOptions): ExportedB
     game_id: bundle.manifest?.doc.game_id ?? null,
     manifest_version: bundle.manifest?.doc.version ?? null,
     knowledge: options.knowledge,
+    view: options.knowledge,
+    expression_language: CURRENT_EXPRESSION_LANGUAGE,
     target: options.target,
     documents,
     index: buildExportIndex(documents),

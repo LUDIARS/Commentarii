@@ -35,10 +35,28 @@ export interface TacticReferencingMasked {
   readonly masked_refs: number;
 }
 
+export type RulebookElementKind = 'variable' | 'set' | 'action' | 'process' | 'behavior' | 'objectives' | 'progress';
+
+export interface RulebookKnowledgeRow {
+  readonly kind: RulebookElementKind;
+  readonly id: string;
+  readonly knowledge: 'shown' | 'discoverable' | 'masked';
+  /** How many .masked.json overrides replace part of this action (their content stays hidden). */
+  readonly masked_overrides: number;
+  readonly path: string;
+}
+
+export interface RulebookKnowledge {
+  readonly rows: readonly RulebookKnowledgeRow[];
+  /** masked counts masked elements plus masked overrides. */
+  readonly totals: KnowledgeCounts;
+}
+
 export interface KnowledgeReport {
   readonly game_id: string | null;
   readonly entities: readonly EntityKnowledgeRow[];
   readonly totals: KnowledgeCounts;
   readonly ungrounded: readonly UngroundedValue[];
   readonly tactics_referencing_masked: readonly TacticReferencingMasked[];
+  readonly rulebook: RulebookKnowledge;
 }

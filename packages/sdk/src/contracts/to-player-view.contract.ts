@@ -1,4 +1,4 @@
-// C-3 toPlayerView(bundle): no masked knowledge anywhere in the result.
+// C-3 toPlayerView(bundle): no masked knowledge anywhere in the result, no masked companions or overrides.
 
 import type { Bundle } from '../bundle/bundle.ts';
 
@@ -13,6 +13,7 @@ function containsMasked(value: unknown): boolean {
 export default {
   post: (view: Bundle) => {
     if (view.maskedEntities.length > 0) return 'player view keeps masked companion files';
+    if (view.rulebook.maskedActions.length > 0) return 'player view keeps masked action overrides';
     return !containsMasked(view) || 'player view contains a masked value';
   },
 };

@@ -30,7 +30,21 @@
           "from": { "$ref": "id.schema.json#/$defs/slug" },
           "to": { "$ref": "id.schema.json#/$defs/slug" },
           "on": { "type": "string", "minLength": 1 },
-          "rule": { "$ref": "id.schema.json#/$defs/ruleId" }
+          "rule": { "$ref": "id.schema.json#/$defs/ruleId" },
+          "when": {
+            "description": "Machine-evaluated condition (expr/2) of the transition; `on` stays the prose for people.",
+            "$ref": "id.schema.json#/$defs/expression"
+          },
+          "p": {
+            "description": "Chance the transition fires when `when` holds (default 1).",
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 1
+          },
+          "hold": {
+            "description": "Seconds (expr/2) the machine stays at least in the target state once it enters it.",
+            "$ref": "id.schema.json#/$defs/expression"
+          }
         },
         "additionalProperties": false
       }

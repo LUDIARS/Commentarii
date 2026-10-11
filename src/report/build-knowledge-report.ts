@@ -10,6 +10,7 @@ import type {
   TacticReferencingMasked,
   UngroundedValue,
 } from './knowledge-report.ts';
+import { buildRulebookKnowledge } from './build-rulebook-knowledge.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:a8918a40 */
 import augurContract_b0e318ca from '../contracts/build-knowledge-report.contract.ts'; /* augur-inject:contract-predicate:072fb9ce */
 
@@ -80,6 +81,7 @@ export function buildKnowledgeReport(load: LoadResult): KnowledgeReport {
     totals: counts(sum('shown'), sum('discoverable'), sum('masked')),
     ungrounded: ungroundedValues(load),
     tactics_referencing_masked: tacticsReferencingMasked(load),
+    rulebook: buildRulebookKnowledge(load.bundle, counts),
   };
 }
 // @ts-expect-error augur-inject

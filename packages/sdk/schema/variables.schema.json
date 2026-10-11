@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "variables.schema.json",
+  "title": "Rulebook state variables (mechanics/variables.json)",
+  "description": "Every state variable of the rulebook: who owns it, its type, unit and range, how it is observed or derived, and its knowledge / source (spec/feature/rulebook.md §2). A variable without `observe` is tracked by the forward model alone. Expressions are expr/2.",
+  "type": "object",
+  "required": ["variables", "knowledge", "source"],
+  "properties": {
+    "variables": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "$ref": "#/$defs/variable" }
+    },
+    "sets": {
+      "description": "Named sets of entities for aggregates (count(hostile), sum(hostile, hp)).",
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "$ref": "#/$defs/set" }
+    },
+    "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+    "source": { "$ref": "value.schema.json#/$defs/source" },
+    "draft": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "owner": { "enum": ["world", "stage", "self", "entity"] },
+    "bound": {
+      "description": "A number, or an expression over other variables (e.g. max_hp).",
+      "oneOf": [{ "type": "number" }, { "$ref": "id.schema.json#/$defs/expression" }]
+    },
+    "variable": {
+      "type": "object",
+      "required": ["owner", "type", "knowledge", "source"],
+      "properties": {
+        "owner": {
+          "oneOf": [
+            { "$ref": "#/$defs/owner" },
+            { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/owner" } }
+          ]
+        },
+        "type": { "enum": ["number", "time", "bool", "vec3", "node", "entity", "state", "enum", "count"] },
+        "description": { "$ref": "id.schema.json#/$defs/localizedText" },
+        "unit": { "type": "string", "minLength": 1 },
+        "range": {
+          "description": "Declared range; the initial interval of an unknown value.",
+          "type": "array",
+          "prefixItems": [{ "$ref": "#/$defs/bound" }, { "$ref": "#/$defs/bound" }],
+          "items": false,
+          "minItems": 2
+        },
+        "domain": {
+          "description": "Values of an enum variable.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "id.schema.json#/$defs/slug" }
+        },
+        "machine": { "$ref": "id.schema.json#/$defs/stateId" },
+        "observe": {
+          "description": "How the observation frame shows the variable: one rule, or one per owner. `event:<kind> -> <expr>` sets it when the event arrives.",
+          "oneOf": [
+            { "type": "string", "minLength": 1 },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": { "$ref": "#/$defs/owner" },
+              "additionalProperties": { "type": "string", "minLength": 1 }
+            }
+          ]
+        },
+        "from": {
+          "description": "Field path of the owning entity's document the value starts from (stats.health).",
+          "type": "string",
+          "pattern": "^[a-z_][a-z0-9_]*(\\.[a-z0-9_]+)*$"
+        },
+        "init": { "$ref": "#/$defs/bound" },
+        "derive": { "$ref": "id.schema.json#/$defs/expression" },
+        "decay": { "description": "tick: an event-set flag that resets after one tick.", "const": "tick" },
+        "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+        "source": { "$ref": "value.schema.json#/$defs/source" }
+      },
+      "additionalProperties": false
+    },
+    "set": {
+      "type": "object",
+      "required": ["of", "where", "knowledge", "source"],
+      "properties": {
+        "of": { "const": "entity" },
+        "where": { "$ref": "id.schema.json#/$defs/expression" },
+        "description": { "$ref": "id.schema.json#/$defs/localizedText" },
+        "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+        "source": { "$ref": "value.schema.json#/$defs/source" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -169,12 +169,23 @@ export interface Rule {
   readonly draft?: boolean;
 }
 
+/** `on` is prose for people; `when` (expr/2), `p` and `hold` are what an interpreter evaluates. */
+export interface StateTransition {
+  readonly from: string;
+  readonly to: string;
+  readonly on: string;
+  readonly rule?: string;
+  readonly when?: string;
+  readonly p?: number;
+  readonly hold?: string;
+}
+
 export interface StateMachine {
   readonly id: string;
   readonly name: LocalizedText;
   readonly initial: string;
   readonly states: readonly { readonly id: string; readonly label?: LocalizedText }[];
-  readonly transitions: readonly { readonly from: string; readonly to: string; readonly on: string; readonly rule?: string }[];
+  readonly transitions: readonly StateTransition[];
   readonly knowledge: Knowledge;
   readonly source: Source;
   readonly draft?: boolean;
