@@ -1,40 +1,46 @@
-# 段階 R1: ルールブック (mechanics/) + 前向きモデル + アフォーダンス
+# Ingenium R1: ルールブック + 式言語 v2 + 信念・前向きモデル・アフォーダンス
 
-設計正本: `spec/architecture/design.md` §16 (特に §16.3 ルールブック、§16.4 アフォーダンス、§16.8 の R1 行)。§4.3 (共通フィールド)、§5 (知識境界)、§7.2 (Observation)、§7.6 (`player` / `omniscient`) が前提。段階 1〜5 (+5C/5K) はマージ済み。本 run のコードは `src/domain/expression/` (拡張)、`src/rulebook/` (新設)、`schema/` (追加)、`samples/bestia/mechanics/` に閉じる。Augur 契約 ID は **C-100 番台**。並行して段 6 (描画タップ、`src/render-tap/`・`src/adapters/render-tap/`) が別 run で進むので、そこには触らない。
+設計正本: `spec/plan/2026-10-11-ingenium-integrated-design.md` (§1〜§5)。詳細は Fable 案 `spec/plan/2026-10-11-autoplayer-paradigms-fable.md` の §3.2 (ルールブック `mechanics/`、JSON 例)、§3.3 (式言語 v2)、§3.4 (信念状態と前向きモデル)、§3.5 (アフォーダンス)、§3.10 (相手のモデル)、§7.1 (R1 の受入) を正本にする。Astra 案 `spec/plan/2026-10-11-autoplayer-paradigms-astra.md` の §4.3〜§4.6・§5 (存在・公開可否・認識状態の分離) と §9 の R1 指摘を受入に加える。
 
-neco の指示 (2026-10-11): 「オートプレイヤーは BT、FSM、Utility AI および GOAP、MCTS などの行動選択 AI の判断系アルゴリズムを理解しており、それを決定するためのベースのルール / メカニクス (仕様) をデータとして持つ。攻略法については仕様に依存せず自分で行動し、能力的にできる事を判断・解釈して行動する。」本段はその「ルール / メカニクスをデータとして持つ」部分と「能力的にできること」の列挙を作る。判断方式 (R2) と方式選択・自律構え (R3) は後続段。
+前提: R0-A (Commentarii `packages/sdk`) と R0-B (実行側を Ingenium へ移す) がマージ済み。初版 (叩き台、Commentarii に `src/rulebook/` を新設する案) は分離前提と矛盾するため破棄し、本書で置き換える (2026-10-11)。
+
+本段は 2 リポにまたがり、**PR を 2 本** 出す。Commentarii 側 (形式) を先にマージして SDK のタグを上げてから、Ingenium 側 (実行) を出す。
 
 ## 成果物
 
-1. **式言語の拡張** (`src/domain/expression/`): 比較 (`< <= == != >= >`)、論理 (`&& || !`、短絡評価)、`if(c, a, b)`、状態参照関数の差し込み口 (評価文脈から関数を渡す: `dist(a, b)` / `ready(skillId)` / 変数参照 `<var>(<owner>)` / `rule(<ruleId>)` / パラメータ `$name`)。真偽値は 1 / 0。**既存の rule の評価結果は 1 件も変えない** (既存テストと samples の全 rule の example 評価で確認)。式の静的検査 (未知の関数・変数・パラメータ) を validate に足す。
-2. **スキーマ** (`schema/`): `variables.schema.json`、`action.schema.json`、`behavior.schema.json`、`objectives.schema.json`。`state.schema.json` の遷移に任意の `when` (式) を追加 (`on` は人間向けに残す)。全要素が `knowledge` / `source` を持つ (§4.3)。`masked` の要素・効果・確率は既存と同じく `.masked.json` に分離 (§5)。
-   - 行動の型: `id`, `name`, `actor` (`self` | `entity:<filter>`), `maps_to` (§7.3 の抽象アクションへの対応), `params`, `pre`, `effects[]` (`p` 任意、合計 1、`set` は `変数参照 → 式`), `cost` (`time`, `resource`), `cooldown`, `duration` 任意。
-   - 挙動モデル: `paradigm` (`fsm` | `bt` | `utility` | `goap` | `scripted`) と方式ごとの記述 (fsm=states 参照 + when、bt=ノード木 (Selector/Sequence/Condition/Action、葉は action ID)、utility=考慮項目 (式) と重み、goap=目標述語と使う action ID、scripted=時刻 → action)。解釈器は R2 なので、本段はスキーマと validate と render まで。
-   - 目標: `win` / `lose` / `subgoals[]` を式 (述語) で。ステージの `stage.json` で上書き可。
-3. **validate** に検査項目を追加 (1 項目 1 テスト、`spec/` の検査項目リストにも追記): 式の構文、未知の参照、確率の合計、`maps_to` の抽象アクションが §7.3 の語彙か `custom` 宣言済みか、`masked` の分離、`knowledge` の伝播 (masked の変数を参照する action は masked 以上)、挙動モデルの参照切れ。
-4. **render**: ルールブックの節 (変数表、行動の型の表、前提と効果の式、挙動モデルの図 = FSM は Mermaid stateDiagram、BT はインデント木、目標)。知識境界レポートにルールブックを含める。
-5. **`src/rulebook/`** (SRP で分割):
-   - `load-rulebook`: バンドルから読み、`mode` (`player` / `omniscient`) に応じて masked を除いた **見える分のルールブック** を作る。除いた箇所は「不明」として残す (存在だけは分かる値と、存在も知らない値を区別: `discoverable` で未観測 = 不明、`masked` = player では存在しない)。
-   - `belief-state`: 観測 (§7.2) + ルールブックの変数宣言から信念状態を作る。不明値は値域つきの「不明」。
-   - `forward-model`: `simulate(belief, action, params, rng?)` → 次の状態。確率的効果は (a) seed からのサンプル (決定的) と (b) 期待値 / 分岐列挙の両方。不明値に依存する効果は結果を「不明」として返す。クールダウン・資源・時間を進める。
-   - `affordances`: 自分の行動の型を、今 `pre` が成り立つ (確定) / 不明値のため成否不明 (要実験) / 1〜2 手先に成り立つ (後ろ向き探索) / 成り立たない (理由つき) に分類。
-6. **samples/bestia のルールブック**: Bestia の既存資料 (samples/bestia の entities / mechanics / sim アダプタの規則 `src/adapters/sim/sim-rules.ts`) から、変数・行動の型 (移動、攻撃、回避、後退、リングへ戻る、相当)・`battle-ai` の挙動モデル (fsm、遷移に when)・目標。少なくとも 1 つの効果を `masked` にして、player 側で不明になることをテストで示す。
-7. `spec/feature/rulebook.md` (公開契約: 式言語の文法、各ファイルの形、knowledge の扱い、前向きモデルの意味論)。`spec/domains/rulebook.domain.json` (新設、pathPattern は `(^|/)src/rulebook/` 形式で書く。`^src/` は不可)。README に節を追加。
+### Commentarii (SDK = データ形式の所有者)
+
+1. **式言語 v2** (`packages/sdk` の expression): 比較 (`< <= == != >= >`)、論理 (`&& || !`、短絡)、`if(c, a, b)`、ID トークン (`kind:game:slug(#state)` を 1 トークン、文字列リテラルは入れない)、パラメータ `$x`、文脈関数の差し込み口 (`hp(x)` 等の変数参照、`dist(a,b)`、`ready(id)`、`rule(id)`、集約 `sum` / `count`)。**区間評価** (`evaluateInterval`: 値は `[lo, hi]`、真偽は `[0,1]`、`&&`=min / `||`=max / `!`=1−x) と点評価。**点評価は現行と完全互換** (既存 rule の評価結果を 1 件も変えない)。静的検査 (未知の関数・変数・パラメータ・ID)。式言語の版を `expr/2` として記録し、`expr/1` の文書はそのまま読める。
+2. **ルールブックのスキーマ** (`schema/`): `variables` (所有者 self / entity / stage / global、型、値域、単位、観測できるか)、`actions` (actor、`maps_to` 抽象アクション、params、`pre`、`outcomes[]` (`p` 合計 1、相互排他を明記)、effects、cost、cooldown、duration)、`processes` (毎ティックの連続変化)、運動プリミティブ (`toward` / `away` / `sideways` / `to_node`)、`behaviors` (`paradigm`: fsm / bt / utility / goap / mcts / scripted と方式ごとの記述)、`objectives` (`win` / `lose` / `progress[]`)。`states` の遷移に機械評価できる `when`。全要素に `knowledge` / `source`。
+3. **masked は上書き分離**: `actions/<slug>.masked.json` は見える側の行動を丸ごと上書きする真の定義。player 側の定義だけで完結し (確率の和が 1 に満たない等の **隠れた分岐の痕跡を残さない**)、omniscient (full 書き出し) が上書きを適用する。
+4. **validate** の検査項目 (1 項目 1 テスト、spec の検査項目リストにも追記): 式の構文 / 未知の参照 / 確率の合計 / `maps_to` の語彙 / masked の分離 / knowledge の伝播 / 挙動モデルの参照切れ / player 定義に隠れた分岐の痕跡が無いこと。
+5. **render**: ルールブックの節 (変数表、行動の型の表と式、挙動モデルの図 (FSM は Mermaid stateDiagram、BT はインデント木)、目標)。知識境界レポートにルールブックを含める。
+6. **bundle.json の `format_version` 2** (`documents.mechanics`、`index.actions`、`view: player | full`)。SDK の `rulebook` 入口: `loadRulebook(exported, mode)` (player / omniscient のビュー、overlay の重ね)。
+7. **samples/bestia のルールブック一式** (Fable 案 付録 A): 変数・行動の型 (移動・攻撃・回避・後退・リングへ戻る相当)・過程・`battle-ai` の挙動モデル (fsm、遷移に `when`)・目標。少なくとも 1 つの効果を masked の上書きにする。
+8. `COMPAT.md` に SDK 0.2.0 / bundle format 2 の行。`spec/feature/rulebook.md` (公開契約)。ドメイン宣言は `(^|/)` 形式。
+
+### Ingenium (実行)
+
+9. **信念状態** (`src/belief/`): 観測 + ルールブックの変数宣言から作る。値は区間、不明は値域いっぱいの区間。効果推定は仮説 (条件・根拠 run・信頼区間・撤回可) として別に持つ。
+10. **前向きモデル** (`src/model/`): `step(state, jointActions, horizon, randomKey)`。持続行動・過程・運動・相手の挙動モデルを **副ステップで同時に** 進める。確率的な結果は seed からの標本 (決定的) と枝の列挙 (確率つき) の両方を返す。**期待状態は作らない** (期待値は集計のときだけ)。不明値に依存する結果は区間のまま返す。乱数は `deriveSeed(seed, "model:<tick>")` の派生ストリームから引く。
+11. **アフォーダンス** (`src/affordance/`): 自分の行動の型を「今できる / 要実験 (不明値で成否不明) / k 手で可能 (witness つき) / 見つからない (探索範囲つき) / 不可能 (根拠つき)」に分ける。入力として送れるかと、効果が分かるかは別の軸。
+12. **相手モデルの解釈器** (fsm / scripted) (`src/opponent/`): `behaviors` の記述を同じ実装で回し、相手の次の手を予測する。相手視点のビューでは相手から見えない情報にアクセスできない。
+13. 判断ログ (リプレイ) に、信念の要約・アフォーダンスの分類を任意の欄として記録 (既存の replay 不変条件を壊さない)。
 
 ## 受入条件
 
-- `npm install --include=dev && npm run typecheck && npm test` が通る。
-- 既存 rule の評価が変わらない (全 sample rule の example 評価が変更前と一致するテスト)。
+- 両リポで `npm install --include=dev && npm run typecheck && npm test` が通る。
+- 既存 rule の点評価が不変 (全 sample rule の example 評価が変更前と一致するテスト)。
 - 新しい validate 項目がそれぞれ 1 テストで違反を検出する。
-- `player` で読んだルールブックと前向きモデルに masked の行動・効果・確率が入らない (テスト)。`omniscient` では入る。
-- Bestia の sim で、観測 → 信念状態 → 前向きモデルで 1 ステップ予測した結果が、sim の実際の次の観測と一致する (決定的効果のもの。確率的なものは分布の台が一致) (テスト)。
-- アフォーダンスが 4 分類を返す (テスト: masked 効果の行動が「要実験」に入る)。
-- render にルールブックの節が出る (スナップショットではなく、行動の型 ID と式が含まれることを確認するテスト)。
+- player のルールブックと前向きモデルに、masked の行動・効果・確率・分岐の **痕跡** が無い (存在の有無を推測できる差も含めて検査するテスト)。omniscient では上書きが効く。
+- 前向きモデルの検証は **独立した oracle** で行う (sim の実装を写した自己比較だけにしない): 複数ステップ・確率的な結果の分布の台・可視射影 (player に見える部分だけの一致) を、手で書いた期待値と比べるテスト。Bestia の sim 実走との一致も別に示す。
+- 同じ seed で同じ予測 (決定性テスト)。既存のリプレイ検証が通る。
+- アフォーダンスが 5 分類を返す (masked 効果の行動が「要実験」に入るテストを含む)。
 - PR 説明に: 変更した境界 / 復旧方法 / 実施した検証 / 未実施。
 
 ## 作業の進め方
 
-- 作業場所は親が渡した worktree とブランチ (`feat/stage-r1-rulebook`)。`main` を直接編集しない。
-- 共有ファイル (`src/cli/*`, `augur.contracts.json`, `src/schema/schema-names.ts`, `src/bundle/classify-path.ts`) への追加は自分の分の最小行に留める (段 6 の run と衝突しうる)。
-- ビルドとテストはフォアグラウンドで待つ (バックグラウンドで待つと session-end される)。
-- 完了 = コミット → Revisor local PR 提出 (`node E:/Document/Ars/command-runner.mjs rv:submit --repo <worktree>`) → **PR 番号と検証結果を報告してから** 終了指示を待つ。マージはしない。ブロック所見は直して再提出する。
+- 作業場所は親が渡した worktree とブランチ。`main` を直接編集しない。
+- Ingenium から Commentarii の内部パスを import しない (SDK の公開入口だけ)。
+- ビルドとテストはフォアグラウンドで待つ。サービスは起動しない。
+- 完了 = Revisor local PR 提出 → **PR 番号と検証結果を報告してから** 終了指示を待つ。マージはしない。ブロック所見は直して再提出する。

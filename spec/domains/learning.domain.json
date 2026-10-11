@@ -22,5 +22,5 @@
     "spec/architecture/design.md §1 §4.4 §5 §8.1 §8.2 §8.4 §11",
     "spec/feature/learning.md"
   ],
-  "rationale": "学習はデータ (正本とオーバーレイ) の更新 (原則 5)。正本を書くのは consolidate --apply の自動反映だけで、意図に触れる書き換え・境界の昇格・雛形は人間承認に残す。omniscient の観測は学習にも昇格にも数えない (原則 2)。reflect 本体 (src/engine/reflect/) はティックの一部なので auto-player に置く。"
+  "rationale": "学習はデータ (正本とオーバーレイ) の更新 (原則 5)。正本を書くのは consolidate --apply の自動反映だけで、意図に触れる書き換え・境界の昇格・雛形は人間承認に残す。omniscient の観測は学習にも昇格にも数えない (原則 2)。reflect 本体 (観測行を書く側) はティックの一部なので Ingenium にある (R0-B)。"
 }

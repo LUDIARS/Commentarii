@@ -22,6 +22,11 @@ export interface BenchCompatibility {
   readonly purpose: 'efficiency' | 'coverage';
   readonly decision_mode: 'player-knowledge' | 'intent-assisted';
   readonly tactics: 'guide' | 'none';
+  /** Ingenium R0-B: absent in results recorded before the engine moved, which then compare with none of its results. */
+  readonly stance?: 'autonomous' | 'guided' | 'hybrid';
+  readonly decider?: string;
+  readonly engine_version?: string;
+  readonly sdk_version?: string;
 }
 
 /** What was measured (allowed to differ between base and head). */

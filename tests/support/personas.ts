@@ -1,14 +1,8 @@
-// Test helpers for the engine: the shipped personas, a persona built from overrides, and an
-// observation frame of the sample's dome arena.
+// Test helpers: a persona built from overrides and an observation frame of the sample's dome arena
+// (the shipped personas moved to Ingenium with the engine).
 
-import { loadPersona } from '../../src/adapters/fs/load-persona.ts';
 import type { Persona } from '@ludiars/commentarii-sdk/knowledge';
 import type { ObservationFrame, ObservedEntity } from '@ludiars/commentarii-sdk/types';
-import { SAMPLE_DIR } from './bundles.ts';
-
-export async function shippedPersona(slug: string): Promise<Persona> {
-  return loadPersona(SAMPLE_DIR, slug);
-}
 
 /** A persona with no habits (no delay, no misplay, no exploration) unless overridden. */
 export function testPersona(overrides: Partial<Persona> = {}): Persona {

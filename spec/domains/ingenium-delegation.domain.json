@@ -1,0 +1,26 @@
+{
+  "name": "ingenium-delegation",
+  "presetRules": [],
+  "templateRules": [],
+  "description": "オートプレイヤーの委譲 (Ingenium R0-B): guide run / bench / gate / replay / report signatures は 1 版だけ残し、ingenium が PATH にあれば引数をそのまま渡して終了コードを返し、無ければ「Ingenium に移った」と出して終了コード 2。実装が Ingenium へ移った仕様の所在 (engine / adapter-protocol / balance-gate / adapter-konbini-dominant) と、Ingenium が書いた観測行の fixture。",
+  "membership": [
+    {
+      "pathPattern": "(^|/)src/delegate/[^/]+\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/delegate/[^/]+\\.test\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/fixtures/ingenium/[^/]+\\.jsonl$"
+    },
+    {
+      "pathPattern": "(^|/)spec/feature/(engine|adapter-protocol|balance-gate|adapter-konbini-dominant)\\.md$"
+    }
+  ],
+  "cardTemplate": "Summarise the \"ingenium-delegation\" domain: guide <moved command> -> isDelegatedCommand -> findOnPath(ingenium) -> spawnInherited (same args, same exit code) | exit 2 with where it moved.",
+  "specRefs": [
+    "spec/plan/2026-10-11-autoplayer-paradigms-fable.md §10.3 (段階 2)",
+    "COMPAT.md"
+  ],
+  "rationale": "判断・実行は Ingenium、原則・データ形式・学習・検証は Commentarii (統合設計 §4)。依存は Ingenium → Commentarii SDK の一方向なので、Commentarii は Ingenium を import せずプロセスとして呼ぶだけ。委譲は次の minor 版で撤去する。"
+}

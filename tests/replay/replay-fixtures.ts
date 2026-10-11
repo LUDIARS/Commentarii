@@ -1,12 +1,10 @@
-// Test helpers for replay: fixture paths, the compiled replay schema, observation frames and
-// an in-memory line writer.
+// Test helpers for replay: fixture paths, the compiled replay schema and observation frames.
 
 import { readFile } from 'node:fs/promises';
 import { readReplaySchemaDocuments } from '../../src/adapters/fs/replay-schema-documents.ts';
 import type { ObservationFrame, ObservationMode, ReplayHeader, ReplayRun } from '@ludiars/commentarii-sdk/types';
 import { fixtureReplayDirectory, fixtureReplayPath } from '@ludiars/commentarii-sdk/fixtures';
 import { createReplaySchema, parseReplay, type ReplayLoad, type ReplaySchema } from '@ludiars/commentarii-sdk/replay';
-import type { ReplayLineWriter } from '../../src/replay/recording-sink.ts';
 
 export const REPLAY_FIXTURE_DIR = fixtureReplayDirectory();
 export const BASE_RUN = fixtureReplayPath('dome-arena-base');
@@ -59,21 +57,5 @@ export function observation(tick: number, mode: ObservationMode = 'player'): Obs
     entities: [{ entity: 'enemy:bestia:wire-spider', instance: 2, pos: [0, 0, 4], confidence: 0.9 }],
     stage: { id: 'stage:bestia:dome-arena', elapsed: t, node: 'node:mid-ring' },
     events: [],
-  };
-}
-
-export interface MemoryWriter extends ReplayLineWriter {
-  readonly lines: string[];
-  text(): string;
-}
-
-export function memoryWriter(): MemoryWriter {
-  const lines: string[] = [];
-  return {
-    lines,
-    async append(line) {
-      lines.push(line);
-    },
-    text: () => lines.map((line) => `${line}\n`).join(''),
   };
 }

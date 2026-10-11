@@ -1,14 +1,20 @@
 {
   "name": "replay",
-  "description": "リプレイの記録と再生: replay/<run-id>.jsonl (header / tick / footer)、RecordingSink (player モードの masked を記録時に拒否)、観測を受けて行動を返す Decider の型と固定 decider、guide replay play (決定性テスト) / diff (最初の分岐と効用差)。",
+  "description": "リプレイの形式側: replay/<run-id>.jsonl (header / tick / footer) の読み込み・不変条件の検査 (player モードの masked 禁止、観測境界) のテストと仕様。形式の部品は commentarii-sdk (packages/sdk) の replay、記録・再生 (RecordingSink / Decider / play / diff) の実行側は Ingenium (R0-B)。",
   "presetRules": [],
   "templateRules": [],
   "membership": [
-    { "pathPattern": "(^|/)(?<!packages/sdk/)src/replay/[^/]+\\.ts$" },
-    { "pathPattern": "(^|/)tests/replay/[^/]+\\.ts$" },
-    { "pathPattern": "(^|/)spec/feature/replay\\.md$" }
+    {
+      "pathPattern": "(^|/)tests/replay/[^/]+\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)spec/feature/replay\\.md$"
+    }
   ],
-  "cardTemplate": "Summarise the \"replay\" domain: record (decider wrapped by RecordingSink) -> replay/<run-id>.jsonl -> parse -> play (determinism) / diff (first branch).",
-  "specRefs": ["spec/architecture/design.md §7.2 §7.5 §14.A", "spec/feature/replay.md"],
-  "rationale": "段階 3 以降のエンジンのテスト正本になる層。判断エンジンは Decider の型でだけ受け、ゲームにもエンジン実装にも依存しない。fs アダプタ (src/adapters/fs/replay-*.ts) は guide-bundle の所属パターンに含まれるのでここには重ねない。形式の読み取り側 (replay-record / parse-replay / tick-invariants / find-masked-pointers / replay-schema / replay-path)、スキーマ、フィクスチャ (fixtures/replay) は commentarii-sdk (packages/sdk) に属する (Ingenium R0-A)。"
+  "cardTemplate": "Summarise the \"replay\" domain: replay/<run-id>.jsonl -> SDK parseReplay (schema + tick invariants + masked ban) -> ReplayRun; writing and playback live in Ingenium.",
+  "specRefs": [
+    "spec/architecture/design.md §7.2 §7.5 §14.A",
+    "spec/feature/replay.md"
+  ],
+  "rationale": "形式と検査はマスク原則の構造的担保なので原則の所有者 (Commentarii) が持つ。書く側 (記録器・decider・play / diff) は Ingenium へ移した (spec/feature/replay.md §3〜5 の実装正本は Ingenium)。"
 }

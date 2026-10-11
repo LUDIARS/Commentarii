@@ -5,6 +5,16 @@ import type { ObservationFieldDeclaration } from '../observation/observation-fie
 import type { ObservationFrame, ObservationMode, ObservationPurpose } from './observation-frame.ts';
 import type { ReplayAction } from './replay-action.ts';
 
+/** Engine stances (spec/plan/2026-10-11-ingenium-integrated-design.md §3). */
+export const STANCES = ['autonomous', 'guided', 'hybrid'] as const;
+export type Stance = (typeof STANCES)[number];
+
+/** The engine that recorded a run. */
+export interface ReplayEngine {
+  readonly name: string;
+  readonly version: string;
+}
+
 export interface ReplayHeader {
   readonly type: 'header';
   /** run:<slug> */
@@ -29,6 +39,15 @@ export interface ReplayHeader {
    * the boundary registry: those are checked against the base registry only.
    */
   readonly observation_fields?: readonly ObservationFieldDeclaration[];
+  /** The recording engine (Ingenium R0-B); absent in recordings made before the engine moved. */
+  readonly engine?: ReplayEngine;
+  /** @ludiars/commentarii-sdk version the engine read the bundle with. */
+  readonly sdk_version?: string;
+  /** bundle format_version the engine reads (EXPORT_FORMAT_VERSION). */
+  readonly bundle_format?: number;
+  /** Content hash of the canonical bundle the engine decided from. */
+  readonly bundle_hash?: string;
+  readonly stance?: Stance;
   /** ISO 8601 (UTC). */
   readonly started_at: string;
 }

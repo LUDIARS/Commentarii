@@ -1,5 +1,7 @@
 # 描画タップ契約 render-tap/1 — raw tap と player 観測の分離
 
+> **実装は Ingenium (`LUDIARS/Ingenium`、private、`E:/Document/Ars/Ingenium`)** (R0-B、2026-10-11)。 本書のうち §1 原則・§2 行の形と、`schema/render-frame.schema.json`・golden (`tests/fixtures/render-tap/`) は Commentarii の正本。§3〜§9 (流れの不変条件・見えたかの判定・識別・分離・負例・受信アダプタ・`report signatures`) の実装正本は Ingenium `spec/feature/render-tap-contract.md`。
+
 設計正本: `spec/architecture/design.md` §7.1 (観測経路の段 2)、§7.2、§11 の段 6。Astra レビュー P0-2 / P1-7 (2026-10-09) の補正。
 Actio: `actio:7ab9fce8-4e31-4a97-9fe7-62db95bea1f7`。スキーマ `schema/render-frame.schema.json`、golden `tests/fixtures/render-tap/golden-v1.jsonl`。
 Pictor (段 6P) と Bestia (段 6B) はこの契約に合わせる。契約を変えるときは版 (`contract`) を上げる。

@@ -36,6 +36,23 @@
           "description": "The game's observation field declarations the run was recorded under (manifest observation.fields, spec/feature/observation-boundary.md). Absent in older recordings: the base registry alone applies.",
           "$ref": "observation-fields.schema.json#/$defs/fields"
         },
+        "engine": {
+          "description": "The engine that recorded the run (Ingenium R0-B). Absent in recordings made before the engine moved out of Commentarii.",
+          "type": "object",
+          "required": ["name", "version"],
+          "properties": {
+            "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$" },
+            "version": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "sdk_version": { "description": "Version of @ludiars/commentarii-sdk the engine read the bundle with.", "type": "string", "minLength": 1 },
+        "bundle_format": { "description": "bundle format_version (EXPORT_FORMAT_VERSION) the engine reads.", "type": "integer", "minimum": 1 },
+        "bundle_hash": { "description": "Content hash of the canonical bundle the engine decided from (the bench bundle_hash).", "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "stance": {
+          "description": "The engine's stance (spec/plan/2026-10-11-ingenium-integrated-design.md): guided = the authored tactics' Utility + BT, autonomous = no tactic or intent as input, hybrid = both through one evaluator.",
+          "enum": ["autonomous", "guided", "hybrid"]
+        },
         "started_at": { "type": "string", "format": "date-time" }
       },
       "additionalProperties": false
