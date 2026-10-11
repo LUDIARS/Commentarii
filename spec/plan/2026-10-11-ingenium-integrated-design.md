@@ -54,7 +54,7 @@
 | `@ludiars/commentarii-sdk` (`packages/sdk`): schemas / types / bundle reader / expression / rulebook ビュー / replay / observation / fixtures | リプレイの記録・再生、bench、balance gate、ペルソナ |
 | 学習の正本側、意図ズレ検証、feasibility、ヒートマップ、Praeforma 連携、人間プレイログ取り込み、Web 編集画面 | |
 
-- 依存は Ig → Cm SDK の一方向。SDK は Cm リポの `packages/sdk` を git タグ依存 (`github:LUDIARS/Commentarii#sdk-vX.Y.Z`) で参照する。
+- 依存は Ig → Cm SDK の一方向。SDK は Cm リポの `packages/sdk` を `npm pack` した tarball を Ingenium の `vendor/` に置いて `file:` 依存で読む (npm の git 依存はサブディレクトリを扱えないため。2026-10-11 R0-A マージ後に変更)。取り出し元 commit と sha256 を記録する。
 - 版の対応は Cm の `COMPAT.md` に 1 表 (SDK 版 × bundle `format_version` × replay header 版 × Ingenium 版)。対応外の組み合わせのテストは「スキップ」ではなく「失敗」にする。
 - 移管ファイルの対応表は Fable 案 §10.3 を正本にする (ただし `src/adapter/**` のプロトコル定義は Ig 所有)。
 
@@ -72,6 +72,6 @@
 ## 6. neco の決定 (2026-10-11)
 
 1. **既定の構えは `autonomous`** (`guided` は `--stance guided` で残す。§14.C の基準値は構え別に取り直す)。
-2. **Ingenium リポは private** (GitHub `LUDIARS/Ingenium`、非公開)。Cm (public) の SDK を git タグ依存で読む方向は変わらない。Ig 側の成果物 (bench 結果・リプレイ) を Cm の public リポへ書き戻すときは、ゲーム固有の値を含めない既存の観測ログ規則 (§10) に従う。
+2. **Ingenium リポは private** (GitHub `LUDIARS/Ingenium`、非公開)。Cm (public) の SDK を読む向き (Ig → Cm) は変わらない。Ig 側の成果物 (bench 結果・リプレイ) を Cm の public リポへ書き戻すときは、ゲーム固有の値を含めない既存の観測ログ規則 (§10) に従う。
 
 それ以外の論点 (Fable 案 §9 の 15 項目、Astra 案 §10) は上の決定表と 2 案の推奨どおりに進め、実装中に人の判断が要るものが出たらその時に聞く。

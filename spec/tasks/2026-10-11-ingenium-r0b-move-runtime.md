@@ -1,6 +1,6 @@
 # Ingenium R0-B: 実行側を Commentarii から Ingenium へ移す
 
-設計正本: `spec/plan/2026-10-11-ingenium-integrated-design.md` (§4 境界、§5 の R0)。移管ファイルの対応表は `spec/plan/2026-10-11-autoplayer-paradigms-fable.md` §10.3 (段階 1〜2) を正本にし、アダプタのプロトコル定義 (`src/adapter/**`、JSON Lines、C++ ヘッダ) は Ingenium 所有とする (統合設計 §2)。前提: R0-A (Commentarii の `packages/sdk` = `@ludiars/commentarii-sdk` の切り出し) がマージ済みで、タグ `sdk-v0.1.0` が打たれていること。段 6 (描画タップ受信) の扱いは親が先に決める。
+設計正本: `spec/plan/2026-10-11-ingenium-integrated-design.md` (§4 境界、§5 の R0)。移管ファイルの対応表は `spec/plan/2026-10-11-autoplayer-paradigms-fable.md` §10.3 (段階 1〜2) を正本にし、アダプタのプロトコル定義 (`src/adapter/**`、JSON Lines、C++ ヘッダ) は Ingenium 所有とする (統合設計 §2)。前提: R0-A (Commentarii の `packages/sdk` = `@ludiars/commentarii-sdk` 0.1.0 の切り出し、#2691) と段 6〜8 (#2690) はマージ済み (Commentarii origin/main e94603e)。段 6 の描画タップ受信 (`src/render-tap/`、`src/adapters/render-tap/`) と 6F 敵 AI (`src/engine/enemy/`)、段 8 の KonbiniDominant アダプタ契約の実行側も本段で Ingenium へ移す。段 7 (Web 編集、7G/7I/7J) と攻略本・意図ズレ検証は Commentarii に残す。
 
 本段は 2 リポにまたがるので、**PR を 2 本** 出す (Ingenium 側 1 本、Commentarii 側 1 本)。Ingenium 側を先にマージし、Commentarii 側は Ingenium の版が出てから。
 
@@ -9,7 +9,7 @@
 ### Ingenium (`E:/Document/Ars/Ingenium`, private)
 
 1. Fable 案 §10.3 の「Ls 行」のファイル (判断エンジン `src/engine/**` の実行側、`src/adapter/**`、`src/adapters/{sim,stdio}/**`、`adapter/cpp/**`、replay の実行側 (decider / registry / recorded / wait / recording-sink / play / diff / format / command)、`src/bench/**`、`src/gate/**`、`src/autoplay/**`、ペルソナ (`personas/**`、`schema/persona.schema.json`)、fs アダプタの実行側、対応する `tests/**`、`spec/feature/{engine,adapter-protocol,balance-gate}.md` と `replay.md` の実行側) を移す。履歴は `git filter-repo` か `subtree split` で切り出して持ち込んでよい (できなければ通常のコピーで、移管元 commit を PR 説明に書く)。
-2. `@ludiars/commentarii-sdk` を `github:LUDIARS/Commentarii#sdk-v0.1.0` (`packages/sdk`) の git タグ依存で読む。Commentarii の内部パスを import しない (検査テスト 1 本)。
+2. `@ludiars/commentarii-sdk` の取り込み方: **npm の git 依存はリポ内のサブディレクトリ (`packages/sdk`) を扱えない** ため、タグ依存は使わない。Commentarii の `packages/sdk` を `npm pack` した tarball を Ingenium の `vendor/commentarii-sdk-<版>.tgz` に置き、`"@ludiars/commentarii-sdk": "file:vendor/commentarii-sdk-<版>.tgz"` で読む (tarball の file 依存は worktree・Revisor の install でもコピーで入る)。`vendor/commentarii-sdk.json` に版・取り出し元の Commentarii commit・sha256 を記録し、`scripts/update-sdk.mjs <Commentarii のパス> <commit>` で再生成できるようにする (sha256 の照合テスト 1 本)。Commentarii の内部パスを import しない (検査テスト 1 本)。
 3. CLI `ingenium` (`run` / `bench` / `gate` / `replay play|diff` / `adapters`)。引数・stdout プロトコル・終了コードは現行の `guide run / bench / gate / replay` と同じ。
 4. リプレイの header の `engine` を `{name: "ingenium", version}` にし、`sdk_version` / `bundle_format` / `bundle_hash` / `stance` を記録する。既定の構えは `guided` のまま (自律構えは R2。`autonomous` 既定化は R2 の受入で行う)。
 5. Augur 契約は Ingenium 側で `L-` ではなく `IG-` 接頭の ID に振り直す (ID 空間を Commentarii と分ける)。
