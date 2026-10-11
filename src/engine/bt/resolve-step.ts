@@ -1,11 +1,10 @@
 // ActionStep -> concrete adapter action: `$binding` operands become entity instance numbers.
 // Undefined when a binding is missing or its instance is no longer visible (the leaf fails).
 
-import { isBindingName, type Bindings } from '../match/bindings.ts';
-import { findInstance } from '../observation/visible-entities.ts';
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
-import { ACTION_VERBS, type ActionOperand, type ActionVerb, type ReplayAction } from '../../replay/replay-action.ts';
-import type { ActionStep } from './bt-node.ts';
+import { type Bindings, findInstance, isBindingName } from '@ludiars/commentarii-sdk/knowledge';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
+import { ACTION_VERBS, type ActionOperand, type ActionVerb, type ReplayAction } from '@ludiars/commentarii-sdk/types';
+import type { ActionStep } from '@ludiars/commentarii-sdk/knowledge';
 
 export function stepVerb(step: ActionStep): ActionVerb | undefined {
   return ACTION_VERBS.find((verb) => step[verb] !== undefined);

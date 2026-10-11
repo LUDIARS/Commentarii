@@ -3,12 +3,10 @@
 //                      or else the nearest unvisited node).
 // Variants of tactics ("定石の変種") are the other exploration candidates (variant-candidates.ts).
 
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
-import { buildTree } from '../bt/build-tree.ts';
-import type { StageView } from '../world/engine-world.ts';
-import type { Candidate } from './candidate.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
+import { buildTree } from '@ludiars/commentarii-sdk/knowledge';
+import type { Candidate, RunMemory, StageView } from '@ludiars/commentarii-sdk/knowledge';
 import { nearestNode } from './map-routes.ts';
-import type { RunMemory } from './run-memory.ts';
 
 function nodeCandidate(node: string): Candidate {
   return {

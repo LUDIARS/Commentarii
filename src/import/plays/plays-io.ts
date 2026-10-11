@@ -1,7 +1,7 @@
 // What `guide import plays` / `guide report plays` need from the outside world beyond CliIo.
 // main.ts wires the real adapters; tests pass their own salt and clock.
 
-import type { ReplaySchema } from '../../replay/replay-schema.ts';
+import type { ReplaySchema } from '@ludiars/commentarii-sdk/replay';
 import type { PlayRunFile } from './classify-play-runs.ts';
 
 export interface PlaysIo {

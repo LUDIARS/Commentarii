@@ -2,10 +2,9 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { decideTick, HOLD_BACK_SEC, type TickOutcome } from '../../src/engine/decide-tick.ts';
 import { INITIAL_ENGINE_STATE, type EngineState } from '../../src/engine/engine-state.ts';
-import type { Persona } from '../../src/engine/persona/persona.ts';
-import { buildEngineWorld } from '../../src/engine/world/build-engine-world.ts';
-import type { EngineWorld } from '../../src/engine/world/engine-world.ts';
-import type { ObservationFrame } from '../../src/replay/observation-frame.ts';
+import type { EngineWorld, Persona } from '@ludiars/commentarii-sdk/knowledge';
+import { buildEngineWorld } from '@ludiars/commentarii-sdk/knowledge';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
 import { loadSample } from '../support/bundles.ts';
 import { enemy, frame, SPIDER, testPersona } from '../support/personas.ts';
 

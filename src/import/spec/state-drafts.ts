@@ -2,7 +2,7 @@
 // mechanics/states/<slug>.json. The state schema has no numeric field, so screening only
 // guards against a schema change letting numbers in.
 
-import type { StateMachine } from '../../domain/documents.ts';
+import type { StateMachine } from '@ludiars/commentarii-sdk/types';
 import type { DraftKindSpec } from './draft-kind.ts';
 import { describeViolations, draftSource, readReplyRecords } from './draft-records.ts';
 import type { DraftDocument, SkippedDraft } from './draft-request.ts';

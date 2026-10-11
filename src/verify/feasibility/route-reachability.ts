@@ -4,7 +4,7 @@
 // from one route node to the next. The full map is used: what the player is not shown can still
 // be walked, and only the map itself can prove it cannot.
 
-import type { GuideMap } from '../../domain/documents.ts';
+import type { GuideMap } from '@ludiars/commentarii-sdk/types';
 
 function adjacency(map: GuideMap): Map<string, Set<string>> {
   const next = new Map<string, Set<string>>();

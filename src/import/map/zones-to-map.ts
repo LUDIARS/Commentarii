@@ -2,7 +2,7 @@
 // or the rectangle centre); each adjacency becomes an edge. The area outline itself is not
 // part of map.json (design 4.5 keeps nodes + edges + annotations only).
 
-import type { GuideMap } from '../../domain/documents.ts';
+import type { GuideMap } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import-error.ts';
 import { assertDeclaredCoordinates, assertPoint } from './check-coordinates.ts';
 import { convertAnnotations, convertEdges, knowledgeOr, toNodeId } from './convert-links.ts';

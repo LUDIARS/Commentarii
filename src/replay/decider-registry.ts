@@ -4,7 +4,7 @@
 import { createUtilityBtDecider, UTILITY_BT_DECIDER_ID, type EngineSetup } from '../engine/utility-bt-decider.ts';
 import type { Decider } from './decider.ts';
 import { createRecordedDecider, RECORDED_DECIDER_ID } from './recorded-decider.ts';
-import type { ReplayRun } from './replay-record.ts';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
 import { createWaitDecider, WAIT_DECIDER_ID } from './wait-decider.ts';
 
 export const DECIDER_IDS = [RECORDED_DECIDER_ID, WAIT_DECIDER_ID, UTILITY_BT_DECIDER_ID] as const;

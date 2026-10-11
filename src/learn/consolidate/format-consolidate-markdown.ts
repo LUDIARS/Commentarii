@@ -2,7 +2,7 @@
 // what was applied, what waits and why, and per proposal the change and its evidence. The JSON
 // Patch of every file is shown as is (RFC 6902), so the review sees exactly what would be written.
 
-import type { TacticMetrics } from '../../domain/documents.ts';
+import type { TacticMetrics } from '@ludiars/commentarii-sdk/types';
 import type { Consolidation } from './plan-consolidation.ts';
 import type { Proposal } from './proposal.ts';
 

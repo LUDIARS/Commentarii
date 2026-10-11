@@ -4,11 +4,17 @@
 // and one in the decision or action before it is written (principle 2).
 
 import type { Decider } from './decider.ts';
-import type { ObservationFrame } from './observation-frame.ts';
-import type { ReplayAction } from './replay-action.ts';
+import type {
+  ObservationFrame,
+  ReplayAction,
+  ReplayFooter,
+  ReplayHeader,
+  ReplayLine,
+  ReplayResult,
+  ReplayTick,
+} from '@ludiars/commentarii-sdk/types';
 import { RecordingError } from './recording-error.ts';
-import type { ReplayFooter, ReplayHeader, ReplayLine, ReplayResult, ReplayTick } from './replay-record.ts';
-import { checkObservation, checkTickRecord, maskedProblems } from './tick-invariants.ts';
+import { checkObservation, checkTickRecord, maskedProblems } from '@ludiars/commentarii-sdk/replay';
 
 /** Where lines go. One call per line, without the trailing newline. */
 export interface ReplayLineWriter {

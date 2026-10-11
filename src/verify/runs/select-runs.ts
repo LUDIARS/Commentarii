@@ -5,7 +5,7 @@
 // was given the designer's intent, spec/feature/engine.md §4.1) are an answer-key test, not a
 // persona's ability: they are listed apart and never classified or banded (Astra review P1-4).
 
-import type { ReplayRun } from '../../replay/replay-record.ts';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
 import { contract } from '#contract-runtime'; /* augur-inject:import:6dceb975 */
 import augurContract_66af0cef from '../../contracts/select-runs.contract.ts'; /* augur-inject:contract-predicate:fb434504 */
 

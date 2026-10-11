@@ -1,7 +1,7 @@
 // C-13 buildGuideMap(request): the requested kind and stage, unique node IDs, and every edge
 // end and annotation target is a node of the map.
 
-import type { GuideMap } from '../domain/documents.ts';
+import type { GuideMap } from '@ludiars/commentarii-sdk/types';
 import type { MapImportRequest } from '../import/map/map-request.ts';
 
 export default {

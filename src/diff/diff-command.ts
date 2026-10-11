@@ -2,7 +2,7 @@
 // --explain is required: the plain file diff is git's job, this command only explains meaning.
 
 import { parseArgs } from 'node:util';
-import type { ExportKnowledge } from '../export/exported-bundle.ts';
+import type { ExportKnowledge } from '@ludiars/commentarii-sdk/types';
 
 export interface DiffCommand {
   readonly name: 'diff-explain';

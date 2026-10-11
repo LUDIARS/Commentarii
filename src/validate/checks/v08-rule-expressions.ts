@@ -1,7 +1,7 @@
 // V08: every rule expression evaluates once with the example value of each variable, and each
 // example lies inside its declared range.
 
-import { evaluateExpression } from '../../domain/expression/evaluate-expression.ts';
+import { evaluateExpression } from '@ludiars/commentarii-sdk/expression';
 import { error, type Check, type Finding } from '../check.ts';
 
 export const v08RuleExpressions: Check = {

@@ -4,15 +4,13 @@
 // decision) depends only on the seed and the number of ticks: the same seed and observation
 // sequence give the same decisions (what `guide replay play` checks).
 
-import type { Bundle } from '../bundle/bundle.ts';
+import type { Bundle, ObservationMode } from '@ludiars/commentarii-sdk/types';
 import type { Decider } from '../replay/decider.ts';
-import type { ObservationMode } from '../replay/observation-frame.ts';
 import { decideTick, type TickOutcome } from './decide-tick.ts';
 import { INITIAL_ENGINE_STATE, type EngineState } from './engine-state.ts';
-import type { Persona } from './persona/persona.ts';
+import type { EngineWorld, Persona } from '@ludiars/commentarii-sdk/knowledge';
 import { createRng, deriveSeed } from './rng.ts';
-import { buildEngineWorld } from './world/build-engine-world.ts';
-import type { EngineWorld } from './world/engine-world.ts';
+import { buildEngineWorld } from '@ludiars/commentarii-sdk/knowledge';
 
 export const UTILITY_BT_DECIDER_ID = 'utility-bt';
 

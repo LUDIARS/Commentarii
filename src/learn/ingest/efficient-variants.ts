@@ -6,11 +6,9 @@
 // The tactic's baseline is its own overlay metrics when it was measured, else the bundle's.
 // Candidates become overlay rewrites at once (used from the next play on, design 8.2).
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import type { TacticMetrics } from '../../domain/documents.ts';
-import { deriveVariant, type TacticMutation } from '../../engine/candidates/tactic-variants.ts';
+import type { Bundle, Overlay, OverlayRewrite, OverlayTactic, TacticMetrics } from '@ludiars/commentarii-sdk/types';
+import { deriveVariant, type TacticMutation } from '@ludiars/commentarii-sdk/knowledge';
 import type { LearningPolicy } from '../policy/learning-policy.ts';
-import type { Overlay, OverlayRewrite, OverlayTactic } from '../overlay/overlay.ts';
 import { compositeGain } from './composite-gain.ts';
 
 export type BaselineSource = 'overlay' | 'bundle';

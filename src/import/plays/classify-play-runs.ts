@@ -4,9 +4,9 @@
 // and are skipped, as is anything that does not load. Omniscient engine runs are counted and
 // left out: they are never compared with players (principle 2).
 
-import { parseReplay } from '../../replay/parse-replay.ts';
-import type { ReplayRun } from '../../replay/replay-record.ts';
-import type { ReplaySchema } from '../../replay/replay-schema.ts';
+import { parseReplay } from '@ludiars/commentarii-sdk/replay';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
+import type { ReplaySchema } from '@ludiars/commentarii-sdk/replay';
 import { AUTOPLAY_DIRECTORY, HUMAN_DIRECTORY } from './human-run-path.ts';
 
 export interface PlayRunFile {

@@ -10,18 +10,13 @@
 //   4. misplay: with the persona's misplay_rate the chosen action is fumbled into a wait.
 // The decision log lists every candidate with its utility and marks the one that acted.
 
-import type { ObservationFrame } from '../replay/observation-frame.ts';
-import type { ReplayAction } from '../replay/replay-action.ts';
-import type { DecisionEntry } from '../replay/replay-record.ts';
+import type { DecisionEntry, ObservationFrame, ReplayAction } from '@ludiars/commentarii-sdk/types';
 import { stepTree } from './bt/step-tree.ts';
-import type { Candidate } from './candidates/candidate.ts';
+import type { Candidate, EngineWorld, ExpectationWatch, Persona, RunMemory } from '@ludiars/commentarii-sdk/knowledge';
 import { generateCandidates } from './candidates/generate-candidates.ts';
-import type { ExpectationWatch, RunMemory } from './candidates/run-memory.ts';
 import { newPlan, type EngineState, type RunningPlan } from './engine-state.ts';
 import { checkExpect } from './expect/check-expect.ts';
-import type { Persona } from './persona/persona.ts';
 import { scoreCandidate, type ScoredCandidate } from './utility/score-candidate.ts';
-import type { EngineWorld } from './world/engine-world.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:1fe7fba0 */
 import augurContract_ee77443c from '../contracts/decide-tick.contract.ts'; /* augur-inject:contract-predicate:dec43b32 */
 

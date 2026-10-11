@@ -5,12 +5,9 @@
 //   others   (attack / use_item / use_skill / interact / custom) emit once and succeed.
 // A leaf whose `$binding` cannot be resolved fails.
 
-import type { ObservationFrame, Vector3 } from '../../replay/observation-frame.ts';
-import type { ReplayAction } from '../../replay/replay-action.ts';
-import type { Bindings } from '../match/bindings.ts';
-import { distance } from '../observation/geometry.ts';
-import { distanceTo, findInstance } from '../observation/visible-entities.ts';
-import type { ActionNode } from './bt-node.ts';
+import type { ObservationFrame, ReplayAction, Vector3 } from '@ludiars/commentarii-sdk/types';
+import type { ActionNode, Bindings } from '@ludiars/commentarii-sdk/knowledge';
+import { distance, distanceTo, findInstance } from '@ludiars/commentarii-sdk/knowledge';
 import { clearRange, withMemory, type BtMemory } from './bt-memory.ts';
 import { resolveStep } from './resolve-step.ts';
 import type { StepResult } from './step-result.ts';

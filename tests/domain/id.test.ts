@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { isBundleKind, isNodeId, parseRef } from '../../src/domain/id.ts';
+import { isBundleKind, isNodeId, parseRef } from '@ludiars/commentarii-sdk/types';
 
 test('parseRef splits kind, game, slug, sub-state and field path', () => {
   assert.deepEqual(parseRef('enemy:bestia:wire-spider.stats.range'), {

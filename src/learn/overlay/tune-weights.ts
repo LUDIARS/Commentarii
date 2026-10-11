@@ -4,7 +4,7 @@
 // weight is scaled by 1 + WEIGHT_STEP * (wins - losses) / compared, kept within the bounds.
 // Without enough measured variants the weights stay as they are (no entry).
 
-import type { ConsiderationName } from '../../engine/persona/persona.ts';
+import type { ConsiderationName } from '@ludiars/commentarii-sdk/knowledge';
 import type { VariantComparison } from '../ingest/efficient-variants.ts';
 import type { LearningPolicy } from '../policy/learning-policy.ts';
 import { round3 } from '../stats/round.ts';

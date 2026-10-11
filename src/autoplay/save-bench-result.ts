@@ -4,15 +4,14 @@
 // bench was a coverage bench; schema-checks the result before writing (nothing invalid is written).
 
 import { bundleHash, documentHash } from '../bench/bundle-hash.ts';
-import type { BenchDivergences } from '../bench/bench-result.ts';
+import type { BenchDivergences, ReplayRun } from '@ludiars/commentarii-sdk/types';
 import type { BenchReport } from '../bench/summarize-bench.ts';
 import { toBenchResult } from '../bench/to-bench-result.ts';
 import type { CliIo } from '../cli/cli-io.ts';
 import type { EngineIo } from '../cli/engine-io.ts';
-import type { Persona } from '../engine/persona/persona.ts';
+import type { Persona } from '@ludiars/commentarii-sdk/knowledge';
 import { benchDivergences } from '../gate/bench-divergences.ts';
 import { readOverlay } from '../learn/overlay/read-overlay.ts';
-import type { ReplayRun } from '../replay/replay-record.ts';
 import { verifyIntent } from '../verify/verify-intent.ts';
 import type { BenchCommand } from './autoplay-command.ts';
 

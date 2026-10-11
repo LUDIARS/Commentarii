@@ -3,7 +3,7 @@
 
 import type { MasterTable } from '../import/masters/master-table.ts';
 import type { DraftLlm } from '../import/spec/draft-llm.ts';
-import type { SchemaRegistry } from '../schema/schema-registry.ts';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 
 export interface ImportIo {
   /** UTF-8 text of an input file (master CSV / JSON, mapping, map, specification). */

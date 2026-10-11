@@ -4,7 +4,7 @@
 import { join } from 'node:path';
 import type { LearnIo } from '../cli/learn-io.ts';
 import { parseOverlay } from './parse-overlay.ts';
-import { OVERLAY_PATH, type Overlay } from './overlay.ts';
+import { OVERLAY_PATH, type Overlay } from '@ludiars/commentarii-sdk/types';
 
 export async function readOverlay(io: LearnIo, bundleDir: string, gameId: string): Promise<Overlay | undefined> {
   const text = await io.readText(join(bundleDir, ...OVERLAY_PATH.split('/')));

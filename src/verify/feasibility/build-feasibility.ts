@@ -4,9 +4,8 @@
 // attempts without any tactic and outside every intended solution are wandering, not a
 // solution: they get no band but still count in confusion depth.
 
-import type { GuideMap, Intent } from '../../domain/documents.ts';
-import type { PraeformaRef } from '../../praeforma/praeforma-ref.ts';
-import type { EngineWorld } from '../../engine/world/engine-world.ts';
+import type { GuideMap, Intent, PraeformaRef } from '@ludiars/commentarii-sdk/types';
+import type { EngineWorld } from '@ludiars/commentarii-sdk/knowledge';
 import type { StageTrace } from '../runs/stage-trace.ts';
 import { assignBands } from './assign-bands.ts';
 import { clusterSolutions, type IntendedSolution } from './cluster-solutions.ts';

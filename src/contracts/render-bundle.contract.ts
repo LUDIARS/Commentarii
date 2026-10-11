@@ -1,6 +1,6 @@
 // C-5 renderBundle(load, options): player output never shows masked names or values.
 
-import type { LoadResult } from '../bundle/bundle.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
 import type { RenderOptions } from '../render/render-bundle.ts';
 
 /** Field names and string values that exist only in masked companion files. */

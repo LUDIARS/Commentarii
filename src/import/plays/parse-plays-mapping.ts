@@ -1,7 +1,7 @@
 // Play log mapping text -> PlaysMapping, validated against schema/plays-mapping.schema.json,
 // plus the rules the schema cannot say (a custom verb names its action).
 
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { ImportError } from '../import-error.ts';
 import { parseJsonInput } from '../parse-json-input.ts';
 import { assertSchema } from '../validate-input.ts';

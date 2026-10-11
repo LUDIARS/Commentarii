@@ -4,7 +4,7 @@
 
 import type { TapContext } from '../adapters/render-tap/tap-to-observation.ts';
 import type { TapFrame } from '../render-tap/render-frame.ts';
-import type { ObservationFrame } from '../replay/observation-frame.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
 
 export default {
   post: (observation: ObservationFrame, frame: TapFrame, _context: TapContext) => {

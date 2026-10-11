@@ -5,7 +5,7 @@
 //   omniscient  every living enemy, plus extra.enemy_hp and extra.masked_stats (masked values
 //               labelled masked), for checking and debugging only.
 
-import type { ObservationFrame, ObservationMode, ObservationPurpose, ObservedEntity, Vector3 } from '../../replay/observation-frame.ts';
+import type { ObservationFrame, ObservationMode, ObservationPurpose, ObservedEntity, Vector3 } from '@ludiars/commentarii-sdk/types';
 import { gap } from './sim-motion.ts';
 import type { Point } from './sim-layout.ts';
 import type { SimEnemy, SimWorld } from './sim-world.ts';

@@ -1,7 +1,7 @@
 // feasibility/<stage-slug>.json (schema/feasibility.schema.json): the feasibility bands of a
 // stage's solutions and the two good-play axes per persona (design 8.5).
 
-import type { PraeformaRef } from '../../praeforma/praeforma-ref.ts';
+import type { PraeformaRef } from '@ludiars/commentarii-sdk/types';
 import type { SampleEvidence } from './sample-evidence.ts';
 import type { FeasibilityThresholds } from './thresholds.ts';
 

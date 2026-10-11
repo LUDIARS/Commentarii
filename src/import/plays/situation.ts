@@ -3,9 +3,9 @@
 // ...), and low HP. Observations with the same situation share the key; the bindings let an
 // action on an entity instance be written as `$enemy` instead of an instance number.
 
-import { parseRef } from '../../domain/id.ts';
-import { hpRatio } from '../../engine/observation/self-readings.ts';
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
+import { parseRef } from '@ludiars/commentarii-sdk/types';
+import { hpRatio } from '@ludiars/commentarii-sdk/knowledge';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
 
 /** HP bar ratio under which the situation counts as low HP (the sample tactics' threshold). */
 export const LOW_HP_RATIO = 0.5;

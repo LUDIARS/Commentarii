@@ -20,7 +20,7 @@
       "pathPattern": "(^|/)src/adapters/stdio/[^/]+\\.ts$"
     },
     {
-      "pathPattern": "(^|/)src/bench/[^/]+\\.ts$"
+      "pathPattern": "(^|/)(?<!packages/sdk/)src/bench/[^/]+\\.ts$"
     },
     {
       "pathPattern": "(^|/)src/autoplay/[^/]+\\.ts$"

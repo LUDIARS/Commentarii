@@ -1,7 +1,6 @@
 // Bench runs -> the JSON report of `guide bench`.
 
-import type { ObservationMode, ObservationPurpose } from '../replay/observation-frame.ts';
-import type { ReplayResult } from '../replay/replay-record.ts';
+import type { ObservationMode, ObservationPurpose, ReplayResult } from '@ludiars/commentarii-sdk/types';
 
 export interface BenchRun {
   readonly seed: number;

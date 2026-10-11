@@ -1,8 +1,7 @@
 // Node IDs, edges and annotations of navgraph / zones inputs -> map.json shape. Every boundary
 // left out becomes masked (principle 1).
 
-import type { MapAnnotation, MapEdge } from '../../domain/documents.ts';
-import type { Knowledge } from '../../domain/knowledge.ts';
+import type { Knowledge, MapAnnotation, MapEdge } from '@ludiars/commentarii-sdk/types';
 import { DEFAULT_KNOWLEDGE } from '../mapping.ts';
 import type { InputAnnotation, InputEdge } from './map-request.ts';
 

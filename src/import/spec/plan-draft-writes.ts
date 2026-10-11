@@ -2,7 +2,7 @@
 // a document a human already took over (draft is not true) is never overwritten.
 
 import { isDeepStrictEqual } from 'node:util';
-import { isJsonObject } from '../../domain/value-node.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 import type { FileChange } from '../plan/file-change.ts';
 import type { DraftDocument } from './draft-request.ts';
 

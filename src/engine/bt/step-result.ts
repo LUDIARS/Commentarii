@@ -2,7 +2,7 @@
 // carries the action to perform, `success` may (a leaf that acted and finished), `failure`
 // never does.
 
-import type { ReplayAction } from '../../replay/replay-action.ts';
+import type { ReplayAction } from '@ludiars/commentarii-sdk/types';
 import type { BtMemory } from './bt-memory.ts';
 
 export type BtStatus = 'running' | 'success' | 'failure';

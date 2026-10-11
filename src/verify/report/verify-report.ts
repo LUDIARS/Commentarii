@@ -2,7 +2,7 @@
 // --json` prints and observations/verify/report.json holds. guide render reads it back to put
 // the heatmaps and bands on the stage pages.
 
-import type { PraeformaRef } from '../../praeforma/praeforma-ref.ts';
+import type { PraeformaRef } from '@ludiars/commentarii-sdk/types';
 import type { Band, PlayAxes } from '../feasibility/feasibility-document.ts';
 import type { HeatPanel } from '../heatmap/aggregate-heatmap.ts';
 import type { IntentVerdict } from '../intent/classify-intents.ts';

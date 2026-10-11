@@ -2,10 +2,10 @@
 // (no globals): the running plan and its tree memory, the run memory, and the observations
 // kept for the persona's reaction delay.
 
-import type { ObservationFrame } from '../replay/observation-frame.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
 import { EMPTY_MEMORY, type BtMemory } from './bt/bt-memory.ts';
-import type { Candidate } from './candidates/candidate.ts';
-import { EMPTY_RUN_MEMORY, type RunMemory } from './candidates/run-memory.ts';
+import type { Candidate } from '@ludiars/commentarii-sdk/knowledge';
+import { EMPTY_RUN_MEMORY, type RunMemory } from '@ludiars/commentarii-sdk/knowledge';
 
 export interface RunningPlan {
   readonly candidate: Candidate;

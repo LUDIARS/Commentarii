@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readPromptTemplate } from '../../../src/adapters/llm/read-prompt-template.ts';
-import type { Intent, Rule } from '../../../src/domain/documents.ts';
+import type { Intent, Rule } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../../../src/import/import-error.ts';
 import { draftFromDocument } from '../../../src/import/spec/draft-from-document.ts';
 import type { DraftRequest } from '../../../src/import/spec/draft-request.ts';

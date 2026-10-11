@@ -2,9 +2,8 @@
 // episode's first observation (the engine's own matcher) and its `do`, with the bindings that
 // match produced, is the same step sequence (waits and repeats aside, as for episodes).
 
-import type { Tactic } from '../../domain/documents.ts';
-import { isBindingName, type Bindings } from '../../engine/match/bindings.ts';
-import { matchCondition } from '../../engine/match/match-condition.ts';
+import type { Tactic } from '@ludiars/commentarii-sdk/types';
+import { type Bindings, isBindingName, matchCondition } from '@ludiars/commentarii-sdk/knowledge';
 import { MAX_STEPS, stepKey, type Episode, type TacticStep } from './segment-episodes.ts';
 
 function rebind(step: TacticStep, bindings: Bindings, episode: Episode): TacticStep | undefined {

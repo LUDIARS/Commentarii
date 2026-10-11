@@ -1,7 +1,7 @@
 // Runs every check of the fixed list and summarizes the result per check ID.
 
-import { buildBundleIndex } from '../bundle/bundle-index.ts';
-import type { LoadResult } from '../bundle/bundle.ts';
+import { buildBundleIndex } from '@ludiars/commentarii-sdk/bundle';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
 import type { CheckId, Finding } from './check.ts';
 import { CHECKS } from './checks/index.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:1d471e62 */

@@ -3,7 +3,7 @@
 //   navgraph  node pos fitted into the panel; a node is a circle (nodes without pos on the bottom row)
 //   zones     no geometry, so the zones sit side by side as rectangles in document order
 
-import type { GuideMap } from '../../domain/documents.ts';
+import type { GuideMap } from '@ludiars/commentarii-sdk/types';
 
 export interface NodeShape {
   readonly cx: number;

@@ -1,9 +1,8 @@
 // One stage: objectives, clear conditions, spawn table, events and map, plus an optional extra
 // section (the heatmap and feasibility bands of guide verify intent).
 
-import type { StageFiles } from '../bundle/bundle.ts';
-import type { Spawn } from '../domain/documents.ts';
-import { localize } from '../domain/localize.ts';
+import type { Spawn, StageFiles } from '@ludiars/commentarii-sdk/types';
+import { localize } from '@ludiars/commentarii-sdk/types';
 import { document, table } from '../markdown/markdown.ts';
 import { formatValue, KNOWLEDGE_LEGEND } from './format-value.ts';
 import { renderMap } from './render-map.ts';

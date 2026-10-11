@@ -3,8 +3,8 @@
 
 import type { ScanSource } from '../audit/scan-source.ts';
 import type { PlaysIo } from '../import/plays/plays-io.ts';
-import type { LoadResult } from '../bundle/bundle.ts';
-import type { ReplayLoad } from '../replay/parse-replay.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
+import type { ReplayLoad } from '@ludiars/commentarii-sdk/replay';
 import type { EngineIo } from './engine-io.ts';
 import type { ImportIo } from './import-io.ts';
 import type { LearnIo } from '../learn/cli/learn-io.ts';

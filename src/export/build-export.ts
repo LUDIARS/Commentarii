@@ -2,8 +2,8 @@
 // toPlayerView, the same masked-free view render uses (principle 1), so a masked value cannot
 // reach it even when a bundle wrongly keeps one outside its .masked.json.
 
-import type { Bundle, LoadResult } from '../bundle/bundle.ts';
-import { toPlayerView } from '../bundle/player-view.ts';
+import type { Bundle, LoadResult } from '@ludiars/commentarii-sdk/types';
+import { toPlayerView } from '@ludiars/commentarii-sdk/rulebook';
 import { buildExportIndex } from './build-export-index.ts';
 import {
   EXPORT_FORMAT,
@@ -12,7 +12,7 @@ import {
   type ExportedDocuments,
   type ExportKnowledge,
   type ExportTarget,
-} from './exported-bundle.ts';
+} from '@ludiars/commentarii-sdk/types';
 import { contract } from '#contract-runtime'; /* augur-inject:import:13e5fa55 */
 import augurContract_b48a0c8a from '../contracts/build-export.contract.ts'; /* augur-inject:contract-predicate:fd294bc1 */
 

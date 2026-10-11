@@ -10,8 +10,8 @@ import { isKnowledge, strictestKnowledge } from '../domain/knowledge.ts';
 import { isJsonObject } from '../domain/value-node.ts';
 import type { ObservationFrame } from '../replay/observation-frame.ts';
 import { BASE_FIELDS, isDeclarablePath, type ObservationFieldDeclaration } from './observation-fields.ts';
-import { contract } from '#contract-runtime'; /* augur-inject:import:5750df13 */
-import augurContract_3d8c6766 from '../contracts/observation-boundary.contract.ts'; /* augur-inject:contract-predicate:30d6aebb */
+import { contract } from '#contract-runtime'; /* augur-inject:import:12a5ebf8 */
+import augurContract_78e556cc from '../contracts/observation-boundary.contract.ts'; /* augur-inject:contract-predicate:d4247e69 */
 
 export type BoundaryProblemCode = 'unregistered' | 'declared-masked' | 'label-contradicts';
 
@@ -113,4 +113,4 @@ export function observationBoundaryProblems(frame: ObservationFrame, declaration
   return walk.problems;
 }
 // @ts-expect-error augur-inject
-observationBoundaryProblems = contract(observationBoundaryProblems, { ...augurContract_3d8c6766, contractId: 'C-60', mode: 'observe', sample: 1, where: 'src/observation/check-observation-boundary.ts:106', rule: 'contract-wrap', id: '3d8c6766' }); /* augur-inject:contract-wrap:3d8c6766 */
+observationBoundaryProblems = contract(observationBoundaryProblems, { ...augurContract_78e556cc, contractId: 'C-60', mode: 'observe', sample: 1, where: 'packages/sdk/src/observation/check-observation-boundary.ts:107', rule: 'contract-wrap', id: '78e556cc' }); /* augur-inject:contract-wrap:78e556cc */

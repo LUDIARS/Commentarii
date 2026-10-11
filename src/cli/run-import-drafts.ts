@@ -10,7 +10,7 @@ import { applyFileChanges } from './apply-file-changes.ts';
 import { EXIT_OK, type CliIo } from './cli-io.ts';
 import { openImportTarget, type ImportTarget } from './open-import-target.ts';
 import type { ImportCommand } from './parse-import-command.ts';
-import { extractPraeformaRef } from '../praeforma/praeforma-ref.ts';
+import { extractPraeformaRef } from '@ludiars/commentarii-sdk/types';
 
 type DraftCommand = Extract<ImportCommand, { name: 'import-spec' | 'intent-import' }>;
 

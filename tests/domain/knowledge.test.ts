@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { isPlayerKnowable, strictestKnowledge } from '../../src/domain/knowledge.ts';
+import { isPlayerKnowable, strictestKnowledge } from '@ludiars/commentarii-sdk/types';
 
 test('the strictest label wins', () => {
   assert.equal(strictestKnowledge(['shown', 'discoverable']), 'discoverable');

@@ -2,7 +2,7 @@
 // (personas/ at the package root) and a bundle may keep game-specific ones (<bundle>/personas/);
 // a bundle persona wins over a shipped one with the same slug (design 14.E).
 
-import type { Persona } from './persona.ts';
+import type { Persona } from '@ludiars/commentarii-sdk/knowledge';
 
 export interface PersonaDocument {
   /** Where it was read from, for error messages. */

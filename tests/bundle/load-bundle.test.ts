@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { loadBundleFromTexts } from '../../src/bundle/load-bundle.ts';
+import { loadBundleFromTexts } from '@ludiars/commentarii-sdk/bundle';
 import { loadSample, schemaRegistry } from '../support/bundles.ts';
 
 test('the sample bundle loads without issues', async () => {

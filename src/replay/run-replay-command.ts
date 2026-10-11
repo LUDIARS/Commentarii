@@ -10,7 +10,7 @@ import { formatReplayDiffMarkdown } from './format-replay-diff-markdown.ts';
 import { formatReplayIssues } from './format-replay-issues.ts';
 import { playReplay } from './play-replay.ts';
 import type { ReplayCommand } from './replay-command.ts';
-import type { ReplayRun } from './replay-record.ts';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
 
 type ReplayIo = Pick<CliIo, 'stdout' | 'stderr' | 'openReplay'> & Partial<Pick<CliIo, 'openBundle' | 'engineIo'>>;
 

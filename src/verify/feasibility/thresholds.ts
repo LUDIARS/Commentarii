@@ -1,7 +1,7 @@
 // Feasibility thresholds (spec/feature/intent-verify.md 6.3): manifest feasibility.thresholds
 // over the defaults, field by field.
 
-import type { Manifest } from '../../domain/documents.ts';
+import type { Manifest } from '@ludiars/commentarii-sdk/types';
 
 export interface FeasibilityThresholds {
   /** Success rate a solution needs from every judged persona to be feasible. */

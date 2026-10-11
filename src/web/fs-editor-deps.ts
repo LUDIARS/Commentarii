@@ -9,7 +9,7 @@ import { readSchemaDocuments } from '../adapters/fs/read-schema-documents.ts';
 import { writeOutputFiles } from '../adapters/fs/write-output-files.ts';
 import { createMainIo } from '../cli/main-io.ts';
 import { runCli } from '../cli/run-cli.ts';
-import { createSchemaRegistry } from '../schema/schema-registry.ts';
+import { createSchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import type { EditorDeps } from './editor-api.ts';
 
 export function createFsEditorDeps(bundleDir: string, port: number): EditorDeps {

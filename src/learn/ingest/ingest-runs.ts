@@ -4,9 +4,9 @@
 //   - only player runs are learned from; an omniscient run is listed as ignored and counted;
 //   - a run already in the overlay is not counted twice (ingesting is idempotent per run ID).
 
-import type { Bundle } from '../../bundle/bundle.ts';
+import type { Bundle } from '@ludiars/commentarii-sdk/types';
 import type { RunObservations } from '../observations/run-observations.ts';
-import { emptyOverlay, type Overlay } from '../overlay/overlay.ts';
+import { emptyOverlay, type Overlay } from '@ludiars/commentarii-sdk/types';
 import { tuneWeights } from '../overlay/tune-weights.ts';
 import type { LearningPolicy } from '../policy/learning-policy.ts';
 import { digestRun } from './digest-run.ts';

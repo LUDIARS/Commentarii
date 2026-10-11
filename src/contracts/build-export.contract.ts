@@ -1,9 +1,8 @@
 // C-17 buildExport(load, options): a player export holds no masked value anywhere and no
 // masked companion files; every index entry points at the document with that ID.
 
-import type { LoadResult } from '../bundle/bundle.ts';
+import type { ExportedBundle, LoadResult } from '@ludiars/commentarii-sdk/types';
 import type { ExportOptions } from '../export/build-export.ts';
-import type { ExportedBundle } from '../export/exported-bundle.ts';
 
 function containsMasked(value: unknown): boolean {
   if (Array.isArray(value)) return value.some(containsMasked);

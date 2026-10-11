@@ -1,7 +1,6 @@
 // V04: a .masked.json file holds masked values only.
 
-import { isMaskedFilePath } from '../../bundle/bundle.ts';
-import { findKnowledgeHolders } from '../../domain/value-node.ts';
+import { findKnowledgeHolders, isMaskedFilePath } from '@ludiars/commentarii-sdk/types';
 import { error, type Check, type Finding } from '../check.ts';
 
 export const v04MaskedOnly: Check = {

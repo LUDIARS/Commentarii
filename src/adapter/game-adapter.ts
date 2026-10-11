@@ -8,9 +8,7 @@
 //   - in `player` mode it never puts a masked value into an observation (principle 2). The
 //     driver checks this again and stops the run if one slips through.
 
-import type { ObservationFrame, ObservationMode } from '../replay/observation-frame.ts';
-import type { ReplayAction } from '../replay/replay-action.ts';
-import type { ReplayResult } from '../replay/replay-record.ts';
+import type { ObservationFrame, ObservationMode, ReplayAction, ReplayResult } from '@ludiars/commentarii-sdk/types';
 
 /** First thing an adapter tells the engine (the `hello` line of the protocol). */
 export interface AdapterHello {

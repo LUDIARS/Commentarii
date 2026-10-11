@@ -5,8 +5,8 @@
 import { join } from 'node:path';
 import type { CliIo } from '../../cli/cli-io.ts';
 import { EXIT_OK } from '../../cli/cli-io.ts';
-import { parseReplay } from '../../replay/parse-replay.ts';
-import type { ReplayRun } from '../../replay/replay-record.ts';
+import { parseReplay } from '@ludiars/commentarii-sdk/replay';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
 import { DIVERGENCES_PATH } from '../intent/divergence-store.ts';
 import { drawPictures } from '../report/draw-pictures.ts';
 import { formatVerifyMarkdown } from '../report/format-verify-markdown.ts';

@@ -2,9 +2,9 @@
 // the bundle it belongs to (game_id). A broken overlay is an error, never silently replaced
 // by an empty one (that would forget every ingested run).
 
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { LearnError } from '../learn-error.ts';
-import { OVERLAY_PATH, type Overlay } from './overlay.ts';
+import { OVERLAY_PATH, type Overlay } from '@ludiars/commentarii-sdk/types';
 
 export function parseOverlay(text: string, registry: SchemaRegistry, gameId: string): Overlay {
   let data: unknown;

@@ -2,7 +2,7 @@
 // value carries the boundary the mapping declares, masked when it declares none (principle 1);
 // a masked value then fails the import as a mapping error (principle 2).
 
-import type { ObservedSelf, ObservedValue } from '../../replay/observation-frame.ts';
+import type { ObservedSelf, ObservedValue } from '@ludiars/commentarii-sdk/types';
 import { DEFAULT_KNOWLEDGE } from '../mapping.ts';
 import type { MasterRow } from '../masters/master-table.ts';
 import { readNumber } from '../masters/read-cell.ts';

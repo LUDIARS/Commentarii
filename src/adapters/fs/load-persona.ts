@@ -1,8 +1,8 @@
 // Composes the file system persona source with the persona schema: (bundle dir, slug) -> Persona.
 
-import type { Persona } from '../../engine/persona/persona.ts';
+import type { Persona } from '@ludiars/commentarii-sdk/knowledge';
 import { resolvePersona } from '../../engine/persona/resolve-persona.ts';
-import { createSchemaRegistry, type SchemaRegistry } from '../../schema/schema-registry.ts';
+import { createSchemaRegistry, type SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { createFsPersonaSource } from './fs-persona-source.ts';
 import { readSchemaDocuments } from './read-schema-documents.ts';
 

@@ -15,7 +15,7 @@
 // Every band carries its sample (finished attempts, successes, rate, interval, seeds, budget).
 // An illusory solution the intent declares illusory_by_design carries by_design.
 
-import type { IllusoryByDesign } from '../../domain/documents.ts';
+import type { IllusoryByDesign } from '@ludiars/commentarii-sdk/types';
 import { followsPath } from '../intent/intent-rules.ts';
 import type { StageTrace } from '../runs/stage-trace.ts';
 import type { SolutionCluster } from './cluster-solutions.ts';

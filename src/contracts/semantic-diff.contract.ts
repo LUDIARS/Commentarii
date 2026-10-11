@@ -1,7 +1,7 @@
 // C-78 semanticDiff(before, after): both sides have the same knowledge, and a player (public) diff
 // carries no masked record and no value labelled masked on either side of a change.
 
-import type { ExportedBundle } from '../export/exported-bundle.ts';
+import type { ExportedBundle } from '@ludiars/commentarii-sdk/types';
 import type { SemanticDiff } from '../diff/semantic-diff.ts';
 
 export default {

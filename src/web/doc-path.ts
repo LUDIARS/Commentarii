@@ -3,8 +3,8 @@
 // "..", never observations/ or anything the loader ignores. Masked companions are documents too:
 // the editor is the maker's own local tool (it never serves the player export).
 
-import { classifyPath, SCHEMA_OF_KIND } from '../bundle/classify-path.ts';
-import type { DocumentSchemaName } from '../schema/schema-names.ts';
+import { classifyPath, SCHEMA_OF_KIND } from '@ludiars/commentarii-sdk/bundle';
+import type { DocumentSchemaName } from '@ludiars/commentarii-sdk/schemas';
 import { contract } from '#contract-runtime'; /* augur-inject:import:16e475ce */
 import augurContract_1b098ee1 from '../contracts/editable-path.contract.ts'; /* augur-inject:contract-predicate:fe2e243d */
 

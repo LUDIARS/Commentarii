@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { Intent } from '../../src/domain/documents.ts';
+import type { Intent } from '@ludiars/commentarii-sdk/types';
 import { classifyIntents } from '../../src/verify/intent/classify-intents.ts';
 import { mergeDivergences } from '../../src/verify/intent/divergence-store.ts';
 import { selectRuns } from '../../src/verify/runs/select-runs.ts';

@@ -4,10 +4,9 @@
 // until the kill estimates that entity's HP. Only instances identified when hit count (the
 // estimate must name an entity), and an instance first hit outside reflect's view is skipped.
 
-import { isJsonObject } from '../../domain/value-node.ts';
-import type { ObservationFrame, ObservedEvent } from '../../replay/observation-frame.ts';
-import { findInstance } from '../observation/visible-entities.ts';
-import { lineOf, type OverlayLine } from './overlay-line.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
+import type { ObservationFrame, ObservedEvent } from '@ludiars/commentarii-sdk/types';
+import { findInstance, lineOf, type OverlayLine } from '@ludiars/commentarii-sdk/knowledge';
 
 export const DAMAGE_EVENT = 'damage-dealt';
 export const KILL_EVENT = 'kill';

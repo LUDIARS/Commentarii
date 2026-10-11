@@ -1,8 +1,8 @@
 // Last gate before writing: every document an import writes must sit at a bundle path
 // (design 4.2) and pass that path's schema. A failing import writes nothing.
 
-import { classifyPath, SCHEMA_OF_KIND } from '../../bundle/classify-path.ts';
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import { classifyPath, SCHEMA_OF_KIND } from '@ludiars/commentarii-sdk/bundle';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { ImportError } from '../import-error.ts';
 import type { FileChange } from './file-change.ts';
 

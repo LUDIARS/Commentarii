@@ -1,10 +1,10 @@
 // observations/overlay.json (design 8.1, schema/overlay.schema.json): what guide learn ingest
 // concluded from player runs. The canonical bundle is never touched by it.
 
-import type { Source, Tactic, TacticMetrics } from '../../domain/documents.ts';
-import type { RenderSignature } from '../../engine/reflect/unknown-entities.ts';
-import type { ConsiderationName } from '../../engine/persona/persona.ts';
-import type { TacticMutation } from '../../engine/candidates/tactic-variants.ts';
+import type { Source, Tactic, TacticMetrics } from '../domain/documents.ts';
+import type { RenderSignature } from '../knowledge/reflect/unknown-entities.ts';
+import type { ConsiderationName } from '../knowledge/persona/persona.ts';
+import type { TacticMutation } from '../knowledge/candidates/tactic-variants.ts';
 
 /** Bundle-relative path of the overlay. */
 export const OVERLAY_PATH = 'observations/overlay.json';

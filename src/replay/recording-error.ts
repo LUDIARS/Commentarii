@@ -1,6 +1,6 @@
 // Raised when the recorder refuses a line. Nothing is appended for a refused line.
 
-import type { TickProblem } from './tick-invariants.ts';
+import type { TickProblem } from '@ludiars/commentarii-sdk/replay';
 
 export class RecordingError extends Error {
   override readonly name = 'RecordingError';

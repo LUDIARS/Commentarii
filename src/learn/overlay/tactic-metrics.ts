@@ -5,8 +5,7 @@
 //   resource    per resource, the p50 spent per run
 //   risk        damage_taken_p50: p50 of the damage taken per run (percent of the HP bar)
 
-import type { TacticMetrics } from '../../domain/documents.ts';
-import type { TacticSample } from './overlay.ts';
+import type { TacticMetrics, TacticSample } from '@ludiars/commentarii-sdk/types';
 import { quantile } from '../stats/quantile.ts';
 import { round3 } from '../stats/round.ts';
 

@@ -4,7 +4,7 @@
 import type { RunningPlan } from '../engine-state.ts';
 import type { ObservationSink } from './observation-sink.ts';
 import { INITIAL_REFLECT_STATE, reflectEnd, reflectTick, type ReflectState } from './reflect-tick.ts';
-import type { ReflectWorld } from './reflect-world.ts';
+import type { ReflectWorld } from '@ludiars/commentarii-sdk/knowledge';
 import type { TickReflector } from './tick-reflector.ts';
 
 export interface ReflectorOptions {

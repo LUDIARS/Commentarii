@@ -2,9 +2,7 @@
 // out. The Utility / BT engine of stage 3 implements this; replay never depends on how.
 // A decider must be deterministic for the same observation sequence (that is what play checks).
 
-import type { ObservationFrame } from './observation-frame.ts';
-import type { ReplayAction } from './replay-action.ts';
-import type { DecisionEntry } from './replay-record.ts';
+import type { DecisionEntry, ObservationFrame, ReplayAction } from '@ludiars/commentarii-sdk/types';
 
 export interface DecisionOutcome {
   readonly decision: readonly DecisionEntry[];

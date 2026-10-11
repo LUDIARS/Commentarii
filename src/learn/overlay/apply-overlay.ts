@@ -5,10 +5,9 @@
 //     play on; personas that trust only authored tactics still ignore it);
 //   - the persona's consideration weights are scaled by the overlay's factors.
 
-import type { Bundle, Located } from '../../bundle/bundle.ts';
-import type { Tactic } from '../../domain/documents.ts';
-import { CONSIDERATION_NAMES, type Persona } from '../../engine/persona/persona.ts';
-import { OVERLAY_PATH, type Overlay } from './overlay.ts';
+import type { Bundle, Located, Tactic } from '@ludiars/commentarii-sdk/types';
+import { CONSIDERATION_NAMES, type Persona } from '@ludiars/commentarii-sdk/knowledge';
+import { OVERLAY_PATH, type Overlay } from '@ludiars/commentarii-sdk/types';
 import { contract } from '#contract-runtime'; /* augur-inject:import:13e7c4fb */
 import augurContract_016a4940 from '../../contracts/apply-overlay.contract.ts'; /* augur-inject:contract-predicate:8b65e6b9 */
 

@@ -1,8 +1,7 @@
 // 状態機械: Mermaid stateDiagram per machine.
 
-import type { Bundle } from '../bundle/bundle.ts';
-import type { StateMachine } from '../domain/documents.ts';
-import { localize } from '../domain/localize.ts';
+import type { Bundle, StateMachine } from '@ludiars/commentarii-sdk/types';
+import { localize } from '@ludiars/commentarii-sdk/types';
 import { codeBlock, document } from '../markdown/markdown.ts';
 
 function stateName(id: string): string {

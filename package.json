@@ -7,25 +7,27 @@
   "engines": {
     "node": ">=24"
   },
+  "workspaces": [
+    "packages/sdk"
+  ],
   "bin": {
     "guide": "dist/cli/main.js"
   },
   "imports": {
     "#contract-runtime": {
-      "types": "./contract-runtime.d.mts",
-      "default": "./contract-runtime.mjs"
+      "types": "./packages/sdk/contract-runtime.d.mts",
+      "default": "./packages/sdk/contract-runtime.mjs"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "typecheck": "tsc --noEmit",
+    "build": "tsc -p packages/sdk/tsconfig.json && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit && tsc -p packages/sdk/tsconfig.json --noEmit",
     "test": "node scripts/run-tests.mjs",
     "dev": "node dist/health/main.js",
     "guide": "node dist/cli/main.js"
   },
   "dependencies": {
-    "ajv": "^8.20.0",
-    "ajv-formats": "^3.0.1"
+    "@ludiars/commentarii-sdk": "0.1.0"
   },
   "devDependencies": {
     "@types/node": "^24.19.1",

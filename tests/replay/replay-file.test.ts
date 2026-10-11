@@ -8,7 +8,7 @@ import { openReplayFile } from '../../src/adapters/fs/replay-open-file.ts';
 import { playReplay } from '../../src/replay/play-replay.ts';
 import { createRecordedDecider } from '../../src/replay/recorded-decider.ts';
 import { openRecording } from '../../src/replay/recording-sink.ts';
-import { replayRelativePath } from '../../src/replay/replay-path.ts';
+import { replayRelativePath } from '@ludiars/commentarii-sdk/replay';
 import { createWaitDecider } from '../../src/replay/wait-decider.ts';
 import { headerFields, observation } from './replay-fixtures.ts';
 

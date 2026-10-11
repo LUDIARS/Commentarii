@@ -4,7 +4,7 @@
 // A stage entered twice is one visit: reached if any stretch was, time of the first one that
 // was, routes joined.
 
-import type { ReplayRun, ReplayTick } from '../../replay/replay-record.ts';
+import type { ReplayRun, ReplayTick } from '@ludiars/commentarii-sdk/types';
 
 export interface StageVisit {
   readonly stage: string;

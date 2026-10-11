@@ -1,9 +1,16 @@
 // Mutable state of one simulated game. The sim owns it and changes it in place, tick by tick;
 // every change goes through step-sim.ts, and the only randomness is the sim's seeded PRNG.
 
-import type { ReplayAction } from '../../replay/replay-action.ts';
-import type { Entity, MaskedEntity, Rule, StateMachine } from '../../domain/documents.ts';
-import type { ObservationFrame, ObservationMode, ObservedEvent } from '../../replay/observation-frame.ts';
+import type {
+  Entity,
+  MaskedEntity,
+  ObservationFrame,
+  ObservationMode,
+  ObservedEvent,
+  ReplayAction,
+  Rule,
+  StateMachine,
+} from '@ludiars/commentarii-sdk/types';
 import type { Rng } from '../../engine/rng.ts';
 import type { SimConfig } from './sim-config.ts';
 import type { Point, SimLayout } from './sim-layout.ts';

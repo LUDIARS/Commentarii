@@ -1,7 +1,6 @@
 // Validates an import input against one of the bundled schemas and fails with every violation.
 
-import type { DocumentSchemaName } from '../schema/schema-names.ts';
-import type { SchemaRegistry } from '../schema/schema-registry.ts';
+import type { DocumentSchemaName, SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { ImportError } from './import-error.ts';
 
 export function assertSchema(registry: SchemaRegistry, schema: DocumentSchemaName, data: unknown, what: string): void {

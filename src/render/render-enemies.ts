@@ -1,7 +1,7 @@
 // 敵図鑑: one row per enemy, one column per stat name used by any enemy.
 
-import type { Bundle } from '../bundle/bundle.ts';
-import { localize } from '../domain/localize.ts';
+import type { Bundle } from '@ludiars/commentarii-sdk/types';
+import { localize } from '@ludiars/commentarii-sdk/types';
 import { document, table } from '../markdown/markdown.ts';
 import { formatValue, formatValues, KNOWLEDGE_LEGEND } from './format-value.ts';
 

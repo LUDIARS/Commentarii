@@ -1,7 +1,7 @@
 // Japanese labels of the verification classes, divergence reasons, decisions and bands used by
 // the Markdown reports. Labels state facts; none of them recommends a design direction.
 
-import type { DivergenceReason } from '../../domain/documents.ts';
+import type { DivergenceReason } from '@ludiars/commentarii-sdk/types';
 import type { Band } from '../feasibility/feasibility-document.ts';
 import type { IntentClass } from '../intent/classify-intents.ts';
 import type { DivergenceDecision } from '../intent/divergence-store.ts';

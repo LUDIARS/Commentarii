@@ -9,7 +9,7 @@
 //          re-evaluation, never silently suppressed
 //   none   unrelated
 
-import type { AllowedDivergence } from '../../domain/documents.ts';
+import type { AllowedDivergence } from '@ludiars/commentarii-sdk/types';
 import { sameSignature, type Divergence } from './divergence.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:590895dd */
 import augurContract_08abbe53 from '../../contracts/match-allowed.contract.ts'; /* augur-inject:contract-predicate:516ad275 */

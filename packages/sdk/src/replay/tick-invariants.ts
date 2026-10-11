@@ -6,8 +6,8 @@ import type { ObservationFrame } from './observation-frame.ts';
 import type { ReplayHeader, ReplayTick } from './replay-record.ts';
 import { findMaskedPointers } from './find-masked-pointers.ts';
 import { observationBoundaryProblems } from '../observation/check-observation-boundary.ts';
-import { contract } from '#contract-runtime'; /* augur-inject:import:1e5f4490 */
-import augurContract_d1bc47f3 from '../contracts/check-tick-record.contract.ts'; /* augur-inject:contract-predicate:b8f4c335 */
+import { contract } from '#contract-runtime'; /* augur-inject:import:6b57d5b8 */
+import augurContract_759e329d from '../contracts/check-tick-record.contract.ts'; /* augur-inject:contract-predicate:d683d8db */
 
 export type TickProblemCode =
   | 'tick-order'
@@ -92,4 +92,4 @@ export function checkTickRecord(header: ReplayHeader, previous: ReplayTick | und
   return problems;
 }
 // @ts-expect-error augur-inject
-checkTickRecord = contract(checkTickRecord, { ...augurContract_d1bc47f3, contractId: 'C-9', mode: 'observe', sample: 1, where: 'src/replay/tick-invariants.ts:70', rule: 'contract-wrap', id: 'd1bc47f3' }); /* augur-inject:contract-wrap:d1bc47f3 */
+checkTickRecord = contract(checkTickRecord, { ...augurContract_759e329d, contractId: 'C-9', mode: 'observe', sample: 1, where: 'packages/sdk/src/replay/tick-invariants.ts:82', rule: 'contract-wrap', id: '759e329d' }); /* augur-inject:contract-wrap:759e329d */

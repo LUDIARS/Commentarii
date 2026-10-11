@@ -3,14 +3,13 @@
 // be compared are reported with the reasons and exit 1 (never a false green). Input problems
 // (GateError) are printed and exit 1.
 
-import type { BenchResult } from '../../bench/bench-result.ts';
+import type { BenchResult, ReplayRun } from '@ludiars/commentarii-sdk/types';
 import { EXIT_INVALID, EXIT_OK, type CliIo } from '../../cli/cli-io.ts';
 import type { EngineSetup } from '../../engine/utility-bt-decider.ts';
 import { applyOverlay } from '../../learn/overlay/apply-overlay.ts';
 import { readOverlay } from '../../learn/overlay/read-overlay.ts';
-import { parseReplay } from '../../replay/parse-replay.ts';
+import { parseReplay } from '@ludiars/commentarii-sdk/replay';
 import { createDecider } from '../../replay/decider-registry.ts';
-import type { ReplayRun } from '../../replay/replay-record.ts';
 import type { VerifyIo } from '../../verify/cli/verify-io.ts';
 import { benchThresholdsOf, DEFAULT_BENCH_THRESHOLDS } from '../bench-thresholds.ts';
 import { compareBench } from '../compare-bench.ts';

@@ -2,9 +2,8 @@
 // entity documents, behavior from their state machine), self at the first spawn node (stats
 // from the first actor entity if the bundle has one, else the sim's defaults).
 
-import type { Bundle, StageFiles } from '../../bundle/bundle.ts';
-import type { Entity, MaskedEntity, Rule, Stage, StateMachine } from '../../domain/documents.ts';
-import { parseRef } from '../../domain/id.ts';
+import type { Bundle, Entity, MaskedEntity, Rule, Stage, StageFiles, StateMachine } from '@ludiars/commentarii-sdk/types';
+import { parseRef } from '@ludiars/commentarii-sdk/types';
 import { createRng } from '../../engine/rng.ts';
 import type { FighterStats, SimConfig } from './sim-config.ts';
 import { createSimLayout, type Point } from './sim-layout.ts';

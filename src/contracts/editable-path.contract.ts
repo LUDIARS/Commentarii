@@ -2,7 +2,7 @@
 // no drive letter, no empty / . / .. segment) and the bundle loader classifies it as a document;
 // the schema returned is the one of that document kind.
 
-import { classifyPath, SCHEMA_OF_KIND } from '../bundle/classify-path.ts';
+import { classifyPath, SCHEMA_OF_KIND } from '@ludiars/commentarii-sdk/bundle';
 import type { EditablePath } from '../web/doc-path.ts';
 
 export default {

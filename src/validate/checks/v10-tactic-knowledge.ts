@@ -1,9 +1,8 @@
 // V10: a tactic's knowledge equals the strictest knowledge among the values it references
 // (design 4.4 propagation rule: one masked reference makes the tactic masked).
 
-import { referencedKnowledge } from '../../bundle/resolve-ref.ts';
-import { strictestKnowledge } from '../../domain/knowledge.ts';
-import { collectTacticRefs } from '../../domain/tactic-refs.ts';
+import { referencedKnowledge } from '@ludiars/commentarii-sdk/bundle';
+import { collectTacticRefs, strictestKnowledge } from '@ludiars/commentarii-sdk/types';
 import { error, type Check, type Finding } from '../check.ts';
 
 export const v10TacticKnowledge: Check = {

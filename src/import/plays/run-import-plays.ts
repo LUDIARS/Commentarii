@@ -6,9 +6,9 @@
 import { basename, dirname, resolve } from 'node:path';
 import type { CliIo } from '../../cli/cli-io.ts';
 import { EXIT_OK } from '../../cli/cli-io.ts';
-import { parseReplay } from '../../replay/parse-replay.ts';
-import type { ReplayRun } from '../../replay/replay-record.ts';
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import { parseReplay } from '@ludiars/commentarii-sdk/replay';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { ImportError } from '../import-error.ts';
 import type { TableMapping } from '../mapping.ts';
 import { parseMapping } from '../parse-mapping.ts';

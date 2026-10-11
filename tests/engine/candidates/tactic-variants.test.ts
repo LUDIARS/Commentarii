@@ -1,10 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { Tactic } from '../../../src/domain/documents.ts';
+import type { Tactic } from '@ludiars/commentarii-sdk/types';
 import { generateCandidates } from '../../../src/engine/candidates/generate-candidates.ts';
-import { EMPTY_RUN_MEMORY } from '../../../src/engine/candidates/run-memory.ts';
-import { deriveVariant, deriveVariants, RELAX_FACTOR } from '../../../src/engine/candidates/tactic-variants.ts';
-import { buildEngineWorld } from '../../../src/engine/world/build-engine-world.ts';
+import { buildEngineWorld, deriveVariant, deriveVariants, EMPTY_RUN_MEMORY, RELAX_FACTOR } from '@ludiars/commentarii-sdk/knowledge';
 import { loadSample } from '../../support/bundles.ts';
 import { enemy, frame, SPIDER, testPersona } from '../../support/personas.ts';
 

@@ -1,6 +1,6 @@
 // The manifest `audit` section with defaults applied (schema/manifest.schema.json $defs.audit).
 
-import type { Manifest } from '../domain/documents.ts';
+import type { Manifest } from '@ludiars/commentarii-sdk/types';
 import type { FindingKind } from './audit-report.ts';
 
 export interface AllowRule {

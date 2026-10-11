@@ -2,9 +2,9 @@
 // candidate comes from a masked, draft or superseded tactic (variants included); no tactic
 // below the persona's confidence floor is proposed.
 
-import type { Candidate } from '../engine/candidates/candidate.ts';
+import type { Candidate } from '@ludiars/commentarii-sdk/knowledge';
 import type { GenerationInput } from '../engine/candidates/generate-candidates.ts';
-import { isTrusted } from '../engine/persona/persona.ts';
+import { isTrusted } from '@ludiars/commentarii-sdk/knowledge';
 
 export default {
   post: (candidates: readonly Candidate[], input: GenerationInput) => {

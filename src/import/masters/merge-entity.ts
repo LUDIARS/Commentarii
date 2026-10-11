@@ -7,9 +7,8 @@
 // - fields the mapping does not produce are kept;
 // - masked values land in the .masked.json companion, every other value in the public file.
 
-import type { GuideValue } from '../../domain/documents.ts';
-import { KNOWLEDGE_LEVELS, isKnowledge, type Knowledge } from '../../domain/knowledge.ts';
-import { isJsonObject, isValueNode, type JsonObject } from '../../domain/value-node.ts';
+import type { GuideValue } from '@ludiars/commentarii-sdk/types';
+import { isJsonObject, isKnowledge, isValueNode, type JsonObject, type Knowledge, KNOWLEDGE_LEVELS } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import-error.ts';
 import type { ImportedEntity } from './build-imported-entities.ts';
 

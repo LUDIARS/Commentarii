@@ -3,7 +3,7 @@
 
 import { isDeepStrictEqual } from 'node:util';
 import type { PlayOptions, PlayReport } from '../replay/play-replay.ts';
-import type { ReplayRun } from '../replay/replay-record.ts';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
 
 export default {
   post: (report: PlayReport, run: ReplayRun, _decider: unknown, options: PlayOptions = {}) => {

@@ -2,8 +2,8 @@
 // (referenced from the `because` of a tactic a run chose), skills (use_skill in a run's actions or
 // in a chosen tactic's steps) and the tactics themselves.
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import { parseRef } from '../../domain/id.ts';
+import type { Bundle } from '@ludiars/commentarii-sdk/types';
+import { parseRef } from '@ludiars/commentarii-sdk/types';
 import type { StageTrace } from '../runs/stage-trace.ts';
 import { tacticOrigin } from '../runs/tactic-origin.ts';
 

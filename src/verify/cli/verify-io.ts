@@ -1,8 +1,8 @@
 // What guide verify intent / guide report feasibility need from the outside world beyond CliIo.
 // main.ts wires the file system; tests pass their own.
 
-import type { ReplaySchema } from '../../replay/replay-schema.ts';
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import type { ReplaySchema } from '@ludiars/commentarii-sdk/replay';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 
 export interface ListedFiles {
   /** Files found (directories expanded recursively), sorted. */

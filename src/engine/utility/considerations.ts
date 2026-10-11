@@ -1,6 +1,6 @@
 // The consideration behind each persona weight (persona.weights keys).
 
-import type { ConsiderationName } from '../persona/persona.ts';
+import type { ConsiderationName } from '@ludiars/commentarii-sdk/knowledge';
 import { confidenceConsideration } from './confidence.ts';
 import { distanceConsideration } from './distance.ts';
 import { explorationConsideration } from './exploration.ts';

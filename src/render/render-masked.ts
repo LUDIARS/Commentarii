@@ -1,8 +1,7 @@
 // --knowledge full only: the masked section for internal review. Never part of player output.
 
-import type { Bundle } from '../bundle/bundle.ts';
-import { findValueNodes, pointerToFieldPath } from '../domain/value-node.ts';
-import type { GuideValue } from '../domain/documents.ts';
+import type { Bundle, GuideValue } from '@ludiars/commentarii-sdk/types';
+import { findValueNodes, pointerToFieldPath } from '@ludiars/commentarii-sdk/types';
 import { document, table } from '../markdown/markdown.ts';
 import { formatValue } from './format-value.ts';
 

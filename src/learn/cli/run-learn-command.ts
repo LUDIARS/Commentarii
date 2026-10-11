@@ -4,7 +4,7 @@
 // Ingest and approve write observations/ only, never a canonical file. Input problems (LearnError)
 // are printed and exit 1 with nothing written.
 
-import type { LoadResult } from '../../bundle/bundle.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
 import { EXIT_INVALID, EXIT_OK, type CliIo } from '../../cli/cli-io.ts';
 import { toFileOperations } from '../../import/plan/file-operations.ts';
 import { formatConsolidateMarkdown } from '../consolidate/format-consolidate-markdown.ts';
@@ -16,10 +16,10 @@ import { formatIngestMarkdown } from '../ingest/format-ingest-markdown.ts';
 import { ingestRuns } from '../ingest/ingest-runs.ts';
 import { LearnError } from '../learn-error.ts';
 import { parseRunObservations, type RunObservations } from '../observations/run-observations.ts';
-import { OVERLAY_PATH, type Overlay } from '../overlay/overlay.ts';
+import { OVERLAY_PATH, type Overlay } from '@ludiars/commentarii-sdk/types';
 import { readOverlay } from '../overlay/read-overlay.ts';
 import { learningPolicyOf } from '../policy/learning-policy.ts';
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import type { LearnApproveCommand, LearnCommand, LearnConsolidateCommand, LearnIngestCommand } from './learn-command.ts';
 import type { LearnIo } from './learn-io.ts';
 

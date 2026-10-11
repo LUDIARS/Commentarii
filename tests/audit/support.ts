@@ -7,9 +7,9 @@ import { resolveAuditConfig, type AuditConfig } from '../../src/audit/audit-conf
 import { fsScanSource } from '../../src/audit/fs-scan-source.ts';
 import type { ScanSource, ScanText } from '../../src/audit/scan-source.ts';
 import { looksBinary, selectScanTargets } from '../../src/audit/scan-targets.ts';
-import type { LoadResult } from '../../src/bundle/bundle.ts';
-import type { BundleSource } from '../../src/bundle/bundle-source.ts';
-import { loadBundle } from '../../src/bundle/load-bundle.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
+import type { BundleSource } from '@ludiars/commentarii-sdk/bundle';
+import { loadBundle } from '@ludiars/commentarii-sdk/bundle';
 import { overlaySource, REPO_ROOT, SAMPLE_DIR, schemaRegistry } from '../support/bundles.ts';
 
 export const AUDIT_DIR = join(REPO_ROOT, 'tests', 'fixtures', 'audit');

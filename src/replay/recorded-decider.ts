@@ -3,7 +3,7 @@
 // and it stands in for the engine until stage 3 registers the Utility / BT decider.
 
 import type { Decider } from './decider.ts';
-import type { ReplayRun } from './replay-record.ts';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
 
 export const RECORDED_DECIDER_ID = 'recorded';
 

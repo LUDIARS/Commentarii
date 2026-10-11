@@ -1,10 +1,10 @@
+import { contract } from '#contract-runtime'; /* augur-inject:import:50cda88b */
+import augurContract_a85e4f0a from '../contracts/extract-praeforma-ref.contract.ts'; /* augur-inject:contract-predicate:8c227f5b */
 // Links to Praeforma (Pf), the specification's source of truth (design 9, 14.K,
 // spec/feature/praeforma-link.md): which Praeforma scene / specification an intended item or a
 // stage belongs to. Praeforma IDs are opaque strings; Commentarii keeps them as they are and
 // never resolves them (Praeforma shows the reports on its own scene screens).
 
-import { contract } from '#contract-runtime'; /* augur-inject:import:50d2dcfb */
-import augurContract_18304f8b from '../contracts/extract-praeforma-ref.contract.ts'; /* augur-inject:contract-predicate:c0250324 */
 
 export interface PraeformaRef {
   readonly scene_id?: string;
@@ -59,4 +59,4 @@ export function extractPraeformaRef(markdown: string, explicitScene?: string): P
   return ref;
 }
 // @ts-expect-error augur-inject
-extractPraeformaRef = contract(extractPraeformaRef, { ...augurContract_18304f8b, contractId: 'C-73', mode: 'observe', sample: 1, where: 'src/praeforma/praeforma-ref.ts:44', rule: 'contract-wrap', id: '18304f8b' }); /* augur-inject:contract-wrap:18304f8b */
+extractPraeformaRef = contract(extractPraeformaRef, { ...augurContract_a85e4f0a, contractId: 'C-73', mode: 'observe', sample: 1, where: 'packages/sdk/src/praeforma/praeforma-ref.ts:45', rule: 'contract-wrap', id: 'a85e4f0a' }); /* augur-inject:contract-wrap:a85e4f0a */

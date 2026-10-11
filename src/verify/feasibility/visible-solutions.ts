@@ -4,11 +4,9 @@
 // the frames the counted runs saw in the stage. A variant is visible when its tactic is. A
 // solution without tactics is visible when every node of its route is on the player map.
 
-import { tacticCandidates } from '../../engine/candidates/tactic-candidates.ts';
-import { EMPTY_RUN_MEMORY } from '../../engine/candidates/run-memory.ts';
-import type { Persona } from '../../engine/persona/persona.ts';
-import type { EngineWorld } from '../../engine/world/engine-world.ts';
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
+import { EMPTY_RUN_MEMORY, tacticCandidates } from '@ludiars/commentarii-sdk/knowledge';
+import type { EngineWorld, Persona } from '@ludiars/commentarii-sdk/knowledge';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
 import { tacticOrigin } from '../runs/tactic-origin.ts';
 
 /** Trusts every tactic the world holds: visibility is about information, not about one persona's habits. */

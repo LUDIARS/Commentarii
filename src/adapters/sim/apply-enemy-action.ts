@@ -9,7 +9,7 @@
 // The enemy's state is set to the matching fixed-tree state so the rest of the sim (who can be
 // hit while dodging) treats both the same way.
 
-import type { ActionOperand, ReplayAction } from '../../replay/replay-action.ts';
+import type { ActionOperand, ReplayAction } from '@ludiars/commentarii-sdk/types';
 import { attackTarget, CLOSEST_APPROACH } from './enemy-act.ts';
 import { PLAYER_INSTANCE } from './enemy-observation.ts';
 import type { Point } from './sim-layout.ts';

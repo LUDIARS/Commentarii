@@ -2,7 +2,7 @@
 // arrays and scalars are compared as a whole.
 
 import { isDeepStrictEqual } from 'node:util';
-import { isJsonObject } from '../../domain/value-node.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 
 export type DiffEntry =
   | { readonly op: 'add'; readonly pointer: string; readonly after: unknown }

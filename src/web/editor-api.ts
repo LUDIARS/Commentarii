@@ -6,8 +6,8 @@
 // cannot drift apart. Writes need a JSON body and, when the browser sends an Origin, the editor's
 // own origin (no cross-site writes to a local tool).
 
-import type { LoadResult } from '../bundle/bundle.ts';
-import type { SchemaRegistry } from '../schema/schema-registry.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { runValidation } from '../validate/run-validation.ts';
 import { DIVERGENCES_PATH } from '../verify/intent/divergence-store.ts';
 import { editablePath } from './doc-path.ts';

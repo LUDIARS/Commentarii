@@ -3,8 +3,8 @@
 // expressions. A number is documented when its absolute value appears in the text (the sign
 // is often written in words); full-width digits count after NFKC normalization.
 
-import { tokenize } from '../../domain/expression/tokenize.ts';
-import { isJsonObject } from '../../domain/value-node.ts';
+import { tokenize } from '@ludiars/commentarii-sdk/expression';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 
 export interface DocumentedNumbers {
   has(value: number): boolean;

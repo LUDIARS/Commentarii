@@ -2,18 +2,15 @@
 // an in-memory line writer.
 
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { readReplaySchemaDocuments } from '../../src/adapters/fs/replay-schema-documents.ts';
-import type { ObservationFrame, ObservationMode } from '../../src/replay/observation-frame.ts';
-import { parseReplay, type ReplayLoad } from '../../src/replay/parse-replay.ts';
+import type { ObservationFrame, ObservationMode, ReplayHeader, ReplayRun } from '@ludiars/commentarii-sdk/types';
+import { fixtureReplayDirectory, fixtureReplayPath } from '@ludiars/commentarii-sdk/fixtures';
+import { createReplaySchema, parseReplay, type ReplayLoad, type ReplaySchema } from '@ludiars/commentarii-sdk/replay';
 import type { ReplayLineWriter } from '../../src/replay/recording-sink.ts';
-import type { ReplayHeader, ReplayRun } from '../../src/replay/replay-record.ts';
-import { createReplaySchema, type ReplaySchema } from '../../src/replay/replay-schema.ts';
-import { REPO_ROOT } from '../support/bundles.ts';
 
-export const REPLAY_FIXTURE_DIR = join(REPO_ROOT, 'tests', 'fixtures', 'replay');
-export const BASE_RUN = join(REPLAY_FIXTURE_DIR, 'dome-arena-base.jsonl');
-export const BRANCH_RUN = join(REPLAY_FIXTURE_DIR, 'dome-arena-branch.jsonl');
+export const REPLAY_FIXTURE_DIR = fixtureReplayDirectory();
+export const BASE_RUN = fixtureReplayPath('dome-arena-base');
+export const BRANCH_RUN = fixtureReplayPath('dome-arena-branch');
 
 let schema: ReplaySchema | undefined;
 

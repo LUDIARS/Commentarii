@@ -5,11 +5,10 @@
 //             over, the subtree that ran before is forgotten.
 //   Condition succeeds or fails on the observation, never acts.
 
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
-import type { Bindings } from '../match/bindings.ts';
-import { matchCondition } from '../match/match-condition.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
+import type { Bindings, BtNode, SelectorNode, SequenceNode } from '@ludiars/commentarii-sdk/knowledge';
+import { matchCondition } from '@ludiars/commentarii-sdk/knowledge';
 import { clearRange, withMemory, type BtMemory } from './bt-memory.ts';
-import type { BtNode, SelectorNode, SequenceNode } from './bt-node.ts';
 import { runActionLeaf } from './run-action-leaf.ts';
 import type { StepResult } from './step-result.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:504d277b */

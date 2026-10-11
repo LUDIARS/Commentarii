@@ -4,10 +4,10 @@
 // refused and nothing of it is written. Lines are built only from player frames already
 // checked by the driver, so this is the structural second gate, not the expected path.
 
-import { findMaskedPointers } from '../../replay/find-masked-pointers.ts';
-import type { ObservationMode } from '../../replay/observation-frame.ts';
+import { findMaskedPointers } from '@ludiars/commentarii-sdk/replay';
+import type { ObservationMode } from '@ludiars/commentarii-sdk/types';
 import type { ReplayLineWriter } from '../../replay/recording-sink.ts';
-import type { OverlayLine } from './overlay-line.ts';
+import type { OverlayLine } from '@ludiars/commentarii-sdk/knowledge';
 
 export class MaskedObservationError extends Error {
   readonly pointers: readonly string[];

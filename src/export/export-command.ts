@@ -2,7 +2,7 @@
 // Errors are thrown as plain Errors; parse-command.ts turns them into usage errors.
 
 import { parseArgs } from 'node:util';
-import { EXPORT_TARGETS, type ExportKnowledge, type ExportTarget } from './exported-bundle.ts';
+import { EXPORT_TARGETS, type ExportKnowledge, type ExportTarget } from '@ludiars/commentarii-sdk/types';
 
 export interface ExportCommand {
   readonly name: 'export';

@@ -2,7 +2,7 @@
 // unknown sightings and broken expects, and the run to runs.player. Entries stay sorted by
 // key so the same runs give the same overlay whatever order they were ingested in per call.
 
-import type { Overlay, OverlayMismatch, OverlayTactic, OverlayUnknown, OverlayValue } from '../overlay/overlay.ts';
+import type { Overlay, OverlayMismatch, OverlayTactic, OverlayUnknown, OverlayValue } from '@ludiars/commentarii-sdk/types';
 import { draftEntity } from '../overlay/draft-entity.ts';
 import { tacticMetrics } from '../overlay/tactic-metrics.ts';
 import type { RunDigest } from './digest-run.ts';

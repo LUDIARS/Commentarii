@@ -7,15 +7,14 @@
 //   4. damage dealt until a kill (value-estimate).
 // reflectEnd closes what is still open when the run ends (unresolved).
 
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
 import type { RunningPlan } from '../engine-state.ts';
 import { checkExpect } from '../expect/check-expect.ts';
 import { EMPTY_DAMAGE_TALLY, tallyDamage, type DamageTally } from './damage-tally.ts';
 import { mismatchLine, outcomeLine, startLine } from './episode-lines.ts';
-import type { OverlayLine } from './overlay-line.ts';
-import type { ReflectWorld } from './reflect-world.ts';
+import type { OverlayLine, ReflectWorld } from '@ludiars/commentarii-sdk/knowledge';
 import { advanceEpisode, openEpisode, type TacticEpisode } from './tactic-episode.ts';
-import { unknownEntityLines } from './unknown-entities.ts';
+import { unknownEntityLines } from '@ludiars/commentarii-sdk/knowledge';
 import { contract } from '#contract-runtime'; /* augur-inject:import:349a976e */
 import augurContract_8145f850 from '../../contracts/reflect-tick.contract.ts'; /* augur-inject:contract-predicate:4db3e608 */
 

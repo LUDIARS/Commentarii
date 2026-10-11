@@ -4,7 +4,7 @@
 // when it has been left alone, the clock advances and the outcome is settled (every enemy down
 // = success; self down or time over = fail).
 
-import type { ReplayAction } from '../../replay/replay-action.ts';
+import type { ReplayAction } from '@ludiars/commentarii-sdk/types';
 import { applySelfAction } from './apply-self-action.ts';
 import { actEnemy } from './enemy-act.ts';
 import { applyEnemyAction } from './apply-enemy-action.ts';

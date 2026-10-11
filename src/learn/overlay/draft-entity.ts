@@ -6,9 +6,9 @@
 // automatically (guide learn consolidate proposes it).
 
 import { createHash } from 'node:crypto';
-import { ENTITY_GROUP_OF_KIND, isEntityKind, parseRef } from '../../domain/id.ts';
-import type { RenderSignature } from '../../engine/reflect/unknown-entities.ts';
-import type { EntityDraft } from './overlay.ts';
+import { ENTITY_GROUP_OF_KIND, isEntityKind, parseRef } from '@ludiars/commentarii-sdk/types';
+import type { RenderSignature } from '@ludiars/commentarii-sdk/knowledge';
+import type { EntityDraft } from '@ludiars/commentarii-sdk/types';
 
 function shortHash(text: string): string {
   return createHash('sha256').update(text).digest('hex').slice(0, 8);

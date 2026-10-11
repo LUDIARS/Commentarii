@@ -2,8 +2,8 @@
 // unidentified entity keeps its instance (and position) only, so the raw identifier is never
 // written (design 7.2: an entity the adapter cannot identify is recorded as unknown).
 
-import { isJsonObject } from '../../domain/value-node.ts';
-import type { ObservedEntity } from '../../replay/observation-frame.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
+import type { ObservedEntity } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import-error.ts';
 import type { MasterRow } from '../masters/master-table.ts';
 import { readText } from '../masters/read-cell.ts';

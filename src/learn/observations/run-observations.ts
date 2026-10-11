@@ -3,9 +3,9 @@
 // A run counts as player only when every line is player: one omniscient line makes the whole
 // run omniscient (the safe side: it is then ignored for learning, principle 2).
 
-import type { OverlayLine } from '../../engine/reflect/overlay-line.ts';
-import type { ObservationMode } from '../../replay/observation-frame.ts';
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import type { OverlayLine } from '@ludiars/commentarii-sdk/knowledge';
+import type { ObservationMode } from '@ludiars/commentarii-sdk/types';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { LearnError } from '../learn-error.ts';
 
 export interface RunObservations {

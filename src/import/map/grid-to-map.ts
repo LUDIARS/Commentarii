@@ -3,7 +3,7 @@
 // diagonals whose two orthogonal cells are walkable (no corner cutting). Legend annotations
 // attach to their cell.
 
-import type { GuideMap, MapAnnotation, MapEdge, MapNode } from '../../domain/documents.ts';
+import type { GuideMap, MapAnnotation, MapEdge, MapNode } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import-error.ts';
 import { DEFAULT_KNOWLEDGE, type GridLegendEntry } from '../mapping.ts';
 import { assertGridUnit } from './check-coordinates.ts';

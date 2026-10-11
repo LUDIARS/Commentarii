@@ -1,4 +1,5 @@
-// npm test: compile src + tests into build-test/ with tsc, then run node --test on the result.
+// npm test: build the SDK (packages/sdk/dist, what @ludiars/commentarii-sdk resolves to at run
+// time), compile src + tests into build-test/ with tsc, then run node --test on the result.
 // VESTIGIUM_LOGS_DIR points the Augur contract runtime at <repo>/logs so contract evidence
 // from the test run can be aggregated with `augur contracts report`.
 
@@ -21,7 +22,9 @@ function run(args, env) {
 
 try {
   await rm(join(root, 'build-test'), { recursive: true, force: true });
-  const compiled = await run([tsc, '-p', 'tsconfig.json'], process.env);
+  await rm(join(root, 'packages', 'sdk', 'dist'), { recursive: true, force: true });
+  const sdkBuilt = await run([tsc, '-p', join('packages', 'sdk', 'tsconfig.json')], process.env);
+  const compiled = sdkBuilt !== 0 ? sdkBuilt : await run([tsc, '-p', 'tsconfig.json'], process.env);
   if (compiled !== 0) {
     process.exitCode = compiled;
   } else {

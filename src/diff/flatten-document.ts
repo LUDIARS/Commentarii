@@ -2,8 +2,7 @@
 // its payload and boundary label, every other scalar or array is one leaf of its own. Pointers
 // are RFC 6901, the same as the boundary checks use, so a change can be traced to the file.
 
-import { isKnowledge, type Knowledge } from '../domain/knowledge.ts';
-import { isJsonObject, isValueNode } from '../domain/value-node.ts';
+import { isJsonObject, isKnowledge, isValueNode, type Knowledge } from '@ludiars/commentarii-sdk/types';
 
 export interface Leaf {
   readonly value: unknown;

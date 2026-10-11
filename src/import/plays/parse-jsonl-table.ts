@@ -1,7 +1,7 @@
 // JSON Lines telemetry (one flat object per line) -> MasterTable. Blank lines are skipped; row n
 // of the reference counts records from 1, as for CSV and JSON tables.
 
-import { isJsonObject } from '../../domain/value-node.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import-error.ts';
 import { tableNameOf, type MasterRow, type MasterTable } from '../masters/master-table.ts';
 

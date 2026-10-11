@@ -5,8 +5,7 @@ import { playReplay } from '../../src/replay/play-replay.ts';
 import { RecordingError } from '../../src/replay/recording-error.ts';
 import { openRecording } from '../../src/replay/recording-sink.ts';
 import { createWaitDecider } from '../../src/replay/wait-decider.ts';
-import type { ObservationFrame } from '../../src/replay/observation-frame.ts';
-import type { ReplayAction } from '../../src/replay/replay-action.ts';
+import type { ObservationFrame, ReplayAction } from '@ludiars/commentarii-sdk/types';
 import { headerFields, memoryWriter, observation, parseText } from './replay-fixtures.ts';
 
 const FIXED_NOW = (): Date => new Date('2026-10-09T00:00:01.000Z');

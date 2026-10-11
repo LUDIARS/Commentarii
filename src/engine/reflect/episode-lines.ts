@@ -4,10 +4,9 @@
 //   mismatch        the expect that broke against what the frame showed (null where the bound
 //                   instance was not visible).
 
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
-import { isJsonObject } from '../../domain/value-node.ts';
-import { findInstance } from '../observation/visible-entities.ts';
-import { lineOf, type OverlayLine, type TacticOutcome } from './overlay-line.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
+import { findInstance, lineOf, type OverlayLine, type TacticOutcome } from '@ludiars/commentarii-sdk/knowledge';
 import type { TacticEpisode } from './tactic-episode.ts';
 
 function round3(value: number): number {

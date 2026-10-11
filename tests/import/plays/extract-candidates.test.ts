@@ -1,9 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { Tactic } from '../../../src/domain/documents.ts';
+import type { ReplayAction, ReplayRun, Tactic } from '@ludiars/commentarii-sdk/types';
 import { extractCandidates } from '../../../src/import/plays/extract-candidates.ts';
-import type { ReplayAction } from '../../../src/replay/replay-action.ts';
-import type { ReplayRun } from '../../../src/replay/replay-record.ts';
 import { headerFields, observation } from '../../replay/replay-fixtures.ts';
 
 function humanRun(runId: string, player: string, actions: readonly ReplayAction[], result: 'success' | 'fail' = 'success'): ReplayRun {

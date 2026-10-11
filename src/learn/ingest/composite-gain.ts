@@ -4,7 +4,7 @@
 // measured (time p50, resource spent in total, damage taken p50). Undefined when no dimension
 // can be compared. Success rate is not part of it; the rewrite rule checks it separately.
 
-import type { TacticMetrics } from '../../domain/documents.ts';
+import type { TacticMetrics } from '@ludiars/commentarii-sdk/types';
 import type { MetricWeights } from '../policy/learning-policy.ts';
 import { round3 } from '../stats/round.ts';
 

@@ -7,10 +7,10 @@
 // the engine as an enemy).
 // A tactic whose expectation breaks is dropped at once and re-evaluated (design 7.4).
 
-import { isJsonObject } from '../../domain/value-node.ts';
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
-import type { Bindings } from '../match/bindings.ts';
-import { findInstance } from '../observation/visible-entities.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
+import type { Bindings } from '@ludiars/commentarii-sdk/knowledge';
+import { findInstance } from '@ludiars/commentarii-sdk/knowledge';
 
 export type ExpectStatus = 'pending' | 'met' | 'broken';
 

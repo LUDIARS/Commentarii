@@ -5,7 +5,7 @@
 import { join } from 'node:path';
 import { CANDIDATES_PATH } from '../../import/plays/human-run-path.ts';
 import type { HumanCandidates } from '../../import/plays/human-candidates.ts';
-import type { DocumentSchemaName } from '../../schema/schema-names.ts';
+import type { DocumentSchemaName } from '@ludiars/commentarii-sdk/schemas';
 import type { LearnIo } from '../cli/learn-io.ts';
 import { LearnError } from '../learn-error.ts';
 import { APPROVALS_PATH, type ApprovalsFile } from './approvals.ts';

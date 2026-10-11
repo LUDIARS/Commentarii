@@ -4,7 +4,7 @@
 // must be an entity of the bundle. Anything else stays unidentified: the observation keeps the
 // instance only, never the raw game identifier.
 
-import { ENTITY_KINDS } from '../../domain/id.ts';
+import { ENTITY_KINDS } from '@ludiars/commentarii-sdk/types';
 import type { TableMapping } from '../mapping.ts';
 import { slugify } from '../masters/slug-of.ts';
 

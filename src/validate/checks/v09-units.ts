@@ -1,6 +1,6 @@
 // V09: a stat name means one unit across the whole bundle (hp is never hp in one enemy and % in another).
 
-import { isJsonObject } from '../../domain/value-node.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 import { error, type Check, type Finding } from '../check.ts';
 
 const NO_UNIT = '(none)';

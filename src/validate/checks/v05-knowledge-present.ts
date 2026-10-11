@@ -1,7 +1,6 @@
 // V05: every value, however deeply nested, declares its knowledge boundary.
 
-import { isKnowledge } from '../../domain/knowledge.ts';
-import { findValueNodes } from '../../domain/value-node.ts';
+import { findValueNodes, isKnowledge } from '@ludiars/commentarii-sdk/types';
 import { error, type Check, type Finding } from '../check.ts';
 
 export const v05KnowledgePresent: Check = {

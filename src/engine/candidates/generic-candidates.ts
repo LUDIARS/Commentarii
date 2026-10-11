@@ -5,15 +5,10 @@
 //                     enemy in sight, head for the next node of the intended route.
 //   generic:gather    head for the nearest resource node of the map.
 
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
-import { buildTree } from '../bt/build-tree.ts';
-import { pointAway } from '../observation/geometry.ts';
-import { hpRatio, reach } from '../observation/self-readings.ts';
-import { distanceTo, entitiesOfKind } from '../observation/visible-entities.ts';
-import type { StageView } from '../world/engine-world.ts';
-import type { Candidate } from './candidate.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
+import { buildTree, distanceTo, entitiesOfKind, hpRatio, pointAway, reach } from '@ludiars/commentarii-sdk/knowledge';
+import type { Candidate, RunMemory, StageView } from '@ludiars/commentarii-sdk/knowledge';
 import { nearestNode } from './map-routes.ts';
-import type { RunMemory } from './run-memory.ts';
 
 /** HP ratio under which surviving becomes a candidate. */
 export const SURVIVE_HP_RATIO = 0.3;

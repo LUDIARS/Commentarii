@@ -3,9 +3,9 @@
 // variable's `ref` field (enemy:g:x.stats.health -> its own health), then the rule's example.
 // Damage uses the bundle rule `rule:<game>:damage` when there is one, else the sim's formula.
 
-import type { Entity, MaskedEntity, Rule } from '../../domain/documents.ts';
-import { evaluateExpression } from '../../domain/expression/evaluate-expression.ts';
-import { parseRef } from '../../domain/id.ts';
+import type { Entity, MaskedEntity, Rule } from '@ludiars/commentarii-sdk/types';
+import { evaluateExpression } from '@ludiars/commentarii-sdk/expression';
+import { parseRef } from '@ludiars/commentarii-sdk/types';
 import type { SimFighter, SimWorld } from './sim-world.ts';
 
 export type Situation = Readonly<Record<string, number>>;

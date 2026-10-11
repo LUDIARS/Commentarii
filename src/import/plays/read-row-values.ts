@@ -2,7 +2,7 @@
 // value, or JSON text in a CSV cell), positions, timestamps and counts. Unreadable values fail
 // with the row reference; empty cells read as undefined.
 
-import type { Vector3 } from '../../replay/observation-frame.ts';
+import type { Vector3 } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import-error.ts';
 import type { MasterRow } from '../masters/master-table.ts';
 import { readNumber, readText } from '../masters/read-cell.ts';

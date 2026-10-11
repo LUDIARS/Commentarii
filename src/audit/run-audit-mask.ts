@@ -1,8 +1,8 @@
 // Runs `guide audit mask`: load the guide, refuse an unsafe configuration, read the scan
 // targets, audit and print. Returns the process exit code.
 
-import type { LoadResult } from '../bundle/bundle.ts';
-import { isMaskedFilePath } from '../bundle/bundle.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
+import { isMaskedFilePath } from '@ludiars/commentarii-sdk/types';
 import { auditExitCode } from './audit-exit-code.ts';
 import { allowRuleErrors, resolveAuditConfig } from './audit-config.ts';
 import { auditMask } from './audit-mask.ts';

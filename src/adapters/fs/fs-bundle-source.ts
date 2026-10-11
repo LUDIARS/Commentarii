@@ -2,7 +2,7 @@
 
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
-import type { BundleSource } from '../../bundle/bundle-source.ts';
+import type { BundleSource } from '@ludiars/commentarii-sdk/bundle';
 
 export async function createFsBundleSource(root: string): Promise<BundleSource> {
   const info = await stat(root).catch(() => undefined);

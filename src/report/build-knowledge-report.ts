@@ -1,10 +1,8 @@
 // Builds the knowledge boundary report from a loaded bundle.
 
-import { buildBundleIndex } from '../bundle/bundle-index.ts';
-import type { LoadResult } from '../bundle/bundle.ts';
-import { referencedKnowledge } from '../bundle/resolve-ref.ts';
-import { collectTacticRefs } from '../domain/tactic-refs.ts';
-import { findValueNodes, isJsonObject } from '../domain/value-node.ts';
+import { buildBundleIndex, referencedKnowledge } from '@ludiars/commentarii-sdk/bundle';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
+import { collectTacticRefs, findValueNodes, isJsonObject } from '@ludiars/commentarii-sdk/types';
 import type {
   EntityKnowledgeRow,
   KnowledgeCounts,

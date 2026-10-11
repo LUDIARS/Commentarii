@@ -6,7 +6,7 @@
 
 import type { Decider } from '../replay/decider.ts';
 import { playReplay } from '../replay/play-replay.ts';
-import type { ReplayRun } from '../replay/replay-record.ts';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
 
 export interface DivergentRun {
   readonly run_id: string;

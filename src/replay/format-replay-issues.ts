@@ -1,6 +1,6 @@
 // Human text for a replay file that failed to load.
 
-import type { ReplayIssue } from './parse-replay.ts';
+import type { ReplayIssue } from '@ludiars/commentarii-sdk/replay';
 
 export function formatReplayIssues(path: string, issues: readonly ReplayIssue[]): string {
   const lines = issues.map((issue) => `${path}:${issue.line} ${issue.pointer === '' ? '/' : issue.pointer} ${issue.message}`);

@@ -4,9 +4,8 @@
 // handed to a narrator, so an external LLM never sees a masked tactic, a masked value or the
 // omniscient observation. Observations themselves are left out: the commentary explains choices.
 
-import type { Bundle } from '../bundle/bundle.ts';
-import { toPlayerView } from '../bundle/player-view.ts';
-import type { ReplayRun } from '../replay/replay-record.ts';
+import type { Bundle, ReplayRun } from '@ludiars/commentarii-sdk/types';
+import { toPlayerView } from '@ludiars/commentarii-sdk/rulebook';
 import { contract } from '#contract-runtime'; /* augur-inject:import:4b014617 */
 import augurContract_ab97cecb from '../contracts/build-commentary-input.contract.ts'; /* augur-inject:contract-predicate:4b1e516a */
 

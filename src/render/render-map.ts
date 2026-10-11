@@ -1,7 +1,7 @@
 // 地図: grid as ASCII, navgraph as a Mermaid graph, zones as an adjacency table.
 
-import type { AnnotationKind, GuideMap } from '../domain/documents.ts';
-import { localize } from '../domain/localize.ts';
+import type { AnnotationKind, GuideMap } from '@ludiars/commentarii-sdk/types';
+import { localize } from '@ludiars/commentarii-sdk/types';
 import { codeBlock, document, table } from '../markdown/markdown.ts';
 
 const WALL = '#';

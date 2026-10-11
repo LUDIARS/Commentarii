@@ -4,11 +4,10 @@
 //   unknown-entity                    -> a sighting of that unknown (keyed as reflect keys it);
 //   mismatch                          -> a broken expect of that tactic.
 
-import type { OverlayLine } from '../../engine/reflect/overlay-line.ts';
-import type { RenderSignature } from '../../engine/reflect/unknown-entities.ts';
-import { isJsonObject } from '../../domain/value-node.ts';
+import type { OverlayLine, RenderSignature } from '@ludiars/commentarii-sdk/knowledge';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 import type { RunObservations } from '../observations/run-observations.ts';
-import type { OverlayVariant, TacticSample, ValueEstimate } from '../overlay/overlay.ts';
+import type { OverlayVariant, TacticSample, ValueEstimate } from '@ludiars/commentarii-sdk/types';
 
 export interface DigestSample {
   readonly tactic: string;

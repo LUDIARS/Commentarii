@@ -1,7 +1,7 @@
 // The reflect step as the driver sees it (design 7.5): called once at the end of every tick,
 // after the action was performed, and once when the run ends.
 
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
 
 export interface TickReflector {
   /** Reflects on the tick just decided and acted on (`frame` is what was observed). */

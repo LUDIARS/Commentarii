@@ -3,10 +3,10 @@
 // resulting document checked against the schema of its bundle path. Any failure throws and
 // nothing is written (a rewrite lands whole or not at all).
 
-import type { Bundle, Located } from '../../bundle/bundle.ts';
-import { classifyPath, SCHEMA_OF_KIND } from '../../bundle/classify-path.ts';
+import type { Bundle, Located } from '@ludiars/commentarii-sdk/types';
+import { classifyPath, SCHEMA_OF_KIND } from '@ludiars/commentarii-sdk/bundle';
 import type { FileChange } from '../../import/plan/file-change.ts';
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { LearnError } from '../learn-error.ts';
 import { applyJsonPatch, JsonPatchError } from '../patch/json-patch.ts';
 import type { Proposal } from './proposal.ts';

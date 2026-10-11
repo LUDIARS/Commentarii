@@ -1,7 +1,7 @@
 // observations/human/candidates.json (schema/human-candidates.schema.json): what human players
 // did in a situation that no guide tactic covers, as learned draft tactics with their evidence.
 
-import type { Tactic } from '../../domain/documents.ts';
+import type { Tactic } from '@ludiars/commentarii-sdk/types';
 
 export interface CandidateEvidence {
   readonly stage: string;

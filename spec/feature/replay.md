@@ -2,7 +2,9 @@
 
 設計正本: `spec/architecture/design.md` §7.2 (Observation)、§7.5 (1 ティック)、§14.A (リプレイ)。
 依頼文: `spec/tasks/2026-10-09-stage-2a-replay.md`。実装は `src/replay/` と `src/adapters/fs/replay-*.ts`、テストは `tests/replay/`、
-フィクスチャは `tests/fixtures/replay/`。
+フィクスチャは `packages/sdk/fixtures/replay/`。形式の読み取り側 (行の型・`parseReplay`・tick の不変条件・`findMaskedPointers`・
+行スキーマ・パス) は Ingenium R0-A で SDK (`@ludiars/commentarii-sdk/replay`・`/types`、`packages/sdk/src/replay/`) に移った。
+記録器・再生器・差分器・decider は `src/replay/` に残る (R0-B で Ingenium へ移す)。
 
 判断エンジン (Utility / BT) は段階 3 で作る。本段は記録形式・記録器・再生器・差分器と、エンジンを受ける型
 (`src/replay/decider.ts` の `Decider`: 観測 → 判断ログ + 行動) を用意する。段階 3 以降のエンジンのテストはリプレイを正本にする。
@@ -28,7 +30,7 @@
 
 ## 2. 不変条件
 
-スキーマに加え、読み込み (`parseReplay`) と記録器 (`RecordingSink`) が同じ検査 (`src/replay/tick-invariants.ts`) を使う。
+スキーマに加え、読み込み (`parseReplay`) と記録器 (`RecordingSink`) が同じ検査 (`packages/sdk/src/replay/tick-invariants.ts`) を使う。
 したがって記録器が書いたファイルは必ず読め、読めるファイルは記録器でも書けた。
 
 | ID | 不変条件 |
@@ -84,7 +86,7 @@ R6 は第一原則の構造上の担保: 記録器は player モードで masked
 
 ## 6. フィクスチャ
 
-`tests/fixtures/replay/` に Bestia サンプル (ドームアリーナ) の手書き run を 2 本置く。どちらも player / efficiency、10 ティック。
+`packages/sdk/fixtures/replay/` (SDK のフィクスチャ。`readFixtureReplay` / `fixtureReplayPath` で読む) に Bestia サンプル (ドームアリーナ) の手書き run を 2 本置く。どちらも player / efficiency、10 ティック。
 
 | ファイル | 内容 |
 |---|---|

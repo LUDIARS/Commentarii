@@ -3,7 +3,7 @@
 // signature only, so it stays the same however many runs show it.
 
 import { createHash } from 'node:crypto';
-import type { DivergenceReason, DivergenceSignature } from '../../domain/documents.ts';
+import type { DivergenceReason, DivergenceSignature } from '@ludiars/commentarii-sdk/types';
 
 export type DivergenceKind = 'interesting' | 'undesirable';
 

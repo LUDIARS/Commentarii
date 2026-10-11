@@ -4,7 +4,7 @@
 
 import { isDeepStrictEqual } from 'node:util';
 import type { Tactic } from '../domain/documents.ts';
-import type { TacticMutation, TacticVariant } from '../engine/candidates/tactic-variants.ts';
+import type { TacticMutation, TacticVariant } from '../knowledge/candidates/tactic-variants.ts';
 
 function strings(value: unknown, found = new Set<string>()): Set<string> {
   if (typeof value === 'string') found.add(value);

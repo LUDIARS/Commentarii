@@ -12,7 +12,7 @@ Astra レビュー P0-1 (2026-10-09) の補正。Actio: `actio:7ab9fce8-4e31-4a9
 
 本仕様は観測フレームの **場所** に許可表を置き、表に無い場所は中身を問わず拒否する (既定拒否)。
 
-## 2. 許可表 (`src/observation/observation-fields.ts`)
+## 2. 許可表 (`packages/sdk/src/observation/observation-fields.ts`)
 
 player の観測フレームが持ってよい場所は次の 3 種だけ。
 
@@ -36,7 +36,7 @@ player の観測フレームが持ってよい場所は次の 3 種だけ。
 | 経路 | 宣言の出所 | 違反したとき |
 |---|---|---|
 | エンジンのドライバ (`src/engine/driver.ts`) | manifest `observation.fields` (`guide run` / `guide bench` が渡す) | 未登録は masked と同じ扱い (原則 1) で run を止める (`stop: masked-in-player`、pointer のみ記録)。decider は見ない |
-| 記録器 / 読み込み (`src/replay/tick-invariants.ts` の R7) | リプレイ header の `observation_fields` (記録時の宣言の写し) | `unregistered-in-player`。記録器は書かず、読み込みはその行を issue にする |
+| 記録器 / 読み込み (`packages/sdk/src/replay/tick-invariants.ts` の R7) | リプレイ header の `observation_fields` (記録時の宣言の写し) | `unregistered-in-player`。記録器は書かず、読み込みはその行を issue にする |
 | 人間プレイの取り込み (`guide import plays`) | manifest の宣言 + plays mapping が `knowledge` を明示した resource (`src/import/plays/observation-declarations.ts`) | 書く前の読み込み検査で失敗し、何も書かない。`knowledge` を書かない resource は masked と宣言される |
 | オーバーレイ・レポート | 上の経路を通ったフレームからだけ作られる (reflect はドライバの検査の後、verify / feasibility / report plays は `parseReplay` 経由) | — |
 
@@ -47,7 +47,7 @@ player の観測フレームが持ってよい場所は次の 3 種だけ。
 - この仕様より前に記録したリプレイは header に `observation_fields` を持たない。そのまま読むと**基本項目だけ**で検査され、
   裸の `resources` や独自の `extra` / イベント項目は `unregistered-in-player` で読めない。黙って通さない (原則 1)。
 - 移行は「そのゲームの宣言を header に足す」こと。宣言は manifest `observation.fields` と同じ内容。同梱フィクスチャ
-  (`tests/fixtures/replay/*.jsonl`) は `self.resources.boost` (HUD のブーストゲージ) と `events.hit-taken.instance` (攻撃してきた見えている個体のヒット表示) を宣言して移行した。
+  (`packages/sdk/fixtures/replay/*.jsonl`) は `self.resources.boost` (HUD のブーストゲージ) と `events.hit-taken.instance` (攻撃してきた見えている個体のヒット表示) を宣言して移行した。
 - 宣言を足せない (出所を説明できない) 値は masked であり、そのリプレイは player の記録として使えない。
 
 ## 5. 負例 (テスト `tests/observation/observation-boundary.test.ts`)

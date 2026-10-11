@@ -2,8 +2,8 @@
 // about it (persona weights; a consideration returning undefined is left out of both sums),
 // plus the persona's hysteresis when it is the plan already running.
 
-import type { Candidate } from '../candidates/candidate.ts';
-import { CONSIDERATION_NAMES, type ConsiderationName, type Persona } from '../persona/persona.ts';
+import type { Candidate } from '@ludiars/commentarii-sdk/knowledge';
+import { CONSIDERATION_NAMES, type ConsiderationName, type Persona } from '@ludiars/commentarii-sdk/knowledge';
 import { CONSIDERATIONS } from './considerations.ts';
 import { clamp01, type UtilityContext } from './utility-context.ts';
 

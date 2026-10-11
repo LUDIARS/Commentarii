@@ -3,15 +3,21 @@
 // the seed derived from (seed, i), so a bench is reproducible as a whole and run by run.
 // Comparing against thresholds is stage 5C; this only measures.
 
-import type { Bundle } from '../bundle/bundle.ts';
+import type {
+  Bundle,
+  ObservationMode,
+  ObservationPurpose,
+  ReplayFooter,
+  ReplayHeader,
+  ReplayRun,
+  ReplayTick,
+} from '@ludiars/commentarii-sdk/types';
 import { createSimAdapter } from '../adapters/sim/sim-adapter.ts';
 import type { SimConfig } from '../adapters/sim/sim-config.ts';
 import { runDriver } from '../engine/driver.ts';
-import type { Persona } from '../engine/persona/persona.ts';
+import type { Persona } from '@ludiars/commentarii-sdk/knowledge';
 import { deriveSeed } from '../engine/rng.ts';
 import { createUtilityBtDecider } from '../engine/utility-bt-decider.ts';
-import type { ObservationMode, ObservationPurpose } from '../replay/observation-frame.ts';
-import type { ReplayFooter, ReplayHeader, ReplayRun, ReplayTick } from '../replay/replay-record.ts';
 import type { ReplayLineWriter } from '../replay/recording-sink.ts';
 import { summarizeBench, type BenchReport, type BenchRun } from './summarize-bench.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:7c3f1b7b */
