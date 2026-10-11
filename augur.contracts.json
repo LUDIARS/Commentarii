@@ -85,24 +85,6 @@
       "sample": 1
     },
     {
-      "id": "C-10",
-      "criterion": "C-10 playReplay(run, decider, options): ok は first_mismatch が null のときだけ true。一致なら until 以下の全ティックを照合し、不一致なら first_mismatch は until 以下のティックで、記録行動はそのティックの記録と同じで再生行動と異なる",
-      "symbol": "playReplay",
-      "file": "src/replay/play-replay.ts",
-      "module": "src/contracts/play-replay.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-11",
-      "criterion": "C-11 diffReplays(a, b, options): 最初の分岐より前の共通ティックは行動も選択候補も一致し、分岐ティックでは行動・選択候補・ティックの有無のいずれかが異なる。分岐が無ければ行動差分は 0 件、表示件数は limit 以下かつ件数以下",
-      "symbol": "diffReplays",
-      "file": "src/replay/diff-replays.ts",
-      "module": "src/contracts/diff-replays.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
       "id": "C-12",
       "criterion": "C-12 planMasterImport(input): 書き出す文書では masked の値が .masked.json にだけ入り .masked.json には masked 以外が無い。既存の observed / human / llm-draft の値はそのまま残り、既存の master 値の knowledge は取り込みで厳しくならない (昇格を戻さない)",
       "symbol": "planMasterImport",
@@ -153,60 +135,6 @@
       "symbol": "buildExport",
       "file": "src/export/build-export.ts",
       "module": "src/contracts/build-export.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-18",
-      "criterion": "C-18 generateCandidates(input): 候補 ID は一意かつ ID 順で、player モードでは masked・draft・superseded の定石 (その変種を含む) を候補にせず、ペルソナの confidence 下限未満の定石も候補にしない",
-      "symbol": "generateCandidates",
-      "file": "src/engine/candidates/generate-candidates.ts",
-      "module": "src/contracts/generate-candidates.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-19",
-      "criterion": "C-19 decideTick(input): 判断ログは各候補を 1 回ずつ有限の効用で並べ、chosen は高々 1 件で outcome.chosen と一致し、chosen より効用の高い候補は skipped に入り、行動の verb は 1 つ (選択なしなら wait 0)",
-      "symbol": "decideTick",
-      "file": "src/engine/decide-tick.ts",
-      "module": "src/contracts/decide-tick.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-20",
-      "criterion": "C-20 stepTree(tree, memory, context): running は必ず行動を持ち failure は行動を持たず、行動の verb は 1 つで、返す memory はその木のノードだけを持つ",
-      "symbol": "stepTree",
-      "file": "src/engine/bt/step-tree.ts",
-      "module": "src/contracts/step-tree.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-21",
-      "criterion": "C-21 runDriver(options): ティック数は maxTicks 以下、ゲーム自身の終了以外の停止では result は abort、masked-in-player 停止は player モードでだけ起き pointer を 1 件以上持ち、選択数の合計はティック数以下",
-      "symbol": "runDriver",
-      "file": "src/engine/driver.ts",
-      "module": "src/contracts/run-driver.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-22",
-      "criterion": "C-22 runBench(options): per_run は要求した runs 件、clear_rate は成功 run の割合、time_sec はクリア 0 件のときだけ null、候補の割合は 0〜1 で合計 1 以下、tactics は --no-tactics なら none",
-      "symbol": "runBench",
-      "file": "src/bench/run-bench.ts",
-      "module": "src/contracts/run-bench.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-30",
-      "criterion": "C-30 reflectTick(state, input): 行は mismatch / unknown-entity / tactic-outcome / value-estimate のいずれかで観測フレームの t・tick・source・mode・purpose を持ち、player モードでは knowledge: masked を含まず、success / failure の判定は開いていたエピソードにだけ付く",
-      "symbol": "reflectTick",
-      "file": "src/engine/reflect/reflect-tick.ts",
-      "module": "src/contracts/reflect-tick.contract.ts",
       "mode": "observe",
       "sample": 1
     },
@@ -364,33 +292,6 @@
       "sample": 1
     },
     {
-      "id": "C-61",
-      "criterion": "C-61 classifyDraw(draw, pass, frame): visible は scene / ui pass で、不透明かつ viewport 上にあり、scene は遮蔽クエリ通過、ui は hidden でなく clip 内のときだけ。shadow / reflection / depth / post の draw と遮蔽の根拠が無い scene draw は visible にならない",
-      "symbol": "classifyDraw",
-      "file": "src/render-tap/classify-draw.ts",
-      "module": "src/contracts/classify-draw.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-62",
-      "criterion": "C-62 identifyAppearance(draw, index): entity は asset-name か content-hash の draw で外見が 1 entity にだけ対応するときだけ名付けられ、count-hash は識別されず、同じ外見の別種は ambiguous になる",
-      "symbol": "identifyAppearance",
-      "file": "src/render-tap/identify-appearance.ts",
-      "module": "src/contracts/identify-appearance.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-63",
-      "criterion": "C-63 selectPlayerDraws(frame, signatures): 見えた個体は遮蔽クエリを通過した不透明な scene draw からだけ出て、外見が一意なときだけ entity を持ち、全ての draw は見えた / UI / 除外 / 不明のどれかに数えられる",
-      "symbol": "selectPlayerDraws",
-      "file": "src/render-tap/select-player-draws.ts",
-      "module": "src/contracts/select-player-draws.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
       "id": "C-64",
       "criterion": "C-64 approvalState(proposal, approvals): 最新の承認が提案の現在の内容ハッシュと攻略本の版に一致するときだけ approved、どちらかが違えば stale、承認が無ければ none",
       "symbol": "approvalState",
@@ -454,24 +355,6 @@
       "sample": 1
     },
     {
-      "id": "C-71",
-      "criterion": "C-71 compareBench(base, head, thresholds): 比較可能性のキー (ペルソナ・seed 集合・予算・mode・purpose・decision_mode・定石・アダプタ) が違う結果は理由つきで拒否し指標も候補も持たない。比較できる結果は全指標を持ち、候補は閾値を超えた指標と新しい望ましくないズレだけ",
-      "symbol": "compareBench",
-      "file": "src/gate/compare-bench.ts",
-      "module": "src/contracts/compare-bench.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-72",
-      "criterion": "C-72 gateBalance(comparison, failOn): 比較不能なら常に失敗、それ以外は候補があり failOn が block のときだけ失敗し、判定が示さないこと (sim の証跡・体験の未検証) を常に添える",
-      "symbol": "gateBalance",
-      "file": "src/gate/gate-balance.ts",
-      "module": "src/contracts/gate-balance.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
       "id": "C-73",
       "criterion": "C-73 extractPraeformaRef(markdown, explicitScene): 明示したシーン ID が常に優先し、返す値は全て文書に現れる (または明示した) 正しい形の Praeforma ID で、文書に何も無く明示も無ければ何も返さない",
       "symbol": "extractPraeformaRef",
@@ -508,24 +391,6 @@
       "sample": 1
     },
     {
-      "id": "C-74",
-      "criterion": "C-74 tapToObservation(frame, context): 観測は player の render-tap 観測で、観測した個体は全て遮蔽クエリを通過した scene draw のもの、描画器のアセット ID (どの draw の mesh / material も) は観測のどこにも現れない",
-      "symbol": "tapToObservation",
-      "file": "src/adapters/render-tap/tap-to-observation.ts",
-      "module": "src/contracts/tap-to-observation.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-75",
-      "criterion": "C-75 observeAsEnemy(world, enemy, mode, playerEntity): 敵は自分を self として観測し entity としては観測せず、player モードでは観測した相手が全て視界内、観測に masked の値が無い",
-      "symbol": "observeAsEnemy",
-      "file": "src/adapters/sim/enemy-observation.ts",
-      "module": "src/contracts/observe-as-enemy.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
       "id": "C-76",
       "criterion": "C-76 editablePath(raw): 編集できるのは攻略本相対 (絶対パス・ドライブ・空 / . / .. の区切りなし) で、ローダーが文書と認めるパスだけ。返すスキーマはその文書の種類のもの",
       "symbol": "editablePath",
@@ -558,15 +423,6 @@
       "symbol": "buildCommentaryInput",
       "file": "src/commentary/commentary-input.ts",
       "module": "src/contracts/build-commentary-input.contract.ts",
-      "mode": "observe",
-      "sample": 1
-    },
-    {
-      "id": "C-80",
-      "criterion": "C-80 collectUnknownSignatures(frames, signatures): 報告する外見は攻略本で一意に名前が付かないもの (unknown-signature は該当なし、ambiguous は 2 つ以上) だけで、どの外見も読んだ player-camera フレーム数より多く数えない",
-      "symbol": "collectUnknownSignatures",
-      "file": "src/render-tap/collect-unknown-signatures.ts",
-      "module": "src/contracts/collect-unknown-signatures.contract.ts",
       "mode": "observe",
       "sample": 1
     }

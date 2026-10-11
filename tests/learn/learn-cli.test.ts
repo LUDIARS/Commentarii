@@ -1,14 +1,10 @@
 import assert from 'node:assert/strict';
-import { readdir, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { PassThrough } from 'node:stream';
+import { copyFile, mkdir, readdir, readFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import { test } from 'node:test';
-import { loadPersona } from '../../src/adapters/fs/load-persona.ts';
 import { openBundleDir } from '../../src/adapters/fs/open-bundle-dir.ts';
-import { createReplayFileWriter } from '../../src/adapters/fs/replay-file-writer.ts';
 import { openReplayFile } from '../../src/adapters/fs/replay-open-file.ts';
 import { writeOutputFiles } from '../../src/adapters/fs/write-output-files.ts';
-import { createStreamLineChannel } from '../../src/adapters/stdio/line-channel.ts';
 import { fsScanSource } from '../../src/audit/fs-scan-source.ts';
 import type { CliIo } from '../../src/cli/cli-io.ts';
 import { runCli } from '../../src/cli/run-cli.ts';
@@ -16,9 +12,12 @@ import { createFsLearnIo } from '../../src/learn/io/fs-learn-io.ts';
 import { parseRunObservations } from '../../src/learn/observations/run-observations.ts';
 import type { Overlay } from '@ludiars/commentarii-sdk/types';
 import { findMaskedPointers } from '@ludiars/commentarii-sdk/replay';
-import { schemaRegistry } from '../support/bundles.ts';
+import { REPO_ROOT, schemaRegistry } from '../support/bundles.ts';
 import { testImportIo } from '../support/import-io.ts';
 import { CLOSE, runPath, withDriftedCopy } from '../support/learn.ts';
+
+/** A reflect file `ingenium run --game <drifted copy> --seed 3 --ticks 400 --observe` wrote (Ingenium 0.2.0). */
+const INGENIUM_REFLECT = join(REPO_ROOT, 'tests', 'fixtures', 'ingenium', 'sim-expert-s3.observations.jsonl');
 
 function capture(): { io: CliIo; stdout: () => string; stderr: () => string } {
   let out = '';
@@ -32,12 +31,6 @@ function capture(): { io: CliIo; stdout: () => string; stderr: () => string } {
       openReplay: openReplayFile,
       importIo: testImportIo(),
       scanSource: fsScanSource,
-      engineIo: {
-        loadPersona,
-        createReplayWriter: createReplayFileWriter,
-        openStdioChannel: () => createStreamLineChannel(new PassThrough(), new PassThrough()),
-        now: () => new Date('2026-10-09T00:00:00.000Z'),
-      },
       learnIo: createFsLearnIo(),
     },
     stdout: () => out,
@@ -102,11 +95,11 @@ test('learn ingest writes only the overlay; consolidate changes nothing without 
   });
 });
 
-test('guide run --observe reflects a player run into a masked-free file guide learn ingest reads', async () => {
+test('guide learn ingest reads the masked-free reflect file an Ingenium run wrote (ingenium run --observe)', async () => {
   await withDriftedCopy(async (directory) => {
     const path = join(directory, 'observations', 'runs', 'sim-expert-s3.jsonl');
-    const run = capture();
-    assert.equal(await runCli(['run', '--game', directory, '--seed', '3', '--ticks', '400', '--observe', path], run.io), 0, run.stderr());
+    await mkdir(dirname(path), { recursive: true });
+    await copyFile(INGENIUM_REFLECT, path);
     const text = await readFile(path, 'utf8');
     const observations = parseRunObservations(path, text, await schemaRegistry());
     assert.equal(observations.mode, 'player');

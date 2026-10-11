@@ -1,10 +1,10 @@
 # Commentarii (Cm)
 
-攻略本ツクール + 汎用オートプレイヤー。
+攻略本ツクール。汎用オートプレイヤーは Ingenium へ分離した (R0-B、2026-10-11)。
 
 - **攻略本 (Guide Bundle)**: ゲーム 1 本分の構造化知識 (敵・アイテム・スキル・ステージ地図・ルール・状態機械・定石)。JSON が機械正本、人間向け Markdown はツクールが生成する。
 - **攻略本ツクール (Guide Maker)**: 取り込み・検証・描画・書き出し・学習結果の統合を行う CLI と Web 編集画面。
-- **オートプレイヤー (Auto Player)**: Utility AI で定石を選び、Behavior Tree で手順を実行し、観測との差分を攻略本へ戻す。ゲーム差はゲームアダプタに閉じ込める。
+- **オートプレイヤー (Auto Player)**: 実装は Ingenium (`LUDIARS/Ingenium`、private、`E:/Document/Ars/Ingenium`)。Utility AI で定石を選び、Behavior Tree で手順を実行し、観測との差分を攻略本へ戻す。ゲーム差はゲームアダプタに閉じ込める。`guide run / bench / gate / replay / report signatures` は 1 版だけ残し、`ingenium` が PATH にあれば引数をそのまま渡す (無ければ「Ingenium に移った」と出して終了コード 2)。
 
 ## 第一原則: マスク原則
 
@@ -70,6 +70,7 @@ node dist/cli/main.js intent import --game <bundle> --stage <slug> --from <inten
 ```sh
 # 機械向け書き出し: <out>/bundle.json (全文書 + 索引)。既定 player は masked を一切含まない
 node dist/cli/main.js export samples/bestia --out out/runtime
+# 以下 3 つ (run / replay play / bench) は Ingenium へ委譲する (ingenium が PATH に必要。無ければ終了コード 2)。正本は ingenium の同名コマンド
 # エンジンを模擬アダプタで 1 回走らせ、リプレイを記録 (同じ seed なら同じ判断)
 node dist/cli/main.js run --game samples/bestia --adapter sim --persona novice --seed 1 --record replay/bestia-novice-s1.jsonl
 # 記録した run をエンジンで再判定 (決定性の検証)
@@ -114,7 +115,7 @@ npm run build            # SDK → dist/ (guide CLI) の順に build
 
 ## SDK (`@ludiars/commentarii-sdk`)
 
-`packages/sdk/` は Commentarii が所有する形式とそれを読む部品のパッケージ (版 0.1.0)。オートプレイヤーは別リポ Ingenium (Ig) に分離し、依存は Ingenium → SDK の一方向 (設計: [spec/plan/2026-10-11-ingenium-integrated-design.md](spec/plan/2026-10-11-ingenium-integrated-design.md) §4)。Ingenium は `github:LUDIARS/Commentarii#sdk-vX.Y.Z` のタグで参照する。版の対応は [COMPAT.md](COMPAT.md)。
+`packages/sdk/` は Commentarii が所有する形式とそれを読む部品のパッケージ (版 0.2.0)。オートプレイヤーは別リポ Ingenium (Ig) に分離し、依存は Ingenium → SDK の一方向 (設計: [spec/plan/2026-10-11-ingenium-integrated-design.md](spec/plan/2026-10-11-ingenium-integrated-design.md) §4)。Ingenium は `packages/sdk` を `npm pack` した tarball を自分の `vendor/` に置き、`file:` 依存で読む (npm の git 依存はサブディレクトリを扱えないため。取り出し元 commit と sha256 は Ingenium の `vendor/commentarii-sdk.json`)。版の対応は [COMPAT.md](COMPAT.md)。
 
 | 入口 | 中身 |
 |---|---|

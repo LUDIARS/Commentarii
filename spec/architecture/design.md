@@ -210,6 +210,8 @@ CLI `guide` が正本の操作口。Web 画面はファイルを書くだけで�
 
 ## 7. オートプレイヤー (Auto Player)
 
+> **実装は Ingenium (`LUDIARS/Ingenium`、private、`E:/Document/Ars/Ingenium`)** (R0-B、2026-10-11)。 判断・実行 (エンジン、アダプタ契約、sim / stdio / 描画タップ受信、リプレイの記録・再生、bench、gate、ペルソナ) は Ingenium の `spec/architecture/design.md` §7 と `spec/feature/` が正本。本節は原則と観測・行動の形 (Commentarii SDK が所有) の正本として残す。`guide run / bench / gate / replay` は 1 版だけ `ingenium` へ委譲する (`COMPAT.md`)。
+
 ### 7.1 観測経路 (3 段)
 
 | 段 | 経路 | 取れるもの | 使いどころ |
@@ -409,6 +411,8 @@ neco 指示 (2026-10-09): 攻略本には「人間がやってやれそうなこ
 
 ### A. リプレイ記録と再生
 
+> **実装は Ingenium (`LUDIARS/Ingenium`、private、`E:/Document/Ars/Ingenium`)** (R0-B、2026-10-11)。 記録器・decider・`replay play / diff` は Ingenium。形式と不変条件 (`replay.schema.json`、SDK `replay`) は Commentarii。
+
 - run ごとに `replay/<run-id>.jsonl`: seed、manifest の版、アダプタ ID、ティックごとの Observation と Action、判断ログ (候補と効用値)。観測は §7.2 の形式そのまま。
 - `guide replay play <run> --until <tick>`: 記録した観測列をエンジンに流し、同じ判断が出るかを検証する (決定性テスト)。アダプタ不要。
 - `guide replay diff <a> <b>`: 判断が分岐した最初のティックと、その時の効用値の差を出す。定石の書き換え前後の比較に使う。
@@ -421,6 +425,8 @@ neco 指示 (2026-10-09): 攻略本には「人間がやってやれそうなこ
 - 第一原則をゲーム実装側へ延長するもの。攻略本に無い値は検査できないので、報告に「未定義の露出候補」(数値定数が UI に直書きされている等) も含める。
 
 ### C. バランス回帰ゲート
+
+> **実装は Ingenium (`LUDIARS/Ingenium`、private、`E:/Document/Ars/Ingenium`)** (R0-B、2026-10-11)。 bench の実行・保存・比較・gate は Ingenium。`bench-result.schema.json` は SDK。coverage bench の divergences は Ingenium が `guide verify intent --json` の出力を `--intent-report` で受け取る。
 
 - ゲームリポの PR で `guide bench --runs N --purpose efficiency` を走らせ、ステージごとのクリア率・時間・被ダメージ・使われた定石の分布を前回 (main) と比較する。差分が manifest の `bench.thresholds` を超えたら「体験ブロック」の証跡として Revisor に出す (現状「未確認」になる欄を埋める)。
 - 走行はリプレイ可能な seed 固定で、結果は `bench/<commit>.json` に残す。意図ズレ (§8.3) の分類変化も同じレポートに載せる。
@@ -437,11 +443,15 @@ neco 指示 (2026-10-09): 攻略本には「人間がやってやれそうなこ
 
 ### E. プレイヤー・ペルソナ
 
+> **実装は Ingenium (`LUDIARS/Ingenium`、private、`E:/Document/Ars/Ingenium`)** (R0-B、2026-10-11)。 ペルソナの解決と同梱ペルソナ (`personas/`) は Ingenium。ペルソナの型と信頼順は SDK `knowledge`、スキーマ `persona.schema.json` は SDK `schema/`。
+
 - `personas/<slug>.json`: Utility の考慮項目の重み、探索率、反応遅延、誤操作率、使う定石の上限 (`confidence` の下限) のプリセット。例: 初心者 (遅延大・探索低・authored のみ)、上級者 (遅延小・learned 可)、探索好き (探索率高)。
 - `guide bench --persona <slug>` で走らせ、ペルソナ別の到達率・詰まり箇所を出す。「初心者が詰まる場所」が意図ズレレポートに並ぶ。
 - ペルソナはゲーム非依存 (Commentarii 同梱) と、ゲーム固有 (バンドル内) の 2 層。Discutere / Histrio のペルソナと ID で結べるようにする。
 
 ### F. 敵 AI としての再利用
+
+> **実装は Ingenium (`LUDIARS/Ingenium`、private、`E:/Document/Ars/Ingenium`)** (R0-B、2026-10-11)。 敵 AI (`src/engine/enemy/`、sim の敵視点の観測) は Ingenium。
 
 - 同じエンジンを敵・NPC の脳として使う。敵用の攻略本は「敵から見たプレイヤー」を entity にした別バンドル (またはバンドル内の `actors/` 視点切替)。
 - アダプタの `self` を敵個体に差し替えるだけで動くことを Bestia の 5 体 AI で実証する (既存の固定 BT と置き換えて同等以上)。

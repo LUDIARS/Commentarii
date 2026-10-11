@@ -1,5 +1,7 @@
 # リプレイ記録と再生 (段階 2A)
 
+> **実装は Ingenium (`LUDIARS/Ingenium`、private、`E:/Document/Ars/Ingenium`)** (R0-B、2026-10-11)。 本書のうち §1 記録形式・§2 不変条件・§6 フィクスチャ (SDK `fixtures`) は Commentarii の正本。§3 記録器・§4 Decider・§5 コマンド (`replay play / diff`) の実装正本は Ingenium `spec/feature/replay.md`。SDK 0.2.0 で header に任意の `engine` / `sdk_version` / `bundle_format` / `bundle_hash` / `stance` を足した (Ingenium の記録は必ず書く。版 1 の記録はそのまま読める)。
+
 設計正本: `spec/architecture/design.md` §7.2 (Observation)、§7.5 (1 ティック)、§14.A (リプレイ)。
 依頼文: `spec/tasks/2026-10-09-stage-2a-replay.md`。実装は `src/replay/` と `src/adapters/fs/replay-*.ts`、テストは `tests/replay/`、
 フィクスチャは `packages/sdk/fixtures/replay/`。形式の読み取り側 (行の型・`parseReplay`・tick の不変条件・`findMaskedPointers`・

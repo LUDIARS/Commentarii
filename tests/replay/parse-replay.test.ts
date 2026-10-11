@@ -107,3 +107,21 @@ test('a masked value in the footer of a player run is refused', async () => {
     [[12, '/summary/drop']],
   );
 });
+
+test('the header may name the recording engine, SDK, bundle format and hash and stance (SDK 0.2.0); a stance outside the set is an issue', async () => {
+  const text = await fixtureText(BASE_RUN);
+  const stamped = withLine(text, 0, (line) => {
+    line.engine = { name: 'ingenium', version: '0.2.0' };
+    line.sdk_version = '0.2.0';
+    line.bundle_format = 1;
+    line.bundle_hash = `sha256:${'0'.repeat(64)}`;
+    line.stance = 'guided';
+  });
+  const loaded = await parseText(stamped);
+  assert.deepEqual(loaded.issues, []);
+  assert.deepEqual(loaded.run?.header.engine, { name: 'ingenium', version: '0.2.0' });
+  assert.equal(loaded.run?.header.stance, 'guided');
+  const bad = await parseText(withLine(text, 0, (line) => void (line.stance = 'scripted')));
+  assert.equal(bad.run, undefined);
+  assert.equal(bad.issues[0]?.line, 1);
+});

@@ -1,19 +1,17 @@
-// The real outside world of the guide CLI: file system, SQLite, LLM, stdio and clock adapters.
+// The real outside world of the guide CLI: file system, SQLite, LLM and clock adapters, and the
+// hand-over of the moved auto player commands to `ingenium` on PATH.
 // Shared by the `guide` entry point and the Web editor server (which runs the same commands).
 
 import { readFile } from 'node:fs/promises';
-import { loadPersona } from '../adapters/fs/load-persona.ts';
-import { readEngineVersion } from '../adapters/fs/read-engine-version.ts';
-import { openFrameSource } from '../adapters/fs/open-frame-source.ts';
 import { openBundleDir } from '../adapters/fs/open-bundle-dir.ts';
 import { readPlayRunFiles } from '../adapters/fs/plays-read-runs.ts';
 import { readSchemaDocuments } from '../adapters/fs/read-schema-documents.ts';
 import { removeBundleFiles } from '../adapters/fs/remove-bundle-files.ts';
-import { createReplayFileWriter } from '../adapters/fs/replay-file-writer.ts';
 import { openReplayFile, replaySchema } from '../adapters/fs/replay-open-file.ts';
 import { writeOutputFiles } from '../adapters/fs/write-output-files.ts';
 import { createClaudeCliLlm } from '../adapters/llm/claude-cli-llm.ts';
-import { createStreamLineChannel } from '../adapters/stdio/line-channel.ts';
+import { findOnPath } from '../delegate/find-on-path.ts';
+import { spawnInherited } from '../delegate/spawn-inherited.ts';
 import { readPromptTemplate } from '../adapters/llm/read-prompt-template.ts';
 import { createSchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { fsScanSource } from '../audit/fs-scan-source.ts';
@@ -39,14 +37,9 @@ export function createMainIo(output: Pick<CliIo, 'stdout' | 'stderr'>): CliIo {
     },
     openReplay: openReplayFile,
     scanSource: fsScanSource,
-    engineIo: {
-      loadPersona,
-      createReplayWriter: createReplayFileWriter,
-      // guide run --adapter stdio: the game process owns guide's stdin / stdout (protocol only).
-      openStdioChannel: () => createStreamLineChannel(process.stdin, process.stdout),
-      now: () => new Date(),
-      engineVersion: readEngineVersion,
-      openFrameSource,
+    delegationIo: {
+      findIngenium: () => findOnPath('ingenium', process.env),
+      runIngenium: (executable, args) => spawnInherited(executable, args),
     },
     learnIo: createFsLearnIo(),
     playsIo: {

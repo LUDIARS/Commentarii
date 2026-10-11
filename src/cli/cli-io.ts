@@ -5,7 +5,7 @@ import type { ScanSource } from '../audit/scan-source.ts';
 import type { PlaysIo } from '../import/plays/plays-io.ts';
 import type { LoadResult } from '@ludiars/commentarii-sdk/types';
 import type { ReplayLoad } from '@ludiars/commentarii-sdk/replay';
-import type { EngineIo } from './engine-io.ts';
+import type { DelegationIo } from '../delegate/run-delegation.ts';
 import type { ImportIo } from './import-io.ts';
 import type { LearnIo } from '../learn/cli/learn-io.ts';
 import type { VerifyIo } from '../verify/cli/verify-io.ts';
@@ -20,9 +20,9 @@ export interface CliIo {
   readonly importIo: ImportIo;
   /** Game repository files for `guide audit mask`. */
   readonly scanSource: ScanSource;
-  /** guide run / guide bench / replay play --decider utility-bt only. */
-  readonly engineIo?: EngineIo;
-  /** guide learn, and the overlay guide run / guide bench read at start-up. */
+  /** guide run / bench / gate / replay / report signatures: handed to ingenium (moved to Ingenium, R0-B). */
+  readonly delegationIo?: Omit<DelegationIo, 'stderr'>;
+  /** guide learn. */
   readonly learnIo?: LearnIo;
   /** guide import plays / guide report plays only. */
   readonly playsIo?: PlaysIo;

@@ -25,7 +25,11 @@
         "mode": { "enum": ["player", "omniscient"] },
         "purpose": { "enum": ["efficiency", "coverage"] },
         "decision_mode": { "enum": ["player-knowledge", "intent-assisted"] },
-        "tactics": { "enum": ["guide", "none"] }
+        "tactics": { "enum": ["guide", "none"] },
+        "stance": { "description": "Engine stance (absent in results recorded before Ingenium: those compare with none of its results).", "enum": ["autonomous", "guided", "hybrid"] },
+        "decider": { "description": "Decider id the bench ran.", "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$" },
+        "engine_version": { "description": "Engine version (also in versions): results of different engine versions are not compared.", "type": "string", "minLength": 1 },
+        "sdk_version": { "description": "@ludiars/commentarii-sdk version the engine read the bundle with.", "type": "string", "minLength": 1 }
       },
       "additionalProperties": false
     },

@@ -1,9 +1,7 @@
 // Runs one CLI command and returns the process exit code.
 
 import { runAuditMask } from '../audit/run-audit-mask.ts';
-import { runAutoplayCommand } from '../autoplay/run-autoplay-command.ts';
 import { runCommentaryCommand } from '../commentary/run-commentary-command.ts';
-import { runReportSignatures } from '../render-tap/cli/run-report-signatures.ts';
 import { runDiffCommand } from '../diff/run-diff-command.ts';
 import { runExportCommand } from '../export/run-export-command.ts';
 import { runLearnCommand } from '../learn/cli/run-learn-command.ts';
@@ -11,14 +9,13 @@ import { runPlaysCommand } from '../import/plays/run-plays-command.ts';
 import { buildKnowledgeReport } from '../report/build-knowledge-report.ts';
 import { formatKnowledgeMarkdown } from '../report/format-knowledge-markdown.ts';
 import { renderBundle } from '../render/render-bundle.ts';
-import { runReplayCommand } from '../replay/run-replay-command.ts';
 import { formatValidationText } from '../validate/format-validation-text.ts';
 import { runValidation } from '../validate/run-validation.ts';
 import { EXIT_INVALID, EXIT_OK, EXIT_USAGE, type CliIo } from './cli-io.ts';
 import { parseCommand, USAGE, UsageError, type Command } from './parse-command.ts';
 import { runImportCommand } from './run-import-command.ts';
+import { runDelegation } from '../delegate/run-delegation.ts';
 import { runVerifyCommand } from '../verify/cli/run-verify-command.ts';
-import { runGateCommand } from '../gate/cli/run-gate-command.ts';
 import { readStageExtras } from '../verify/cli/read-stage-extras.ts';
 
 async function execute(command: Command, io: CliIo): Promise<number> {
@@ -26,6 +23,10 @@ async function execute(command: Command, io: CliIo): Promise<number> {
     case 'help':
       io.stdout(USAGE);
       return EXIT_OK;
+    case 'delegated': {
+      const delegation = io.delegationIo ?? { findIngenium: () => undefined, runIngenium: async () => EXIT_USAGE };
+      return runDelegation(command.argv, { stderr: io.stderr, ...delegation });
+    }
     case 'validate': {
       const report = runValidation(await io.openBundle(command.bundleDir));
       io.stdout(command.json ? `${JSON.stringify(report, null, 2)}\n` : formatValidationText(report));
@@ -48,9 +49,6 @@ async function execute(command: Command, io: CliIo): Promise<number> {
       io.stdout(command.json ? `${JSON.stringify(report, null, 2)}\n` : formatKnowledgeMarkdown(report));
       return EXIT_OK;
     }
-    case 'replay-play':
-    case 'replay-diff':
-      return runReplayCommand(command, io);
     case 'import-masters':
     case 'import-map':
     case 'import-spec':
@@ -64,19 +62,10 @@ async function execute(command: Command, io: CliIo): Promise<number> {
       return runDiffCommand(command, io);
     case 'commentary':
       return runCommentaryCommand(command, io);
-    case 'report-signatures':
-      return runReportSignatures(command, io);
-    case 'run':
-    case 'bench':
-      return runAutoplayCommand(command, io);
     case 'learn-ingest':
     case 'learn-consolidate':
     case 'learn-approve':
       return runLearnCommand(command, io);
-    case 'bench-compare':
-    case 'bench-replay':
-    case 'gate-balance':
-      return runGateCommand(command, io);
     case 'import-plays':
     case 'report-plays':
       return runPlaysCommand(command, io);
