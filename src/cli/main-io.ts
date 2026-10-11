@@ -15,7 +15,7 @@ import { writeOutputFiles } from '../adapters/fs/write-output-files.ts';
 import { createClaudeCliLlm } from '../adapters/llm/claude-cli-llm.ts';
 import { createStreamLineChannel } from '../adapters/stdio/line-channel.ts';
 import { readPromptTemplate } from '../adapters/llm/read-prompt-template.ts';
-import { createSchemaRegistry } from '../schema/schema-registry.ts';
+import { createSchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { fsScanSource } from '../audit/fs-scan-source.ts';
 import { createFsLearnIo } from '../learn/io/fs-learn-io.ts';
 import { createFsVerifyIo } from '../adapters/fs/verify-io-fs.ts';

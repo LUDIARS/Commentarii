@@ -3,8 +3,7 @@
 // they make promotion candidates, reach per side, tactics used, time against the intent,
 // unused mechanisms, heatmap panels and the feasibility summary.
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import type { Intent } from '../../domain/documents.ts';
+import type { Bundle, Intent } from '@ludiars/commentarii-sdk/types';
 import { quantile } from '../../learn/stats/quantile.ts';
 import type { Band, FeasibilityDocument } from '../feasibility/feasibility-document.ts';
 import { feasibilityPath } from '../feasibility/feasibility-document.ts';

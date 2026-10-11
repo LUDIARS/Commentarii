@@ -2,8 +2,7 @@
 // runs, each persona and humans side by side, the intent's route and forbid areas over them)
 // and the good-play scatter plot. Stages without a map get no heatmap.
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import type { GuideMap } from '../../domain/documents.ts';
+import type { Bundle, GuideMap } from '@ludiars/commentarii-sdk/types';
 import { drawHeatmap } from '../../render/heatmap/draw-heatmap.ts';
 import { drawScatter } from '../../render/heatmap/draw-scatter.ts';
 import type { StageReport, VerifyReport } from './verify-report.ts';

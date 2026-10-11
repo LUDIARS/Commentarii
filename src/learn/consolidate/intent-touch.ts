@@ -15,9 +15,8 @@
 // stage ids applies to those stages only; one that names none applies everywhere (safe side).
 // Every intent of the bundle counts, drafts included (the safe side).
 
-import type { Intent, Tactic } from '../../domain/documents.ts';
-import { isNodeId } from '../../domain/id.ts';
-import { isJsonObject } from '../../domain/value-node.ts';
+import type { Intent, Tactic } from '@ludiars/commentarii-sdk/types';
+import { isJsonObject, isNodeId } from '@ludiars/commentarii-sdk/types';
 import { contract } from '#contract-runtime'; /* augur-inject:import:053bc088 */
 import augurContract_cbec7789 from '../../contracts/intent-touch.contract.ts'; /* augur-inject:contract-predicate:92394c8f */
 

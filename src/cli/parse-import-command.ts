@@ -1,7 +1,7 @@
 // Command line of the import commands (guide import masters|map|spec, guide intent import).
 
 import { parseArgs } from 'node:util';
-import type { MapKind } from '../domain/documents.ts';
+import type { MapKind } from '@ludiars/commentarii-sdk/types';
 import { UsageError } from './usage-error.ts';
 
 export type ImportCommand =

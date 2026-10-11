@@ -5,7 +5,7 @@
 // so it can never pass into a player run. Extra columns get no declaration from the mapping:
 // they need one in the manifest.
 
-import type { ObservationFieldDeclaration } from '../../observation/observation-fields.ts';
+import type { ObservationFieldDeclaration } from '@ludiars/commentarii-sdk/observation';
 import type { PlaysMapping } from './plays-mapping.ts';
 
 export function humanRunDeclarations(manifestFields: readonly ObservationFieldDeclaration[], mapping: PlaysMapping): ObservationFieldDeclaration[] {

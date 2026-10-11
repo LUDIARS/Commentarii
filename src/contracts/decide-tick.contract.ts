@@ -3,7 +3,7 @@
 // is listed as skipped; the action has exactly one verb, and idling (nothing chosen) waits.
 
 import type { TickInput, TickOutcome } from '../engine/decide-tick.ts';
-import { ACTION_VERBS } from '../replay/replay-action.ts';
+import { ACTION_VERBS } from '@ludiars/commentarii-sdk/types';
 
 export default {
   post: (outcome: TickOutcome, _input: TickInput) => {

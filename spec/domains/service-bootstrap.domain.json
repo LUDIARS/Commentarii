@@ -1,6 +1,6 @@
 {
   "name": "service-bootstrap",
-  "description": "Excubitor 導入契約: excubitor.bootstrap.json、scripts/site の setup / export / import (データを持たないので明示した空の形式)、npm run dev の /health 最小 HTTP、テストランナーと契約ランタイム。",
+  "description": "Excubitor 導入契約: excubitor.bootstrap.json、scripts/site の setup / export / import (データを持たないので明示した空の形式)、npm run dev の /health 最小 HTTP、テストランナーと契約の宣言 (augur.*.json)。契約ランタイム (contract-runtime.mjs) は SDK と共有するため commentarii-sdk (packages/sdk/) に属する。",
   "presetRules": [],
   "templateRules": [],
   "membership": [
@@ -9,7 +9,6 @@
     { "pathPattern": "(^|/)src/health/[^/]+\\.ts$" },
     { "pathPattern": "(^|/)tests/health/[^/]+\\.test\\.ts$" },
     { "pathPattern": "(^|/)tests/scripts/[^/]+\\.test\\.ts$" },
-    { "pathPattern": "(^|/)contract-runtime\\.(mjs|d\\.mts)$" },
     { "pathPattern": "(^|/)augur\\.(contracts|inject)\\.json$" }
   ],
   "cardTemplate": "Summarise the \"service-bootstrap\" domain: setup / data export-import / health server for Excubitor.",

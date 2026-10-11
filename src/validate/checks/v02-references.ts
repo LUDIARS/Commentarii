@@ -2,12 +2,10 @@
 // an entity / stage / map / event / rule / state / tactic / glossary points at exists.
 // Intent item references (tactic / area / path) are V12.
 
-import type { BundleIndex } from '../../bundle/bundle-index.ts';
-import type { Bundle } from '../../bundle/bundle.ts';
-import { unresolvedReason } from '../../bundle/resolve-ref.ts';
-import type { Spawn } from '../../domain/documents.ts';
-import { ENTITY_GROUP_OF_KIND, isEntityKind, parseRef } from '../../domain/id.ts';
-import { collectTacticRefs } from '../../domain/tactic-refs.ts';
+import type { BundleIndex } from '@ludiars/commentarii-sdk/bundle';
+import type { Bundle, Spawn } from '@ludiars/commentarii-sdk/types';
+import { unresolvedReason } from '@ludiars/commentarii-sdk/bundle';
+import { collectTacticRefs, ENTITY_GROUP_OF_KIND, isEntityKind, parseRef } from '@ludiars/commentarii-sdk/types';
 import { error, type Check, type Finding } from '../check.ts';
 
 function fileSlug(path: string): string {

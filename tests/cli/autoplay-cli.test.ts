@@ -14,7 +14,7 @@ import { fsScanSource } from '../../src/audit/fs-scan-source.ts';
 import type { BenchReport } from '../../src/bench/summarize-bench.ts';
 import type { CliIo } from '../../src/cli/cli-io.ts';
 import { runCli } from '../../src/cli/run-cli.ts';
-import type { ExportedBundle } from '../../src/export/exported-bundle.ts';
+import type { ExportedBundle } from '@ludiars/commentarii-sdk/types';
 import type { PlayReport } from '../../src/replay/play-replay.ts';
 import { SAMPLE_DIR } from '../support/bundles.ts';
 import { testImportIo } from '../support/import-io.ts';

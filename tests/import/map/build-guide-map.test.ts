@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
-import type { GuideMap } from '../../../src/domain/documents.ts';
+import type { GuideMap } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../../../src/import/import-error.ts';
 import { buildGuideMap } from '../../../src/import/map/build-guide-map.ts';
 import type { Coordinates, NavgraphInput, ZonesInput } from '../../../src/import/map/map-request.ts';

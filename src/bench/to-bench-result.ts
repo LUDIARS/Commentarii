@@ -2,9 +2,9 @@
 // key, what was measured (hashes and versions, no names or paths), the metrics with the clear
 // rate's 95% interval, and - for coverage benches - the intent classes of the bench runs.
 
-import type { Persona } from '../engine/persona/persona.ts';
+import type { Persona } from '@ludiars/commentarii-sdk/knowledge';
 import { wilsonInterval } from '../verify/feasibility/sample-evidence.ts';
-import { BENCH_RESULT_FORMAT, type BenchDivergences, type BenchResult } from './bench-result.ts';
+import { BENCH_RESULT_FORMAT, type BenchDivergences, type BenchResult } from '@ludiars/commentarii-sdk/types';
 import { documentHash } from './bundle-hash.ts';
 import type { BenchReport } from './summarize-bench.ts';
 

@@ -5,8 +5,8 @@
 // candidate generation check of the feasibility bands.
 
 import { stageVisits } from '../../import/plays/stage-visits.ts';
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
-import { chosenCandidate, type ReplayTick } from '../../replay/replay-record.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
+import { chosenCandidate, type ReplayTick } from '@ludiars/commentarii-sdk/types';
 import type { RunSide, VerifyRun } from './select-runs.ts';
 
 export interface NodeTally {

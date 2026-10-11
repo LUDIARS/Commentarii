@@ -1,7 +1,7 @@
 // Per-kind rules of the intent check (design 8.3, spec/feature/intent-verify.md 4): which stage
 // traces an intended item is judged on, which of them reproduce it, and how the others diverge.
 
-import type { DivergenceReason, IntendedItem } from '../../domain/documents.ts';
+import type { DivergenceReason, IntendedItem } from '@ludiars/commentarii-sdk/types';
 import type { StageTrace } from '../runs/stage-trace.ts';
 
 export interface ItemJudgement {

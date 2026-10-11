@@ -2,7 +2,7 @@
 // only when it names the divergence ID or the same intent and signature, and was not judged under
 // another guide version; an entry naming only a run or a tactic never suppresses it.
 
-import type { AllowedDivergence } from '../domain/documents.ts';
+import type { AllowedDivergence } from '@ludiars/commentarii-sdk/types';
 import type { AllowedMatch } from '../verify/intent/allowed-match.ts';
 import { sameSignature, type Divergence } from '../verify/intent/divergence.ts';
 

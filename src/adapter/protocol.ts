@@ -3,10 +3,8 @@
 //   engine -> game   action (one per observation), bye
 // One UTF-8 JSON object per LF-terminated line, nothing else on the channel.
 
-import { isJsonObject } from '../domain/value-node.ts';
-import type { ObservationFrame } from '../replay/observation-frame.ts';
-import type { ReplayAction } from '../replay/replay-action.ts';
-import type { ReplayResult } from '../replay/replay-record.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
+import type { ObservationFrame, ReplayAction, ReplayResult } from '@ludiars/commentarii-sdk/types';
 import type { AdapterHello, EngineStopReason } from './game-adapter.ts';
 
 export const PROTOCOL_VERSION = 1;

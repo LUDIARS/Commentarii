@@ -1,8 +1,8 @@
 // Master rows + table mapping -> the entities those rows describe. Pure: no merge with the
 // existing bundle yet. Every value is a master value whose boundary defaults to masked.
 
-import type { GuideValue, LocalizedText } from '../../domain/documents.ts';
-import { ENTITY_GROUP_OF_KIND, type EntityKind } from '../../domain/id.ts';
+import type { GuideValue, LocalizedText } from '@ludiars/commentarii-sdk/types';
+import { ENTITY_GROUP_OF_KIND, type EntityKind } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import-error.ts';
 import { DEFAULT_KNOWLEDGE, type TableMapping } from '../mapping.ts';
 import type { MasterRow, MasterTable } from './master-table.ts';

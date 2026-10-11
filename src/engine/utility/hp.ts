@@ -1,7 +1,7 @@
 // HP ratio: candidates that seek safety score higher the lower the HP; candidates that push
 // forward score higher the healthier self is. Others are not judged on HP.
 
-import { hpRatio } from '../observation/self-readings.ts';
+import { hpRatio } from '@ludiars/commentarii-sdk/knowledge';
 import type { Consideration } from './utility-context.ts';
 
 export const hpConsideration: Consideration = (candidate, { observation }) => {

@@ -2,7 +2,7 @@
 // parse-command.ts turns them into usage errors.
 
 import { parseArgs } from 'node:util';
-import type { ObservationMode, ObservationPurpose } from '../replay/observation-frame.ts';
+import type { ObservationMode, ObservationPurpose } from '@ludiars/commentarii-sdk/types';
 
 export const ADAPTER_KINDS = ['sim', 'stdio', 'render-tap'] as const;
 export type AdapterKind = (typeof ADAPTER_KINDS)[number];

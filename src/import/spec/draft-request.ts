@@ -1,8 +1,7 @@
 // Contract of "document -> draft JSON" (guide import spec / guide intent import).
 
-import type { Intent, Rule, StateMachine } from '../../domain/documents.ts';
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
-import type { PraeformaRef } from '../../praeforma/praeforma-ref.ts';
+import type { Intent, PraeformaRef, Rule, StateMachine } from '@ludiars/commentarii-sdk/types';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import type { DraftLlm } from './draft-llm.ts';
 
 export type DraftKind = 'rules' | 'states' | 'intent';

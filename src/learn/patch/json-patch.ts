@@ -4,7 +4,7 @@
 // applies whole or not at all.
 
 import { isDeepStrictEqual } from 'node:util';
-import { isJsonObject } from '../../domain/value-node.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 import { contract } from '#contract-runtime'; /* augur-inject:import:b1c00ded */
 import augurContract_6cda3dfd from '../../contracts/apply-json-patch.contract.ts'; /* augur-inject:contract-predicate:ea2bef6f */
 

@@ -5,8 +5,8 @@
 // is a design question (is it an intended route, a bait, a bug?), so it always waits for an
 // approval bound to its content hash. Candidates whose tactic ID already exists are skipped.
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import { parseRef } from '../../domain/id.ts';
+import type { Bundle } from '@ludiars/commentarii-sdk/types';
+import { parseRef } from '@ludiars/commentarii-sdk/types';
 import type { HumanCandidate, HumanCandidates } from '../../import/plays/human-candidates.ts';
 import type { ProposalDraft } from './proposal.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:5535e152 */

@@ -1,7 +1,7 @@
 // "失敗が続く定石" (design 6 learn ingest): tactics whose latest judged runs are failures in a
 // row, at least FAILING_STREAK of them, with their success rate and broken expects.
 
-import type { Overlay } from '../overlay/overlay.ts';
+import type { Overlay } from '@ludiars/commentarii-sdk/types';
 
 export const FAILING_STREAK = 3;
 

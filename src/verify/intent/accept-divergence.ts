@@ -4,7 +4,7 @@
 // The only canonical change is that entry; tactics are never written (promotion to authored is
 // reported, a person does it).
 
-import type { AllowedDivergence, Intent, Tactic } from '../../domain/documents.ts';
+import type { AllowedDivergence, Intent, Tactic } from '@ludiars/commentarii-sdk/types';
 import { VerifyError } from '../verify-error.ts';
 import type { DivergenceStore, StoredDivergence } from './divergence-store.ts';
 import { promotionCandidates, type PromotionCandidate } from './promotion-candidates.ts';

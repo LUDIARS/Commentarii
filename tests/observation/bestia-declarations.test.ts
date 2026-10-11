@@ -4,8 +4,8 @@
 
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { observationBoundaryProblems } from '../../src/observation/check-observation-boundary.ts';
-import type { ObservationFrame } from '../../src/replay/observation-frame.ts';
+import { observationBoundaryProblems } from '@ludiars/commentarii-sdk/observation';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
 import { loadSample } from '../support/bundles.ts';
 
 function bestiaPlayerFrame(extra: Record<string, unknown> = {}): ObservationFrame {

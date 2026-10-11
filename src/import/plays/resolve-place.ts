@@ -1,7 +1,7 @@
 // Stage and map node cells -> guide IDs: the mapping's values table first, else the cell as an
 // ID or slug that exists in the bundle. Raw game names never pass through unresolved.
 
-import { isNodeId } from '../../domain/id.ts';
+import { isNodeId } from '@ludiars/commentarii-sdk/types';
 import type { LookupMapping } from './plays-mapping.ts';
 import type { PlaysContext } from './plays-context.ts';
 

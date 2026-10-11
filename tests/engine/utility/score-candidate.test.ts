@@ -1,12 +1,10 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildTree } from '../../../src/engine/bt/build-tree.ts';
-import type { Candidate } from '../../../src/engine/candidates/candidate.ts';
-import { CONSIDERATION_NAMES } from '../../../src/engine/persona/persona.ts';
+import { buildEngineWorld, buildTree, CONSIDERATION_NAMES } from '@ludiars/commentarii-sdk/knowledge';
+import type { Candidate } from '@ludiars/commentarii-sdk/knowledge';
 import { CONSIDERATIONS } from '../../../src/engine/utility/considerations.ts';
 import { scoreCandidate } from '../../../src/engine/utility/score-candidate.ts';
 import type { UtilityContext } from '../../../src/engine/utility/utility-context.ts';
-import { buildEngineWorld } from '../../../src/engine/world/build-engine-world.ts';
 import { loadSample } from '../../support/bundles.ts';
 import { frame, testPersona } from '../../support/personas.ts';
 

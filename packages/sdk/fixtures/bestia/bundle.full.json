@@ -1,0 +1,962 @@
+{
+  "format": "commentarii.bundle",
+  "format_version": 1,
+  "game_id": "bestia",
+  "manifest_version": "0.1.0",
+  "knowledge": "full",
+  "target": "runtime",
+  "documents": {
+    "manifest": {
+      "path": "manifest.json",
+      "doc": {
+        "game_id": "bestia",
+        "title": {
+          "ja": "Bestia 攻略本 (サンプル)",
+          "en": "Bestia guide (sample)"
+        },
+        "version": "0.1.0",
+        "builds": [
+          "main"
+        ],
+        "coordinates": {
+          "system": "world-xyz",
+          "unit": "m"
+        },
+        "lexicon": {
+          "version": "0"
+        },
+        "observation": {
+          "fields": [
+            {
+              "path": "self.resources.weapon_cooldown",
+              "knowledge": "discoverable",
+              "origin": "main weapon reload: read from the muzzle flash and shot interval (Bestia spec/feature/commentarii-adapter.md)"
+            },
+            {
+              "path": "self.resources.boost_cooldown",
+              "knowledge": "shown",
+              "origin": "boost volley reload on the HUD"
+            },
+            {
+              "path": "self.resources.auxiliary_cooldown",
+              "knowledge": "discoverable",
+              "origin": "auxiliary weapon reload: read from its firing interval"
+            },
+            {
+              "path": "extra.weapon",
+              "knowledge": "shown",
+              "origin": "main weapon name on the HUD"
+            },
+            {
+              "path": "extra.auxiliary",
+              "knowledge": "shown",
+              "origin": "auxiliary weapon name on the HUD"
+            },
+            {
+              "path": "extra.ring_radius",
+              "knowledge": "shown",
+              "origin": "ring size on the HUD and the drawn ring"
+            },
+            {
+              "path": "extra.survivors",
+              "knowledge": "shown",
+              "origin": "survivor count on the HUD"
+            },
+            {
+              "path": "events.eliminated.instance",
+              "knowledge": "shown",
+              "origin": "survivor count and per-monster defeat display on the HUD"
+            }
+          ]
+        },
+        "learning": {
+          "policy": {
+            "exploration_rate": 0.15,
+            "rewrite": {
+              "min_runs": 20,
+              "min_gain": 0.1,
+              "metric_weights": {
+                "time": 0.5,
+                "resource": 0.2,
+                "risk": 0.3
+              },
+              "auto_apply": true
+            },
+            "promotion": {
+              "discoverable_requires": {
+                "player_runs": 5,
+                "agreement": 0.9
+              }
+            }
+          }
+        }
+      }
+    },
+    "glossary": {
+      "path": "glossary.json",
+      "doc": {
+        "terms": [
+          {
+            "text": "バズーカビートル",
+            "lang": "ja",
+            "ref": "enemy:bestia:bazooka-beetle"
+          },
+          {
+            "text": "BAZOOKA BEETLE",
+            "lang": "en",
+            "ref": "enemy:bestia:bazooka-beetle"
+          },
+          {
+            "text": "ワイヤースパイダー",
+            "lang": "ja",
+            "ref": "enemy:bestia:wire-spider"
+          },
+          {
+            "text": "WIRE SPIDER",
+            "lang": "en",
+            "ref": "enemy:bestia:wire-spider"
+          },
+          {
+            "text": "ボマードラゴンフライ",
+            "lang": "ja",
+            "ref": "enemy:bestia:bomber-dragonfly"
+          },
+          {
+            "text": "BOMBER DRAGONFLY",
+            "lang": "en",
+            "ref": "enemy:bestia:bomber-dragonfly"
+          }
+        ],
+        "ui": [
+          {
+            "element": "モンスターの体格 (描画サイズ)",
+            "shows": "enemy:bestia:bazooka-beetle.stats.radius"
+          },
+          {
+            "element": "モンスターの体格 (描画サイズ)",
+            "shows": "enemy:bestia:wire-spider.stats.radius"
+          },
+          {
+            "element": "モンスターの体格 (描画サイズ)",
+            "shows": "enemy:bestia:bomber-dragonfly.stats.radius"
+          }
+        ],
+        "glyphs": [
+          {
+            "glyph": "R TO RESTART",
+            "means": "決着表示 (勝者名 / DRAW)"
+          }
+        ]
+      }
+    },
+    "entities": [
+      {
+        "path": "entities/enemies/bazooka-beetle.json",
+        "doc": {
+          "id": "enemy:bestia:bazooka-beetle",
+          "name": {
+            "ja": "バズーカビートル",
+            "en": "Bazooka Beetle"
+          },
+          "stats": {
+            "health": {
+              "value": 180,
+              "unit": "hp",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[0]"
+              }
+            },
+            "radius": {
+              "value": 1.6,
+              "unit": "m",
+              "knowledge": "shown",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[0]"
+              }
+            },
+            "speed": {
+              "value": 7,
+              "unit": "m/s",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[0]"
+              }
+            },
+            "range": {
+              "value": 23,
+              "unit": "m",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[0]"
+              }
+            },
+            "cooldown": {
+              "value": 0.24,
+              "unit": "s",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[0]"
+              }
+            }
+          },
+          "behavior": "state:bestia:battle-ai"
+        }
+      },
+      {
+        "path": "entities/enemies/bomber-dragonfly.json",
+        "doc": {
+          "id": "enemy:bestia:bomber-dragonfly",
+          "name": {
+            "ja": "ボマードラゴンフライ",
+            "en": "Bomber Dragonfly"
+          },
+          "stats": {
+            "health": {
+              "value": 105,
+              "unit": "hp",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[2]"
+              }
+            },
+            "radius": {
+              "value": 1.35,
+              "unit": "m",
+              "knowledge": "shown",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[2]"
+              }
+            },
+            "speed": {
+              "value": 9,
+              "unit": "m/s",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[2]"
+              }
+            },
+            "range": {
+              "value": 17,
+              "unit": "m",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[2]"
+              }
+            },
+            "cooldown": {
+              "value": 1.1,
+              "unit": "s",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[2]"
+              }
+            }
+          },
+          "behavior": "state:bestia:battle-ai"
+        }
+      },
+      {
+        "path": "entities/enemies/wire-spider.json",
+        "doc": {
+          "id": "enemy:bestia:wire-spider",
+          "name": {
+            "ja": "ワイヤースパイダー",
+            "en": "Wire Spider"
+          },
+          "stats": {
+            "health": {
+              "value": 140,
+              "unit": "hp",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[1]"
+              }
+            },
+            "radius": {
+              "value": 1.5,
+              "unit": "m",
+              "knowledge": "shown",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[1]"
+              }
+            },
+            "speed": {
+              "value": 8,
+              "unit": "m/s",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[1]"
+              }
+            },
+            "range": {
+              "value": 19,
+              "unit": "m",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[1]"
+              }
+            },
+            "cooldown": {
+              "value": 0.8,
+              "unit": "s",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[1]"
+              }
+            }
+          },
+          "behavior": "state:bestia:battle-ai",
+          "weak_to": [
+            {
+              "value": "attr:bestia:fire",
+              "knowledge": "discoverable",
+              "source": {
+                "kind": "human",
+                "ref": "sample: hand-written archetype note"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "masked_entities": [
+      {
+        "path": "entities/enemies/bazooka-beetle.masked.json",
+        "doc": {
+          "id": "enemy:bestia:bazooka-beetle",
+          "stats": {
+            "body_mass": {
+              "value": 18,
+              "unit": "kg",
+              "knowledge": "masked",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/world.cpp archetype[0]"
+              }
+            },
+            "aim_lead_divisor": {
+              "value": 32,
+              "knowledge": "masked",
+              "source": {
+                "kind": "master",
+                "ref": "Bestia src/behavior.cpp decide()"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "stages": [
+      {
+        "slug": "dome-arena",
+        "events": {
+          "path": "stages/dome-arena/events.json",
+          "doc": {
+            "stage": "stage:bestia:dome-arena",
+            "events": [
+              {
+                "id": "battle-start",
+                "trigger": {
+                  "kind": "time",
+                  "at_sec": {
+                    "value": 0,
+                    "unit": "s",
+                    "knowledge": "shown",
+                    "source": {
+                      "kind": "master",
+                      "ref": "Bestia src/world.cpp World::reset"
+                    }
+                  }
+                },
+                "description": {
+                  "value": {
+                    "ja": "全モンスターが同時に動き出す"
+                  },
+                  "knowledge": "shown",
+                  "source": {
+                    "kind": "llm-draft",
+                    "ref": "sample: drafted from spec/feature/battle.md"
+                  },
+                  "draft": true
+                }
+              }
+            ]
+          }
+        },
+        "map": {
+          "path": "stages/dome-arena/map.json",
+          "doc": {
+            "stage": "stage:bestia:dome-arena",
+            "kind": "zones",
+            "source": {
+              "kind": "human",
+              "ref": "sample: ring radius 36 m split into zones"
+            },
+            "nodes": [
+              {
+                "id": "node:center",
+                "label": {
+                  "ja": "中央"
+                },
+                "knowledge": "shown"
+              },
+              {
+                "id": "node:mid-ring",
+                "label": {
+                  "ja": "中間リング"
+                },
+                "knowledge": "shown"
+              },
+              {
+                "id": "node:outer-ring",
+                "label": {
+                  "ja": "外周"
+                },
+                "knowledge": "shown"
+              },
+              {
+                "id": "node:outside",
+                "label": {
+                  "ja": "リング外"
+                },
+                "knowledge": "shown"
+              }
+            ],
+            "edges": [
+              {
+                "from": "node:center",
+                "to": "node:mid-ring",
+                "knowledge": "shown"
+              },
+              {
+                "from": "node:mid-ring",
+                "to": "node:outer-ring",
+                "knowledge": "shown"
+              },
+              {
+                "from": "node:outer-ring",
+                "to": "node:outside",
+                "knowledge": "shown"
+              }
+            ],
+            "annotations": [
+              {
+                "target": "node:mid-ring",
+                "kind": "spawn",
+                "note": {
+                  "ja": "全員が中心から 20 m の円周上に出現する"
+                },
+                "knowledge": "shown"
+              },
+              {
+                "target": "node:outside",
+                "kind": "hazard",
+                "note": {
+                  "ja": "リング外。AI は戻ろうとする"
+                },
+                "knowledge": "shown"
+              }
+            ]
+          }
+        },
+        "stage": {
+          "path": "stages/dome-arena/stage.json",
+          "doc": {
+            "id": "stage:bestia:dome-arena",
+            "praeforma": {
+              "scene_id": "sample-scene-dome-arena",
+              "project_code": "Bestia"
+            },
+            "name": {
+              "ja": "ドームアリーナ",
+              "en": "Dome Arena"
+            },
+            "objectives": [
+              {
+                "value": {
+                  "ja": "最後の 1 体まで生き残る",
+                  "en": "Be the last monster standing"
+                },
+                "knowledge": "shown",
+                "source": {
+                  "kind": "master",
+                  "ref": "Bestia spec/feature/battle.md"
+                }
+              }
+            ],
+            "clear_conditions": [
+              {
+                "value": {
+                  "ja": "他の全モンスターが倒れる",
+                  "en": "Every other monster is eliminated"
+                },
+                "knowledge": "shown",
+                "source": {
+                  "kind": "master",
+                  "ref": "Bestia src/world.cpp World::reset"
+                }
+              }
+            ],
+            "spawns": [
+              {
+                "entity": "enemy:bestia:bazooka-beetle",
+                "count": {
+                  "value": 1,
+                  "knowledge": "shown",
+                  "source": {
+                    "kind": "master",
+                    "ref": "Bestia src/world.cpp roster"
+                  }
+                },
+                "at": "node:mid-ring"
+              },
+              {
+                "entity": "enemy:bestia:wire-spider",
+                "count": {
+                  "value": 1,
+                  "knowledge": "shown",
+                  "source": {
+                    "kind": "master",
+                    "ref": "Bestia src/world.cpp roster"
+                  }
+                },
+                "at": "node:mid-ring"
+              },
+              {
+                "entity": "enemy:bestia:bomber-dragonfly",
+                "count": {
+                  "value": 1,
+                  "knowledge": "shown",
+                  "source": {
+                    "kind": "master",
+                    "ref": "Bestia src/world.cpp roster"
+                  }
+                },
+                "at": "node:mid-ring"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "rules": [
+      {
+        "path": "mechanics/rules/dodge-window.json",
+        "doc": {
+          "id": "rule:bestia:dodge-window",
+          "name": {
+            "ja": "弾を避け始める猶予",
+            "en": "Dodge look-ahead window"
+          },
+          "expression": "clamp(closing_time, 0, 0.45)",
+          "result_unit": "s",
+          "variables": {
+            "closing_time": {
+              "description": {
+                "ja": "弾が自分に最接近するまでの時間"
+              },
+              "unit": "s",
+              "range": [
+                0,
+                5
+              ],
+              "example": 0.3
+            }
+          },
+          "knowledge": "discoverable",
+          "source": {
+            "kind": "master",
+            "ref": "Bestia src/behavior.cpp decide()"
+          }
+        }
+      },
+      {
+        "path": "mechanics/rules/wounded-retreat.json",
+        "doc": {
+          "id": "rule:bestia:wounded-retreat",
+          "name": {
+            "ja": "瀕死で後退する体力",
+            "en": "Wounded retreat threshold"
+          },
+          "expression": "max_health * 0.25",
+          "result_unit": "hp",
+          "variables": {
+            "max_health": {
+              "description": {
+                "ja": "最大体力"
+              },
+              "unit": "hp",
+              "range": [
+                100,
+                250
+              ],
+              "example": 180,
+              "ref": "enemy:bestia:bazooka-beetle.stats.health"
+            }
+          },
+          "knowledge": "discoverable",
+          "source": {
+            "kind": "master",
+            "ref": "Bestia src/behavior.cpp Task::Wounded"
+          }
+        }
+      }
+    ],
+    "states": [
+      {
+        "path": "mechanics/states/battle-ai.json",
+        "doc": {
+          "id": "state:bestia:battle-ai",
+          "name": {
+            "ja": "戦闘 AI (固定 BT)",
+            "en": "Battle AI (fixed behavior tree)"
+          },
+          "initial": "chase",
+          "states": [
+            {
+              "id": "chase",
+              "label": {
+                "ja": "追跡",
+                "en": "CHASE"
+              }
+            },
+            {
+              "id": "attack",
+              "label": {
+                "ja": "攻撃",
+                "en": "ATTACK"
+              }
+            },
+            {
+              "id": "dodge",
+              "label": {
+                "ja": "回避",
+                "en": "DODGE"
+              }
+            },
+            {
+              "id": "retreat",
+              "label": {
+                "ja": "後退",
+                "en": "RETREAT"
+              }
+            },
+            {
+              "id": "return",
+              "label": {
+                "ja": "リングへ戻る",
+                "en": "RETURN TO RING"
+              }
+            }
+          ],
+          "transitions": [
+            {
+              "from": "chase",
+              "to": "attack",
+              "on": "相手が射程内"
+            },
+            {
+              "from": "attack",
+              "to": "chase",
+              "on": "相手が射程外"
+            },
+            {
+              "from": "chase",
+              "to": "dodge",
+              "on": "弾が迫る",
+              "rule": "rule:bestia:dodge-window"
+            },
+            {
+              "from": "attack",
+              "to": "dodge",
+              "on": "弾が迫る",
+              "rule": "rule:bestia:dodge-window"
+            },
+            {
+              "from": "dodge",
+              "to": "chase",
+              "on": "脅威が去る"
+            },
+            {
+              "from": "attack",
+              "to": "retreat",
+              "on": "瀕死で相手が近い",
+              "rule": "rule:bestia:wounded-retreat"
+            },
+            {
+              "from": "retreat",
+              "to": "chase",
+              "on": "攻撃準備が整う"
+            },
+            {
+              "from": "chase",
+              "to": "return",
+              "on": "リング外に出かけた"
+            },
+            {
+              "from": "return",
+              "to": "chase",
+              "on": "リング内に戻った"
+            }
+          ],
+          "knowledge": "discoverable",
+          "source": {
+            "kind": "master",
+            "ref": "Bestia src/behavior.cpp tree"
+          }
+        }
+      }
+    ],
+    "tactics": [
+      {
+        "path": "tactics/kite-wire-spider.json",
+        "doc": {
+          "id": "tactic:bestia:kite-wire-spider",
+          "name": {
+            "ja": "スパイダーの射程外へ下がる",
+            "en": "Kite the wire spider"
+          },
+          "when": {
+            "all": [
+              {
+                "entity": "enemy:bestia:wire-spider",
+                "visible": true,
+                "distance_lt": 19
+              },
+              {
+                "self": {
+                  "hp_ratio_lt": 0.5
+                }
+              }
+            ]
+          },
+          "do": [
+            {
+              "move_to": "node:outer-ring"
+            },
+            {
+              "attack": "$enemy"
+            }
+          ],
+          "expect": {
+            "within_sec": 3,
+            "entity_state": {
+              "$enemy": "state:bestia:battle-ai#chase"
+            }
+          },
+          "because": [
+            "enemy:bestia:wire-spider.stats.range",
+            "rule:bestia:wounded-retreat"
+          ],
+          "knowledge": "discoverable",
+          "confidence": "authored",
+          "metrics": {
+            "runs": 12,
+            "success": 0.75,
+            "time_sec": {
+              "p50": 2.4
+            },
+            "risk": {
+              "damage_taken_p50": 6
+            }
+          },
+          "superseded_by": null
+        }
+      },
+      {
+        "path": "tactics/sidestep-lead-shot.json",
+        "doc": {
+          "id": "tactic:bestia:sidestep-lead-shot",
+          "name": {
+            "ja": "偏差射撃の裏をかく横移動",
+            "en": "Sidestep the leading shot"
+          },
+          "when": {
+            "all": [
+              {
+                "entity": "enemy:bestia:bazooka-beetle",
+                "visible": true,
+                "distance_lt": 10
+              }
+            ]
+          },
+          "do": [
+            {
+              "custom": "strafe-perpendicular",
+              "target": "$enemy"
+            },
+            {
+              "attack": "$enemy"
+            }
+          ],
+          "expect": {
+            "within_sec": 2,
+            "entity_state": {
+              "$enemy": "state:bestia:battle-ai#attack"
+            }
+          },
+          "because": [
+            "enemy:bestia:bazooka-beetle.stats.aim_lead_divisor"
+          ],
+          "knowledge": "masked",
+          "confidence": "derived",
+          "superseded_by": null
+        }
+      }
+    ],
+    "intents": [
+      {
+        "path": "intent/dome-arena.json",
+        "doc": {
+          "stage": "stage:bestia:dome-arena",
+          "intended": [
+            {
+              "id": "intent:bestia:dome-arena:fight-center",
+              "kind": "route",
+              "path": [
+                "node:mid-ring",
+                "node:center"
+              ],
+              "knowledge": "shown",
+              "note": "中央に寄って乱戦になってほしい",
+              "praeforma": {
+                "scene_id": "sample-scene-dome-arena",
+                "spec_id": "sample-spec-arena-flow"
+              }
+            },
+            {
+              "id": "intent:bestia:dome-arena:learn-kite",
+              "kind": "teach",
+              "tactic": "tactic:bestia:kite-wire-spider",
+              "note": "射程差で下がることを覚えてほしい",
+              "praeforma": {
+                "scene_id": "sample-scene-dome-arena",
+                "spec_id": "sample-spec-kite-tutorial"
+              }
+            },
+            {
+              "id": "intent:bestia:dome-arena:time",
+              "kind": "time",
+              "range_sec": [
+                60,
+                180
+              ]
+            },
+            {
+              "id": "intent:bestia:dome-arena:no-ring-out",
+              "kind": "forbid",
+              "area": "node:outside",
+              "note": "リング外に居座って時間を稼がせない"
+            }
+          ],
+          "allowed_divergences": [],
+          "design_stance": "open"
+        }
+      }
+    ]
+  },
+  "index": {
+    "ids": {
+      "enemy:bestia:bazooka-beetle": {
+        "kind": "entity",
+        "path": "entities/enemies/bazooka-beetle.json",
+        "pointer": "/documents/entities/0"
+      },
+      "enemy:bestia:bomber-dragonfly": {
+        "kind": "entity",
+        "path": "entities/enemies/bomber-dragonfly.json",
+        "pointer": "/documents/entities/1"
+      },
+      "enemy:bestia:wire-spider": {
+        "kind": "entity",
+        "path": "entities/enemies/wire-spider.json",
+        "pointer": "/documents/entities/2"
+      },
+      "stage:bestia:dome-arena": {
+        "kind": "stage",
+        "path": "stages/dome-arena/stage.json",
+        "pointer": "/documents/stages/0/stage"
+      },
+      "rule:bestia:dodge-window": {
+        "kind": "rule",
+        "path": "mechanics/rules/dodge-window.json",
+        "pointer": "/documents/rules/0"
+      },
+      "rule:bestia:wounded-retreat": {
+        "kind": "rule",
+        "path": "mechanics/rules/wounded-retreat.json",
+        "pointer": "/documents/rules/1"
+      },
+      "state:bestia:battle-ai": {
+        "kind": "state",
+        "path": "mechanics/states/battle-ai.json",
+        "pointer": "/documents/states/0"
+      },
+      "tactic:bestia:kite-wire-spider": {
+        "kind": "tactic",
+        "path": "tactics/kite-wire-spider.json",
+        "pointer": "/documents/tactics/0"
+      },
+      "tactic:bestia:sidestep-lead-shot": {
+        "kind": "tactic",
+        "path": "tactics/sidestep-lead-shot.json",
+        "pointer": "/documents/tactics/1"
+      },
+      "intent:bestia:dome-arena:fight-center": {
+        "kind": "intent",
+        "path": "intent/dome-arena.json",
+        "pointer": "/documents/intents/0/doc/intended/0"
+      },
+      "intent:bestia:dome-arena:learn-kite": {
+        "kind": "intent",
+        "path": "intent/dome-arena.json",
+        "pointer": "/documents/intents/0/doc/intended/1"
+      },
+      "intent:bestia:dome-arena:time": {
+        "kind": "intent",
+        "path": "intent/dome-arena.json",
+        "pointer": "/documents/intents/0/doc/intended/2"
+      },
+      "intent:bestia:dome-arena:no-ring-out": {
+        "kind": "intent",
+        "path": "intent/dome-arena.json",
+        "pointer": "/documents/intents/0/doc/intended/3"
+      }
+    },
+    "render_signatures": {},
+    "adjacency": {
+      "stage:bestia:dome-arena": {
+        "node:center": [
+          "node:mid-ring"
+        ],
+        "node:mid-ring": [
+          "node:center",
+          "node:outer-ring"
+        ],
+        "node:outer-ring": [
+          "node:mid-ring",
+          "node:outside"
+        ],
+        "node:outside": [
+          "node:outer-ring"
+        ]
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { Intent } from '../../src/domain/documents.ts';
-import { buildEngineWorld } from '../../src/engine/world/build-engine-world.ts';
+import type { Intent } from '@ludiars/commentarii-sdk/types';
+import { buildEngineWorld } from '@ludiars/commentarii-sdk/knowledge';
 import { assignBands } from '../../src/verify/feasibility/assign-bands.ts';
 import { buildFeasibility, type FeasibilityInput } from '../../src/verify/feasibility/build-feasibility.ts';
 import { clusterSolutions } from '../../src/verify/feasibility/cluster-solutions.ts';

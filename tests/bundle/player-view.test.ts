@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { stripMasked, toPlayerView } from '../../src/bundle/player-view.ts';
+import { stripMasked, toPlayerView } from '@ludiars/commentarii-sdk/rulebook';
 import { loadBroken, loadSample } from '../support/bundles.ts';
 
 test('the player view drops masked companions and masked tactics', async () => {

@@ -5,13 +5,12 @@
 // same guide version). Pure: the caller writes the changes. Without --apply, or with nothing
 // applicable, the bundle is left exactly as it is.
 
-import type { Bundle } from '../../bundle/bundle.ts';
+import type { Bundle, Overlay } from '@ludiars/commentarii-sdk/types';
 import type { FileChange } from '../../import/plan/file-change.ts';
 import type { HumanCandidates } from '../../import/plays/human-candidates.ts';
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { approvalState, type Approval } from '../approval/approvals.ts';
 import { sealProposal } from '../approval/seal-proposal.ts';
-import type { Overlay } from '../overlay/overlay.ts';
 import type { LearningPolicy } from '../policy/learning-policy.ts';
 import { applyProposals } from './apply-proposals.ts';
 import { draftProposals } from './draft-proposals.ts';

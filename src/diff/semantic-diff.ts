@@ -4,8 +4,8 @@
 // exports, never from prose. Both sides are exported with the same knowledge, so a player diff
 // (the public one) is computed on player views and cannot carry a masked value.
 
-import type { ExportedBundle, ExportedDocument, ExportKnowledge } from '../export/exported-bundle.ts';
-import { isKnowledge, type Knowledge } from '../domain/knowledge.ts';
+import type { ExportedBundle, ExportedDocument, ExportKnowledge } from '@ludiars/commentarii-sdk/types';
+import { isKnowledge, type Knowledge } from '@ludiars/commentarii-sdk/types';
 import { flattenDocument, type Leaf } from './flatten-document.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:d60f7c3e */
 import augurContract_e5312268 from '../contracts/semantic-diff.contract.ts'; /* augur-inject:contract-predicate:9dd10bf8 */

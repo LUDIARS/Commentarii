@@ -2,9 +2,9 @@
 // take each record's slug, and overwrite every field the model must not decide (principle 3:
 // the LLM drafts text; knowledge, source and draft are fixed here).
 
-import type { Source } from '../../domain/documents.ts';
-import { isJsonObject, type JsonObject } from '../../domain/value-node.ts';
-import type { SchemaViolation } from '../../schema/schema-registry.ts';
+import type { Source } from '@ludiars/commentarii-sdk/types';
+import { isJsonObject, type JsonObject } from '@ludiars/commentarii-sdk/types';
+import type { SchemaViolation } from '@ludiars/commentarii-sdk/schemas';
 import type { DraftRequest } from './draft-request.ts';
 
 const SLUG = /^[a-z0-9][a-z0-9_-]*$/;

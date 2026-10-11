@@ -6,8 +6,8 @@ import { assembleBundle } from './assemble-bundle.ts';
 import type { LoadedFile, LoadIssue, LoadResult } from './bundle.ts';
 import type { BundleSource } from './bundle-source.ts';
 import { classifyPath, SCHEMA_OF_KIND } from './classify-path.ts';
-import { contract } from '#contract-runtime'; /* augur-inject:import:b084a744 */
-import augurContract_cd99ed03 from '../contracts/load-bundle.contract.ts'; /* augur-inject:contract-predicate:98297ab3 */
+import { contract } from '#contract-runtime'; /* augur-inject:import:8c2fe2e0 */
+import augurContract_b0161617 from '../contracts/load-bundle.contract.ts'; /* augur-inject:contract-predicate:88ec0a8d */
 
 export interface BundleText {
   readonly path: string;
@@ -51,7 +51,7 @@ export function loadBundleFromTexts(texts: readonly BundleText[], registry: Sche
   return { bundle: assembleBundle(files), files, issues };
 }
 // @ts-expect-error augur-inject
-loadBundleFromTexts = contract(loadBundleFromTexts, { ...augurContract_cd99ed03, contractId: 'C-4', mode: 'observe', sample: 1, where: 'src/bundle/load-bundle.ts:26', rule: 'contract-wrap', id: 'cd99ed03' }); /* augur-inject:contract-wrap:cd99ed03 */
+loadBundleFromTexts = contract(loadBundleFromTexts, { ...augurContract_b0161617, contractId: 'C-4', mode: 'observe', sample: 1, where: 'packages/sdk/src/bundle/load-bundle.ts:26', rule: 'contract-wrap', id: 'b0161617' }); /* augur-inject:contract-wrap:b0161617 */
 
 export async function loadBundle(source: BundleSource, registry: SchemaRegistry): Promise<LoadResult> {
   const paths = await source.listFiles();

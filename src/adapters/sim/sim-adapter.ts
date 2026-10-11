@@ -2,10 +2,9 @@
 // bundle alone (map, entities, state machines, rules), for tests and benches. Same seed, same
 // actions -> same observations.
 
-import type { Bundle } from '../../bundle/bundle.ts';
+import type { Bundle, ObservationMode, ObservationPurpose } from '@ludiars/commentarii-sdk/types';
 import type { GameAdapter } from '../../adapter/game-adapter.ts';
-import { parseRef } from '../../domain/id.ts';
-import type { ObservationMode, ObservationPurpose } from '../../replay/observation-frame.ts';
+import { parseRef } from '@ludiars/commentarii-sdk/types';
 import { createSimWorld } from './create-sim-world.ts';
 import { DEFAULT_SIM_CONFIG, type SimConfig } from './sim-config.ts';
 import { observeSim } from './sim-observation.ts';

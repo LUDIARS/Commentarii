@@ -3,7 +3,7 @@
 
 import { isDeepStrictEqual } from 'node:util';
 import type { DiffOptions, ReplayDiff } from '../replay/diff-replays.ts';
-import type { ReplayRun, ReplayTick } from '../replay/replay-record.ts';
+import type { ReplayRun, ReplayTick } from '@ludiars/commentarii-sdk/types';
 
 function chosen(tick: ReplayTick): string | undefined {
   return tick.decision.find((entry) => entry.chosen)?.candidate;

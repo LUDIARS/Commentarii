@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { diffReplays } from '../../src/replay/diff-replays.ts';
 import { formatReplayDiffMarkdown } from '../../src/replay/format-replay-diff-markdown.ts';
-import type { ReplayRun } from '../../src/replay/replay-record.ts';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
 import { BASE_RUN, BRANCH_RUN, loadRun } from './replay-fixtures.ts';
 
 test('a run compared with itself has no divergence', async () => {

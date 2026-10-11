@@ -1,9 +1,7 @@
 // TypeScript view of a play log mapping (schema/plays-mapping.schema.json is the source of
 // truth): telemetry column -> Observation field, game identifier -> guide ID (design 14.D).
 
-import type { Knowledge } from '../../domain/knowledge.ts';
-import type { ActionVerb } from '../../replay/replay-action.ts';
-import type { ReplayResult } from '../../replay/replay-record.ts';
+import type { ActionVerb, Knowledge, ReplayResult } from '@ludiars/commentarii-sdk/types';
 
 export interface ColumnRef {
   readonly column: string;

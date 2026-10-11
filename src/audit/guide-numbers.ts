@@ -1,7 +1,7 @@
 // Every number the guide knows about, in any file and at any knowledge level. A number in UI
 // text that is not in this set has no boundary yet (undefined-exposure).
 
-import type { LoadedFile } from '../bundle/bundle.ts';
+import type { LoadedFile } from '@ludiars/commentarii-sdk/types';
 
 function walk(value: unknown, out: Set<number>): void {
   if (typeof value === 'number' && Number.isFinite(value)) out.add(Math.abs(value));

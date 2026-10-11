@@ -1,10 +1,9 @@
 // C-79 buildCommentaryInput(run, bundle): only a player-mode run is read, and no tactic the player
 // view leaves out (masked) appears anywhere in the input handed to a narrator.
 
-import type { Bundle } from '../bundle/bundle.ts';
-import { toPlayerView } from '../bundle/player-view.ts';
+import type { Bundle, ReplayRun } from '@ludiars/commentarii-sdk/types';
+import { toPlayerView } from '@ludiars/commentarii-sdk/rulebook';
 import type { CommentaryInput } from '../commentary/commentary-input.ts';
-import type { ReplayRun } from '../replay/replay-record.ts';
 
 export default {
   post: (result: CommentaryInput, run: ReplayRun, bundle: Bundle) => {

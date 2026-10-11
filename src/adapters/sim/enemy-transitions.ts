@@ -9,7 +9,7 @@
 //   return   standing in a hazard node (e.g. outside the ring)
 // Transitions to any other state never fire in the sim (documented in spec/feature/engine.md).
 
-import type { Rule, StateMachine } from '../../domain/documents.ts';
+import type { Rule, StateMachine } from '@ludiars/commentarii-sdk/types';
 import { gap } from './sim-motion.ts';
 import { targetPos, type SimTarget } from './sim-targets.ts';
 import { evaluateRule, statsOf, type Situation } from './sim-rules.ts';

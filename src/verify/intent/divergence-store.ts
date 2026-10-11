@@ -4,7 +4,7 @@
 // adds the new ones as pending. Accepted divergences never come in (classify-intents.ts sets
 // them apart). Past verdicts only order the list: pending, then allow, then reject.
 
-import type { DivergenceReason, DivergenceSignature } from '../../domain/documents.ts';
+import type { DivergenceReason, DivergenceSignature } from '@ludiars/commentarii-sdk/types';
 import type { Divergence, DivergenceKind } from './divergence.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:d56b48d3 */
 import augurContract_f33e3f27 from '../../contracts/merge-divergences.contract.ts'; /* augur-inject:contract-predicate:a6198387 */

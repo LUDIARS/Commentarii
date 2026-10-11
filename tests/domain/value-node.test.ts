@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { findKnowledgeHolders, findValueNodes, pointerToFieldPath } from '../../src/domain/value-node.ts';
+import { findKnowledgeHolders, findValueNodes, pointerToFieldPath } from '@ludiars/commentarii-sdk/types';
 
 const document = {
   stats: { hp: { value: 1, knowledge: 'shown', source: { kind: 'master', ref: 'x' } } },

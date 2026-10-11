@@ -2,9 +2,15 @@
 // non-master values survive; a master value's knowledge never gets stricter.
 
 import { isDeepStrictEqual } from 'node:util';
-import { isMaskedFilePath } from '../bundle/bundle.ts';
-import { KNOWLEDGE_LEVELS, isKnowledge } from '../domain/knowledge.ts';
-import { findValueNodes, isJsonObject, pointerToFieldPath, type JsonObject } from '../domain/value-node.ts';
+import {
+  findValueNodes,
+  isJsonObject,
+  isKnowledge,
+  isMaskedFilePath,
+  type JsonObject,
+  KNOWLEDGE_LEVELS,
+  pointerToFieldPath,
+} from '@ludiars/commentarii-sdk/types';
 import type { MasterImportInput } from '../import/masters/plan-master-import.ts';
 import type { FileChange } from '../import/plan/file-change.ts';
 

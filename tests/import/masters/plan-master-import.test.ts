@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
-import { findValueNodes, isJsonObject } from '../../../src/domain/value-node.ts';
+import { findValueNodes, isJsonObject } from '@ludiars/commentarii-sdk/types';
 import { pairTables } from '../../../src/import/masters/pair-tables.ts';
 import { parseCsvTable } from '../../../src/import/masters/parse-csv.ts';
 import { planMasterImport, type MappedTable } from '../../../src/import/masters/plan-master-import.ts';

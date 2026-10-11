@@ -3,8 +3,8 @@
 // masked intent items stay out. Without verify I/O or a report, render is unchanged.
 
 import { join } from 'node:path';
-import type { LoadResult } from '../../bundle/bundle.ts';
-import { toPlayerView } from '../../bundle/player-view.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
+import { toPlayerView } from '@ludiars/commentarii-sdk/rulebook';
 import type { CliIo } from '../../cli/cli-io.ts';
 import { renderStageExtras, type StageExtras } from '../report/render-stage-extras.ts';
 import { REPORT_JSON_PATH, type VerifyReport } from '../report/verify-report.ts';

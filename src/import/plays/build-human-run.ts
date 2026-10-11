@@ -3,9 +3,8 @@
 // Identifiers become salted hashes (run:human-<hash>, summary.player); time is relative to the
 // first row; a masked value in any observation is a mapping error and fails the import.
 
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
-import { findMaskedPointers } from '../../replay/find-masked-pointers.ts';
-import type { ReplayFooter, ReplayHeader, ReplayResult, ReplayRun, ReplayTick } from '../../replay/replay-record.ts';
+import type { ObservationFrame, ReplayFooter, ReplayHeader, ReplayResult, ReplayRun, ReplayTick } from '@ludiars/commentarii-sdk/types';
+import { findMaskedPointers } from '@ludiars/commentarii-sdk/replay';
 import { ImportError } from '../import-error.ts';
 import type { MasterRow } from '../masters/master-table.ts';
 import { readNumber, readText } from '../masters/read-cell.ts';

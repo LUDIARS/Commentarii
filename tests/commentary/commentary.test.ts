@@ -10,10 +10,11 @@ import { parseCommentaryCommand } from '../../src/commentary/commentary-command.
 import { buildCommentaryInput, HIDDEN_CANDIDATE } from '../../src/commentary/commentary-input.ts';
 import { formatCommentary } from '../../src/commentary/format-commentary.ts';
 import { runCommentaryCommand } from '../../src/commentary/run-commentary-command.ts';
-import type { ReplayRun } from '../../src/replay/replay-record.ts';
-import { loadSample, REPO_ROOT, SAMPLE_DIR } from '../support/bundles.ts';
+import { fixtureReplayPath } from '@ludiars/commentarii-sdk/fixtures';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
+import { loadSample, SAMPLE_DIR } from '../support/bundles.ts';
 
-const RUN = join(REPO_ROOT, 'tests', 'fixtures', 'replay', 'dome-arena-base.jsonl');
+const RUN = fixtureReplayPath('dome-arena-base');
 const KITE = 'tactic:bestia:kite-wire-spider'; // discoverable
 const SIDESTEP = 'tactic:bestia:sidestep-lead-shot'; // masked
 

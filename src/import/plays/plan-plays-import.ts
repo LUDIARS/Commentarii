@@ -3,9 +3,9 @@
 // column is dropped by name; every run must load as a replay (schema and invariants, including
 // the player-mode masked ban) and no output may hold a raw player or run identifier.
 
-import { parseReplay } from '../../replay/parse-replay.ts';
-import type { ReplayRun } from '../../replay/replay-record.ts';
-import type { ReplaySchema } from '../../replay/replay-schema.ts';
+import { parseReplay } from '@ludiars/commentarii-sdk/replay';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
+import type { ReplaySchema } from '@ludiars/commentarii-sdk/replay';
 import { ImportError } from '../import-error.ts';
 import type { MasterTable } from '../masters/master-table.ts';
 import { assertNoRawIdentifiers } from './assert-no-raw-identifiers.ts';

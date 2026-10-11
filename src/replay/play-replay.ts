@@ -4,8 +4,7 @@
 
 import { isDeepStrictEqual } from 'node:util';
 import type { Decider } from './decider.ts';
-import type { ReplayAction } from './replay-action.ts';
-import type { ReplayRun } from './replay-record.ts';
+import type { ReplayAction, ReplayRun } from '@ludiars/commentarii-sdk/types';
 import { contract } from '#contract-runtime'; /* augur-inject:import:f559e42c */
 import augurContract_7bcd5916 from '../contracts/play-replay.contract.ts'; /* augur-inject:contract-predicate:a55af329 */
 

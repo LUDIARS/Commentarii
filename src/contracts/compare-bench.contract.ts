@@ -2,7 +2,7 @@
 // with reasons and carry no metric or candidate; comparable results carry every metric, and the
 // candidates are exactly the exceeded metrics plus the new undesirable divergences (if any).
 
-import type { BenchResult } from '../bench/bench-result.ts';
+import type { BenchResult } from '@ludiars/commentarii-sdk/types';
 import type { BalanceComparison } from '../gate/compare-bench.ts';
 
 export default {

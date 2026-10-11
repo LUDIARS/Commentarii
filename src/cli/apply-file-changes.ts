@@ -5,7 +5,7 @@ import { ImportError } from '../import/import-error.ts';
 import { assertChangesValid } from '../import/plan/assert-changes-valid.ts';
 import type { FileChange } from '../import/plan/file-change.ts';
 import { toFileOperations, type FileOperations } from '../import/plan/file-operations.ts';
-import type { SchemaRegistry } from '../schema/schema-registry.ts';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import type { CliIo } from './cli-io.ts';
 import type { ImportTarget } from './open-import-target.ts';
 

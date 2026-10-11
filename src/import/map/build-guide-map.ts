@@ -2,7 +2,7 @@
 // shapes are converted by their own module; this one dispatches and rejects a graph whose
 // edges or annotations point at nodes that do not exist.
 
-import type { GuideMap } from '../../domain/documents.ts';
+import type { GuideMap } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import-error.ts';
 import { gridToMap } from './grid-to-map.ts';
 import type { MapImportRequest } from './map-request.ts';

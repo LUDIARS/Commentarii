@@ -1,6 +1,6 @@
 // JSON master table (an array of flat objects) -> MasterTable. Row n of source.ref counts from 1.
 
-import { isJsonObject } from '../../domain/value-node.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import-error.ts';
 import { parseJsonInput } from '../parse-json-input.ts';
 import { tableNameOf, type MasterRow, type MasterTable } from './master-table.ts';

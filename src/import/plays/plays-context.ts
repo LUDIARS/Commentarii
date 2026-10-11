@@ -2,9 +2,8 @@
 // identify may resolve to, the stages with their map nodes, and the tactics candidates are
 // compared with. Built once from the loaded bundle (the full one: the import reads IDs only).
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import type { Tactic } from '../../domain/documents.ts';
-import type { ObservationFieldDeclaration } from '../../observation/observation-fields.ts';
+import type { Bundle, Tactic } from '@ludiars/commentarii-sdk/types';
+import type { ObservationFieldDeclaration } from '@ludiars/commentarii-sdk/observation';
 import { ImportError } from '../import-error.ts';
 
 export interface PlaysContext {

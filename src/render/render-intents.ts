@@ -1,7 +1,6 @@
 // 意図一覧: what the designer expects per stage, and the divergences already accepted.
 
-import type { Bundle } from '../bundle/bundle.ts';
-import type { IntendedItem, Intent } from '../domain/documents.ts';
+import type { Bundle, IntendedItem, Intent } from '@ludiars/commentarii-sdk/types';
 import { document, table } from '../markdown/markdown.ts';
 
 function intendedText(item: IntendedItem): string {

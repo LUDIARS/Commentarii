@@ -8,13 +8,10 @@
 
 import type { GameAdapter } from '../adapter/game-adapter.ts';
 import type { Decider } from '../replay/decider.ts';
-import { observationBoundaryProblems } from '../observation/check-observation-boundary.ts';
-import type { ObservationFieldDeclaration } from '../observation/observation-fields.ts';
-import { findMaskedPointers } from '../replay/find-masked-pointers.ts';
-import type { ObservationFrame, ObservationMode } from '../replay/observation-frame.ts';
-import type { ReplayAction } from '../replay/replay-action.ts';
-import type { ReplayResult } from '../replay/replay-record.ts';
-import type { ReplayHeader } from '../replay/replay-record.ts';
+import { observationBoundaryProblems } from '@ludiars/commentarii-sdk/observation';
+import type { ObservationFieldDeclaration } from '@ludiars/commentarii-sdk/observation';
+import { findMaskedPointers } from '@ludiars/commentarii-sdk/replay';
+import type { ObservationFrame, ObservationMode, ReplayAction, ReplayHeader, ReplayResult } from '@ludiars/commentarii-sdk/types';
 import { openRecording, type RecordingSink, type ReplayLineWriter } from '../replay/recording-sink.ts';
 import type { TickReflector } from './reflect/tick-reflector.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:18a2c66d */

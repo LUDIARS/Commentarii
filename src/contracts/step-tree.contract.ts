@@ -2,9 +2,9 @@
 // an action has exactly one verb, and the returned memory only holds nodes of this tree.
 
 import type { BtMemory } from '../engine/bt/bt-memory.ts';
-import type { BtNode } from '../engine/bt/bt-node.ts';
+import type { BtNode } from '@ludiars/commentarii-sdk/knowledge';
 import type { StepResult } from '../engine/bt/step-result.ts';
-import { ACTION_VERBS } from '../replay/replay-action.ts';
+import { ACTION_VERBS } from '@ludiars/commentarii-sdk/types';
 
 export default {
   post: (result: StepResult, tree: BtNode, _memory: BtMemory) => {

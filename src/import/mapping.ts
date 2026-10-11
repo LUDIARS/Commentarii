@@ -1,9 +1,7 @@
 // TypeScript view of an import mapping (schema/mapping.schema.json is the source of truth).
 // One mapping per game: master tables -> entities, and the character legend of grid maps.
 
-import type { AnnotationKind, LocalizedText } from '../domain/documents.ts';
-import type { EntityKind } from '../domain/id.ts';
-import type { Knowledge } from '../domain/knowledge.ts';
+import type { AnnotationKind, EntityKind, Knowledge, LocalizedText } from '@ludiars/commentarii-sdk/types';
 
 export interface StatMapping {
   readonly column: string;

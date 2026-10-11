@@ -1,8 +1,8 @@
 // What to look for: every masked value of the bundle's `.masked.json` companions, flattened to
 // numbers, exact strings and ID slugs, each with the ref of the guide value it came from.
 
-import type { Bundle } from '../bundle/bundle.ts';
-import { parseRef } from '../domain/id.ts';
+import type { Bundle } from '@ludiars/commentarii-sdk/types';
+import { parseRef } from '@ludiars/commentarii-sdk/types';
 import { significantDigitsOfNumber } from './numeric-literal.ts';
 
 export type MaskedNeedle =

@@ -4,8 +4,8 @@
 // Used to compare a run before and after a tactic rewrite (design 14.A).
 
 import { isDeepStrictEqual } from 'node:util';
-import type { ReplayAction } from './replay-action.ts';
-import { chosenCandidate, type ReplayRun, type ReplayTick } from './replay-record.ts';
+import type { ReplayAction } from '@ludiars/commentarii-sdk/types';
+import { chosenCandidate, type ReplayRun, type ReplayTick } from '@ludiars/commentarii-sdk/types';
 import { contract } from '#contract-runtime'; /* augur-inject:import:afeed0fa */
 import augurContract_85cfa426 from '../contracts/diff-replays.contract.ts'; /* augur-inject:contract-predicate:3ce2d84f */
 

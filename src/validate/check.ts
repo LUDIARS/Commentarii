@@ -1,7 +1,7 @@
 // Contract of one validate check (design 6: a fixed list, one item one test).
 
-import type { BundleIndex } from '../bundle/bundle-index.ts';
-import type { LoadResult } from '../bundle/bundle.ts';
+import type { BundleIndex } from '@ludiars/commentarii-sdk/bundle';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
 
 export type CheckId = 'V01' | 'V02' | 'V03' | 'V04' | 'V05' | 'V06' | 'V07' | 'V08' | 'V09' | 'V10' | 'V11' | 'V12';
 

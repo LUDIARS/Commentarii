@@ -4,7 +4,7 @@
 // self.hp or to a place the game declared in observation.fields (the boundary check refuses
 // anything else, so a mapping cannot smuggle a value past it).
 
-import type { Manifest } from '../../domain/documents.ts';
+import type { Manifest } from '@ludiars/commentarii-sdk/types';
 
 export type UiRead = 'fill' | 'number';
 

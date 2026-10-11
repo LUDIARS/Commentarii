@@ -2,7 +2,7 @@
 // outside world beyond CliIo. main.ts wires the real adapters; tests pass in-memory ones.
 
 import type { LineChannel } from '../adapters/stdio/line-channel.ts';
-import type { Persona } from '../engine/persona/persona.ts';
+import type { Persona } from '@ludiars/commentarii-sdk/knowledge';
 import type { ReplayLineWriter } from '../replay/recording-sink.ts';
 
 export interface EngineIo {

@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import type { LoadResult } from '../../src/bundle/bundle.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
 import { parseDiffCommand } from '../../src/diff/diff-command.ts';
 import { formatDiffMarkdown } from '../../src/diff/format-diff-markdown.ts';
 import { runDiffCommand } from '../../src/diff/run-diff-command.ts';

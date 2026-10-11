@@ -1,6 +1,6 @@
 // V06: every value has a source (principle 3: no value without provenance enters the bundle).
 
-import { findValueNodes, isJsonObject } from '../../domain/value-node.ts';
+import { findValueNodes, isJsonObject } from '@ludiars/commentarii-sdk/types';
 import { error, type Check, type Finding } from '../check.ts';
 
 export const v06SourcePresent: Check = {

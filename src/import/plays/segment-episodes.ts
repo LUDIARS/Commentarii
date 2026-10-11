@@ -4,9 +4,7 @@
 // ($enemy), and actions a tactic cannot express (a position, an entity out of the situation)
 // are left out. Only the first MAX_STEPS steps are kept: a tactic is a short sequence.
 
-import type { ActionOperand, ReplayAction } from '../../replay/replay-action.ts';
-import type { ReplayRun } from '../../replay/replay-record.ts';
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
+import type { ActionOperand, ObservationFrame, ReplayAction, ReplayRun } from '@ludiars/commentarii-sdk/types';
 import { situationOf, type Situation } from './situation.ts';
 
 export const MAX_STEPS = 4;

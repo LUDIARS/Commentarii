@@ -4,7 +4,7 @@
 // with the player view: intent items the view does not hold (masked) are left out of the
 // section and of the picture.
 
-import type { Bundle } from '../../bundle/bundle.ts';
+import type { Bundle } from '@ludiars/commentarii-sdk/types';
 import { document, table } from '../../markdown/markdown.ts';
 import { drawStageHeatmap, mapOfStage } from './draw-pictures.ts';
 import { BAND_LABEL, CLASS_LABEL, CONVERGENCE_TEXT } from './labels.ts';

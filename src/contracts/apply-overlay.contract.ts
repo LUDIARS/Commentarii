@@ -3,10 +3,9 @@
 // copies), and each persona weight is the input weight times the overlay factor (or as it was).
 
 import { isDeepStrictEqual } from 'node:util';
-import type { Bundle } from '../bundle/bundle.ts';
-import { CONSIDERATION_NAMES, type Persona } from '../engine/persona/persona.ts';
+import type { Bundle, Overlay } from '@ludiars/commentarii-sdk/types';
+import { CONSIDERATION_NAMES, type Persona } from '@ludiars/commentarii-sdk/knowledge';
 import type { OverlaidSetup } from '../learn/overlay/apply-overlay.ts';
-import type { Overlay } from '../learn/overlay/overlay.ts';
 
 export default {
   post: (result: OverlaidSetup, bundle: Bundle, persona: Persona, overlay: Overlay) => {

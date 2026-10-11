@@ -4,12 +4,11 @@
   "presetRules": [],
   "templateRules": [],
   "membership": [
-    { "pathPattern": "(^|/)src/replay/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)(?<!packages/sdk/)src/replay/[^/]+\\.ts$" },
     { "pathPattern": "(^|/)tests/replay/[^/]+\\.ts$" },
-    { "pathPattern": "(^|/)tests/fixtures/replay/[^/]+\\.jsonl$" },
     { "pathPattern": "(^|/)spec/feature/replay\\.md$" }
   ],
   "cardTemplate": "Summarise the \"replay\" domain: record (decider wrapped by RecordingSink) -> replay/<run-id>.jsonl -> parse -> play (determinism) / diff (first branch).",
   "specRefs": ["spec/architecture/design.md §7.2 §7.5 §14.A", "spec/feature/replay.md"],
-  "rationale": "段階 3 以降のエンジンのテスト正本になる層。判断エンジンは Decider の型でだけ受け、ゲームにもエンジン実装にも依存しない。スキーマ (schema/*.schema.json) と fs アダプタ (src/adapters/fs/replay-*.ts) は既存の guide-bundle の所属パターンに含まれるのでここには重ねない。"
+  "rationale": "段階 3 以降のエンジンのテスト正本になる層。判断エンジンは Decider の型でだけ受け、ゲームにもエンジン実装にも依存しない。fs アダプタ (src/adapters/fs/replay-*.ts) は guide-bundle の所属パターンに含まれるのでここには重ねない。形式の読み取り側 (replay-record / parse-replay / tick-invariants / find-masked-pointers / replay-schema / replay-path)、スキーマ、フィクスチャ (fixtures/replay) は commentarii-sdk (packages/sdk) に属する (Ingenium R0-A)。"
 }

@@ -3,7 +3,7 @@
 
 import { readFile } from 'node:fs/promises';
 import { readSchemaDocuments } from '../../adapters/fs/read-schema-documents.ts';
-import { createSchemaRegistry, type SchemaRegistry } from '../../schema/schema-registry.ts';
+import { createSchemaRegistry, type SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import type { LearnIo } from '../cli/learn-io.ts';
 
 function isMissing(error: unknown): boolean {

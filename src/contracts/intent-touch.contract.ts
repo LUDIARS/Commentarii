@@ -3,7 +3,7 @@
 // a time change, an open / mixed design_stance with a supersede, an illusory_by_design naming a
 // tactic, or an accepted divergence naming a tactic is always reported as a touch.
 
-import type { Intent, Tactic } from '../domain/documents.ts';
+import type { Intent, Tactic } from '@ludiars/commentarii-sdk/types';
 import { nodesOfTactic, stagesOfTactic, type RewriteChange } from '../learn/consolidate/intent-touch.ts';
 
 function applies(intent: Intent, tactics: readonly Tactic[]): boolean {

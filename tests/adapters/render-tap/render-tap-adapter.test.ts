@@ -8,7 +8,7 @@ import { createRenderTapAdapter } from '../../../src/adapters/render-tap/render-
 import { cameraPosition, tapToObservation, type TapContext } from '../../../src/adapters/render-tap/tap-to-observation.ts';
 import type { LineChannel } from '../../../src/adapters/stdio/line-channel.ts';
 import { runDriver } from '../../../src/engine/driver.ts';
-import { observationBoundaryProblems } from '../../../src/observation/check-observation-boundary.ts';
+import { observationBoundaryProblems } from '@ludiars/commentarii-sdk/observation';
 import { buildSignatureIndex } from '../../../src/render-tap/identify-appearance.ts';
 import { isTapEnd, type TapFrame, type TapLine } from '../../../src/render-tap/render-frame.ts';
 import type { SequenceProblem } from '../../../src/render-tap/render-frame-sequence.ts';

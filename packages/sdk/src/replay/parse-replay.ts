@@ -5,8 +5,8 @@
 import type { ReplayFooter, ReplayHeader, ReplayLine, ReplayRun, ReplayTick } from './replay-record.ts';
 import type { ReplaySchema } from './replay-schema.ts';
 import { checkTickRecord, maskedProblems } from './tick-invariants.ts';
-import { contract } from '#contract-runtime'; /* augur-inject:import:27ead5eb */
-import augurContract_c6aaec7e from '../contracts/parse-replay.contract.ts'; /* augur-inject:contract-predicate:1e0cc394 */
+import { contract } from '#contract-runtime'; /* augur-inject:import:4bf9ea73 */
+import augurContract_83028992 from '../contracts/parse-replay.contract.ts'; /* augur-inject:contract-predicate:aac14b8a */
 
 export interface ReplayIssue {
   /** 1-based line number (0 for the file as a whole). */
@@ -74,4 +74,4 @@ export function parseReplay(text: string, schema: ReplaySchema): ReplayLoad {
   return run === undefined ? { issues } : { run, issues };
 }
 // @ts-expect-error augur-inject
-parseReplay = contract(parseReplay, { ...augurContract_c6aaec7e, contractId: 'C-8', mode: 'observe', sample: 1, where: 'src/replay/parse-replay.ts:66', rule: 'contract-wrap', id: 'c6aaec7e' }); /* augur-inject:contract-wrap:c6aaec7e */
+parseReplay = contract(parseReplay, { ...augurContract_83028992, contractId: 'C-8', mode: 'observe', sample: 1, where: 'packages/sdk/src/replay/parse-replay.ts:66', rule: 'contract-wrap', id: '83028992' }); /* augur-inject:contract-wrap:83028992 */

@@ -4,7 +4,7 @@
 // condition, units). Any change to any of these gives another hash, which voids an approval.
 
 import { createHash } from 'node:crypto';
-import { isJsonObject } from '../../domain/value-node.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 
 export function canonicalJson(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;

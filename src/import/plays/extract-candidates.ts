@@ -4,9 +4,8 @@
 // consolidate or a human. The tactic boundary starts masked (principle 1) until a human decides.
 
 import { createHash } from 'node:crypto';
-import { parseRef } from '../../domain/id.ts';
-import type { Tactic } from '../../domain/documents.ts';
-import type { ReplayRun } from '../../replay/replay-record.ts';
+import { parseRef } from '@ludiars/commentarii-sdk/types';
+import type { ReplayRun, Tactic } from '@ludiars/commentarii-sdk/types';
 import { coversEpisode } from './covers-episode.ts';
 import type { HumanCandidate, HumanCandidates } from './human-candidates.ts';
 import { segmentEpisodes, stepKey, type Episode } from './segment-episodes.ts';

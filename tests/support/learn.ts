@@ -1,20 +1,22 @@
 // Test helpers for the learning loop: the drifted bundle (the sample with values moved on
-// purpose, tests/fixtures/learn/drifted), its hand-written run observations, and temp copies.
+// purpose, tests/fixtures/learn/drifted), its hand-written run observations (the SDK's
+// observation fixtures), and temp copies.
 
 import { cp, mkdtemp, rm } from 'node:fs/promises';
 import { readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createFsBundleSource } from '../../src/adapters/fs/fs-bundle-source.ts';
-import type { LoadResult } from '../../src/bundle/bundle.ts';
-import { loadBundle } from '../../src/bundle/load-bundle.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
+import { loadBundle } from '@ludiars/commentarii-sdk/bundle';
+import { fixtureObservationRunsDirectory } from '@ludiars/commentarii-sdk/fixtures';
 import { parseRunObservations, type RunObservations } from '../../src/learn/observations/run-observations.ts';
 import { learningPolicyOf, type LearningPolicy } from '../../src/learn/policy/learning-policy.ts';
 import { overlaySource, REPO_ROOT, SAMPLE_DIR, schemaRegistry } from './bundles.ts';
 
 export const LEARN_FIXTURES = join(REPO_ROOT, 'tests', 'fixtures', 'learn');
 export const DRIFTED_DIR = join(LEARN_FIXTURES, 'drifted');
-export const RUNS_DIR = join(LEARN_FIXTURES, 'runs');
+export const RUNS_DIR = fixtureObservationRunsDirectory();
 
 export const CLOSE = 'tactic:bestia:close-in-dragonfly';
 export const KITE = 'tactic:bestia:kite-wire-spider';

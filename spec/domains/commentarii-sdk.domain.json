@@ -1,0 +1,22 @@
+{
+  "name": "commentarii-sdk",
+  "description": "@ludiars/commentarii-sdk (packages/sdk): Commentarii が所有する形式と、それを読む部品の公開パッケージ。JSON Schema と ajv の検証器、文書モデルの型、バンドルの読み込みと player ビュー、式言語、replay の読み取りと不変条件・マスク検査、観測境界、攻略本が何を可能に見せるかを読む部品 (knowledge)、両リポが共有するフィクスチャ。公開入口は index とサブパス (schemas / types / bundle / expression / rulebook / replay / observation / knowledge / fixtures) だけ。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)packages/sdk/src/.+\\.ts$" },
+    { "pathPattern": "(^|/)packages/sdk/schema/[^/]+\\.schema\\.json$" },
+    { "pathPattern": "(^|/)packages/sdk/fixtures/.+$" },
+    { "pathPattern": "(^|/)packages/sdk/(package|tsconfig)\\.json$" },
+    { "pathPattern": "(^|/)packages/sdk/contract-runtime\\.(mjs|d\\.mts)$" },
+    { "pathPattern": "(^|/)tests/sdk/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)COMPAT\\.md$" }
+  ],
+  "cardTemplate": "Summarise the \"commentarii-sdk\" domain: schemas + types -> bundle reader / player view -> expression -> replay and observation checks -> knowledge parts -> fixtures, exposed only through the package entries.",
+  "specRefs": [
+    "spec/plan/2026-10-11-ingenium-integrated-design.md §4 §5",
+    "spec/plan/2026-10-11-autoplayer-paradigms-fable.md §10.1 §10.3",
+    "spec/tasks/2026-10-11-ingenium-r0a-commentarii-sdk.md"
+  ],
+  "rationale": "Ingenium (Ig) は Commentarii SDK にだけ一方向に依存する (Ingenium R0-A)。データ形式とマスク原則の構造的担保 (不変条件・観測境界・player ビュー) は原則を所有する Commentarii が持つので、それを 1 つのパッケージに閉じ、src/ からも公開入口だけで使う (tests/sdk/sdk-boundary.test.ts が内部パスの import を検査)。実行時の依存は ajv 系のみ。"
+}

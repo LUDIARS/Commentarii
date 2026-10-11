@@ -7,14 +7,18 @@
 // them on novelty), and `traits.tactic` names the tactic they come from (so the knowledge
 // boundary of that tactic is what the C-18 contract checks).
 
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
-import { matchCondition } from '../match/match-condition.ts';
-import { isTrusted, type Persona } from '../persona/persona.ts';
-import type { EngineWorld } from '../world/engine-world.ts';
-import type { Candidate } from './candidate.ts';
-import { isHeldBack, type RunMemory } from './run-memory.ts';
-import { tacticCandidate } from './tactic-candidates.ts';
-import { deriveVariants, type TacticVariant } from './tactic-variants.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
+import {
+  deriveVariants,
+  isHeldBack,
+  isTrusted,
+  matchCondition,
+  type Persona,
+  type RunMemory,
+  tacticCandidate,
+  type TacticVariant,
+} from '@ludiars/commentarii-sdk/knowledge';
+import type { Candidate, EngineWorld } from '@ludiars/commentarii-sdk/knowledge';
 
 /** Novelty of a variant that was tried before in this run (an untried one scores 1). */
 export const TRIED_VARIANT_NOVELTY = 0.3;

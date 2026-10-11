@@ -8,12 +8,12 @@ import { createRenderTapAdapter } from '../adapters/render-tap/render-tap-adapte
 import { renderTapConfigOf } from '../adapters/render-tap/render-tap-config.ts';
 import { createSimAdapter } from '../adapters/sim/sim-adapter.ts';
 import { createStdioAdapter } from '../adapters/stdio/stdio-adapter.ts';
-import type { Bundle } from '../bundle/bundle.ts';
-import { toPlayerView } from '../bundle/player-view.ts';
+import type { Bundle } from '@ludiars/commentarii-sdk/types';
+import { toPlayerView } from '@ludiars/commentarii-sdk/rulebook';
 import type { EngineIo } from '../cli/engine-io.ts';
 import { deriveSeed } from '../engine/rng.ts';
 import { buildSignatureIndex } from '../render-tap/identify-appearance.ts';
-import type { SchemaRegistry } from '../schema/schema-registry.ts';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import type { RunCommand } from './autoplay-command.ts';
 
 export interface RunAdapterInput {

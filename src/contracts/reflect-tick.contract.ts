@@ -3,8 +3,8 @@
 // success / failure verdict only ends an episode that was open; the state remembers the frame.
 
 import type { ReflectInput, ReflectResult, ReflectState } from '../engine/reflect/reflect-tick.ts';
-import { OVERLAY_LINE_KINDS } from '../engine/reflect/overlay-line.ts';
-import { findMaskedPointers } from '../replay/find-masked-pointers.ts';
+import { OVERLAY_LINE_KINDS } from '@ludiars/commentarii-sdk/knowledge';
+import { findMaskedPointers } from '@ludiars/commentarii-sdk/replay';
 
 export default {
   post: (result: ReflectResult, state: ReflectState, input: ReflectInput) => {

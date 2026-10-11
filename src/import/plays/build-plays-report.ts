@@ -1,6 +1,6 @@
 // Human runs and autoplay runs -> the per-stage comparison of `guide report plays`.
 
-import type { ReplayRun } from '../../replay/replay-record.ts';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
 import type { ClassifiedRuns } from './classify-play-runs.ts';
 import { MAX_ROUTES, type PlaysReport, type RouteCount, type StageComparison, type StageSide, type TimeSpread } from './plays-report.ts';
 import { stageVisits, type StageVisit } from './stage-visits.ts';

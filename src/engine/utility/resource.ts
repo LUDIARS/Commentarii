@@ -1,7 +1,7 @@
 // Resources: a tactic whose measured resource cost self cannot pay scores 0 (1 when it can);
 // gathering scores higher the less self holds.
 
-import { resourceAmount, resourceAmounts } from '../observation/self-readings.ts';
+import { resourceAmount, resourceAmounts } from '@ludiars/commentarii-sdk/knowledge';
 import type { Consideration } from './utility-context.ts';
 
 /** Held amount at which the urge to gather halves. */

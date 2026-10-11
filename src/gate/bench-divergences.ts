@@ -1,7 +1,7 @@
 // The intent verification of a coverage bench, reduced to what the gate compares: how many
 // intended items fell in each class, and which undesirable divergences are open (not accepted).
 
-import type { BenchDivergences } from '../bench/bench-result.ts';
+import type { BenchDivergences } from '@ludiars/commentarii-sdk/types';
 import type { VerifyReport } from '../verify/report/verify-report.ts';
 
 export function benchDivergences(report: VerifyReport): BenchDivergences {

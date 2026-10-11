@@ -1,8 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { Bundle, LoadResult } from '../../src/bundle/bundle.ts';
+import type { Bundle, Intent, LoadResult } from '@ludiars/commentarii-sdk/types';
 import type { Approval } from '../../src/learn/approval/approvals.ts';
-import type { Intent } from '../../src/domain/documents.ts';
 import type { HumanCandidates } from '../../src/import/plays/human-candidates.ts';
 import type { Proposal } from '../../src/learn/consolidate/proposal.ts';
 import { intentTouch } from '../../src/learn/consolidate/intent-touch.ts';

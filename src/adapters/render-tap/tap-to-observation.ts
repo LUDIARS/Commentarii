@@ -5,11 +5,17 @@
 // ambiguous look-alike, count-hash) is observed without an entity ID, which reflect records as
 // an unknown entity. UI bars and numbers go to the places manifest render_tap.ui names.
 
-import type { GuideMap } from '../../domain/documents.ts';
+import type {
+  GuideMap,
+  ObservationFrame,
+  ObservationPurpose,
+  ObservedEntity,
+  ObservedValue,
+  Vector3,
+} from '@ludiars/commentarii-sdk/types';
 import { appearanceKey } from '../../render-tap/identify-appearance.ts';
 import type { Matrix4, TapFrame } from '../../render-tap/render-frame.ts';
 import { selectPlayerDraws, type SeenInstance, type SeenUi } from '../../render-tap/select-player-draws.ts';
-import type { ObservationFrame, ObservationPurpose, ObservedEntity, ObservedValue, Vector3 } from '../../replay/observation-frame.ts';
 import type { RenderTapConfig } from './render-tap-config.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:7e40bc72 */
 import augurContract_32f2ba67 from '../../contracts/tap-to-observation.contract.ts'; /* augur-inject:contract-predicate:b628a795 */

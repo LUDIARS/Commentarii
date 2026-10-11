@@ -4,7 +4,7 @@
 // omniscient mode. A "shot-at" event tells it was attacked this tick (what the fixed tree's dodge
 // transition reads).
 
-import type { ObservationFrame, ObservationMode, ObservedEntity, Vector3 } from '../../replay/observation-frame.ts';
+import type { ObservationFrame, ObservationMode, ObservedEntity, Vector3 } from '@ludiars/commentarii-sdk/types';
 import type { Point } from './sim-layout.ts';
 import { gap } from './sim-motion.ts';
 import type { SimEnemy, SimWorld } from './sim-world.ts';

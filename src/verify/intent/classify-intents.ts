@@ -8,8 +8,7 @@
 // signature become one divergence; those a person already accepted (allowed_divergences) are
 // set apart and not reported again. Omniscient runs never reach here (select-runs.ts).
 
-import type { AllowedDivergence, DivergenceReason, GuideMap, IntendedItem, Intent } from '../../domain/documents.ts';
-import type { PraeformaRef } from '../../praeforma/praeforma-ref.ts';
+import type { AllowedDivergence, DivergenceReason, GuideMap, IntendedItem, Intent, PraeformaRef } from '@ludiars/commentarii-sdk/types';
 import { unwalkableRoute } from '../feasibility/route-reachability.ts';
 import { wilsonInterval } from '../feasibility/sample-evidence.ts';
 import type { StageTrace } from '../runs/stage-trace.ts';

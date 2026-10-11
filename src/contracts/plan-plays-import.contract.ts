@@ -6,7 +6,7 @@
 import { createHmac } from 'node:crypto';
 import type { PlaysImport, PlaysImportRequest } from '../import/plays/plan-plays-import.ts';
 import { readText } from '../import/masters/read-cell.ts';
-import { findMaskedPointers } from '../replay/find-masked-pointers.ts';
+import { findMaskedPointers } from '@ludiars/commentarii-sdk/replay';
 
 const RUN_PATH = /^observations\/human\/([0-9a-f]{16})\/[a-z0-9][a-z0-9_-]*\.jsonl$/;
 

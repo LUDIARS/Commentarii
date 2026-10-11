@@ -1,10 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { Bundle } from '../../../src/bundle/bundle.ts';
-import type { Tactic } from '../../../src/domain/documents.ts';
+import type { Bundle, Tactic } from '@ludiars/commentarii-sdk/types';
 import { generateCandidates } from '../../../src/engine/candidates/generate-candidates.ts';
-import { EMPTY_RUN_MEMORY } from '../../../src/engine/candidates/run-memory.ts';
-import { buildEngineWorld } from '../../../src/engine/world/build-engine-world.ts';
+import { buildEngineWorld, EMPTY_RUN_MEMORY } from '@ludiars/commentarii-sdk/knowledge';
 import { loadSample } from '../../support/bundles.ts';
 import { BEETLE, enemy, frame, SPIDER, testPersona } from '../../support/personas.ts';
 

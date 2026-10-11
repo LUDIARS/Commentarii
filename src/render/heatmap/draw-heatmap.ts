@@ -3,7 +3,7 @@
 // moves are lines as thick as their count (run-path), deaths are red marks, and the intent's
 // route (dashed, intent-route) and forbid areas (red frame, forbid) are drawn over every panel.
 
-import type { GuideMap } from '../../domain/documents.ts';
+import type { GuideMap } from '@ludiars/commentarii-sdk/types';
 import { layoutMap, type NodeShape, type PanelBox } from './map-layout.ts';
 import { element, escapeXml, heatColor, svgDocument, text } from './svg.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:7b6c9196 */

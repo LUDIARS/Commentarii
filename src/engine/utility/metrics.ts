@@ -1,8 +1,8 @@
 // Measured results of a tactic (design 4.4 metrics): half success rate, half the time /
 // resource / risk figures weighted by the manifest's learning.policy.rewrite.metric_weights.
 
-import type { TacticMetrics } from '../../domain/documents.ts';
-import type { MetricWeights } from '../world/engine-world.ts';
+import type { TacticMetrics } from '@ludiars/commentarii-sdk/types';
+import type { MetricWeights } from '@ludiars/commentarii-sdk/knowledge';
 import type { Consideration } from './utility-context.ts';
 
 const TIME_SCALE_SEC = 10;

@@ -5,11 +5,10 @@
 //   resource      per resource, the decreases added up (what was spent, not the net change).
 //   nodes         the map nodes passed, in order of first visit (checked against `forbid`).
 
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
 import type { RunningPlan } from '../engine-state.ts';
-import type { Bindings } from '../match/bindings.ts';
-import { hpRatio, resourceAmounts } from '../observation/self-readings.ts';
-import type { LineVariant } from './overlay-line.ts';
+import type { Bindings, LineVariant } from '@ludiars/commentarii-sdk/knowledge';
+import { hpRatio, resourceAmounts } from '@ludiars/commentarii-sdk/knowledge';
 
 const PERCENT = 100;
 

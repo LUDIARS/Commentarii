@@ -1,9 +1,8 @@
 // ルール: expression, variable table and the check calculation with the example values.
 
-import type { Bundle } from '../bundle/bundle.ts';
-import type { Rule } from '../domain/documents.ts';
-import { evaluateExpression } from '../domain/expression/evaluate-expression.ts';
-import { localize } from '../domain/localize.ts';
+import type { Bundle, Rule } from '@ludiars/commentarii-sdk/types';
+import { evaluateExpression } from '@ludiars/commentarii-sdk/expression';
+import { localize } from '@ludiars/commentarii-sdk/types';
 import { codeBlock, document, table } from '../markdown/markdown.ts';
 
 function checkCalculation(rule: Rule): string {

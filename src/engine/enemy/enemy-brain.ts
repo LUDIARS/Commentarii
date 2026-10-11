@@ -4,8 +4,7 @@
 // sees only what is in its sight; an all-knowing enemy must be asked for (mode omniscient).
 // No enemy-specific code: the difference is the guide (actors' viewpoint) and the adapter.
 
-import type { ReplayAction } from '../../replay/replay-action.ts';
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
+import type { ObservationFrame, ReplayAction } from '@ludiars/commentarii-sdk/types';
 import { createUtilityBtDecider, type EngineSetup } from '../utility-bt-decider.ts';
 
 export interface EnemyBrain {

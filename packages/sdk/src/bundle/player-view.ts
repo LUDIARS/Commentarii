@@ -4,8 +4,8 @@
 
 import { isJsonObject } from '../domain/value-node.ts';
 import type { Bundle, Located, StageFiles } from './bundle.ts';
-import { contract } from '#contract-runtime'; /* augur-inject:import:57a6a525 */
-import augurContract_6798a8ca from '../contracts/to-player-view.contract.ts'; /* augur-inject:contract-predicate:bc66eeb3 */
+import { contract } from '#contract-runtime'; /* augur-inject:import:e726a455 */
+import augurContract_a1837d49 from '../contracts/to-player-view.contract.ts'; /* augur-inject:contract-predicate:802ff3b3 */
 
 function isMaskedObject(value: unknown): boolean {
   return isJsonObject(value) && value.knowledge === 'masked';
@@ -62,4 +62,4 @@ export function toPlayerView(bundle: Bundle): Bundle {
   };
 }
 // @ts-expect-error augur-inject
-toPlayerView = contract(toPlayerView, { ...augurContract_6798a8ca, contractId: 'C-3', mode: 'observe', sample: 1, where: 'src/bundle/player-view.ts:47', rule: 'contract-wrap', id: '6798a8ca' }); /* augur-inject:contract-wrap:6798a8ca */
+toPlayerView = contract(toPlayerView, { ...augurContract_a1837d49, contractId: 'C-3', mode: 'observe', sample: 1, where: 'packages/sdk/src/bundle/player-view.ts:47', rule: 'contract-wrap', id: 'a1837d49' }); /* augur-inject:contract-wrap:a1837d49 */

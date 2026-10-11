@@ -2,7 +2,7 @@
 // already holds from another source (human, observed) is not overwritten.
 
 import { basename } from 'node:path';
-import { isJsonObject } from '../domain/value-node.ts';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import/import-error.ts';
 import { buildGuideMap } from '../import/map/build-guide-map.ts';
 import type { MapImportRequest, NavgraphInput, ZonesInput } from '../import/map/map-request.ts';
@@ -10,7 +10,7 @@ import { parseGridCells } from '../import/map/parse-grid-cells.ts';
 import { parseJsonInput } from '../import/parse-json-input.ts';
 import { parseMapping } from '../import/parse-mapping.ts';
 import { assertSchema } from '../import/validate-input.ts';
-import type { SchemaRegistry } from '../schema/schema-registry.ts';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { applyFileChanges } from './apply-file-changes.ts';
 import { EXIT_OK, type CliIo } from './cli-io.ts';
 import { openImportTarget, type ImportTarget } from './open-import-target.ts';

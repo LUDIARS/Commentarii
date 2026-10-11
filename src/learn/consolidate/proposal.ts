@@ -3,7 +3,7 @@
 // `add` at the root). `auto` proposals may be applied by --apply; `pending` ones wait for a
 // person (approval), with the reason.
 
-import type { TacticMetrics } from '../../domain/documents.ts';
+import type { TacticMetrics } from '@ludiars/commentarii-sdk/types';
 import type { JsonPatchOperation } from '../patch/json-patch.ts';
 
 export type ProposalKind = 'rewrite' | 'promotion' | 'entity-draft' | 'human-tactic';

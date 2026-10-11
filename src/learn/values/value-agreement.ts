@@ -3,7 +3,7 @@
 // estimate agrees, each run counted once (its mean estimate), so a long run cannot outvote
 // several short ones (promotion.discoverable_requires counts player runs).
 
-import type { ValueEstimate } from '../overlay/overlay.ts';
+import type { ValueEstimate } from '@ludiars/commentarii-sdk/types';
 import { round3 } from '../stats/round.ts';
 
 export const AGREEMENT_TOLERANCE = 0.05;

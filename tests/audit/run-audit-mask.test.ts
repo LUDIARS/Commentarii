@@ -6,7 +6,7 @@ import type { AuditReport } from '../../src/audit/audit-report.ts';
 import { auditExitCode } from '../../src/audit/audit-exit-code.ts';
 import { openReplayFile } from '../../src/adapters/fs/replay-open-file.ts';
 import { fsScanSource } from '../../src/audit/fs-scan-source.ts';
-import type { LoadResult } from '../../src/bundle/bundle.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
 import type { CliIo } from '../../src/cli/cli-io.ts';
 import { runCli } from '../../src/cli/run-cli.ts';
 import { testImportIo } from '../support/import-io.ts';

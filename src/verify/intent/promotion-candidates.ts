@@ -3,8 +3,7 @@
 // A tactic is learned when the bundle says so, or when it is an exploration variant
 // (<tactic>--<mutation>) the bundle does not hold at all.
 
-import type { Tactic } from '../../domain/documents.ts';
-import type { DivergenceSignature } from '../../domain/documents.ts';
+import type { DivergenceSignature, Tactic } from '@ludiars/commentarii-sdk/types';
 
 export interface PromotionCandidate {
   readonly tactic: string;

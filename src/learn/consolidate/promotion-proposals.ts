@@ -6,9 +6,7 @@
 // proposal moves the value from the .masked.json to the entity file as discoverable, keeping
 // its value and source kind and adding the evidence runs to the source ref, for a person to approve.
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import type { GuideValue } from '../../domain/documents.ts';
-import type { Overlay, OverlayValue } from '../overlay/overlay.ts';
+import type { Bundle, GuideValue, Overlay, OverlayValue } from '@ludiars/commentarii-sdk/types';
 import { pointerSegment, type JsonPatchOperation } from '../patch/json-patch.ts';
 import type { LearningPolicy } from '../policy/learning-policy.ts';
 import { resolveQuantity, type CanonicalValue } from '../values/resolve-quantity.ts';

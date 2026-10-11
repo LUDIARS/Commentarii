@@ -1,13 +1,9 @@
 {
   "name": "guide-bundle",
-  "description": "攻略本バンドルの正本モデル: 共通 JSON Schema、値・知識境界・ID・式評価の純関数、バンドルのローダ (BundleSource ポート + fs アダプタ)、参照索引、masked を除いた player view。",
+  "description": "攻略本バンドルの正本モデル: 共通 JSON Schema、値・知識境界・ID・式評価の純関数、バンドルのローダ (BundleSource ポート + fs アダプタ)、参照索引、masked を除いた player view。スキーマ・純関数・ローダ・索引・player view の実装は commentarii-sdk (packages/sdk) に移り (Ingenium R0-A)、この domain は fs アダプタ・サンプル・テストを持つ。",
   "presetRules": [],
   "templateRules": [],
   "membership": [
-    { "pathPattern": "(^|/)schema/[^/]+\\.schema\\.json$" },
-    { "pathPattern": "(^|/)src/domain/.+\\.ts$" },
-    { "pathPattern": "(^|/)src/schema/[^/]+\\.ts$" },
-    { "pathPattern": "(^|/)src/bundle/[^/]+\\.ts$" },
     { "pathPattern": "(^|/)src/adapters/fs/[^/]+\\.ts$" },
     { "pathPattern": "(^|/)tests/domain/.+\\.test\\.ts$" },
     { "pathPattern": "(^|/)tests/schema/[^/]+\\.test\\.ts$" },

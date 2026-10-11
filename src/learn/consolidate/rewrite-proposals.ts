@@ -5,10 +5,8 @@
 // otherwise it waits for approval (relax variants always wait: they change the condition).
 // Already applied or already superseded rewrites are skipped.
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import type { TacticMetrics } from '../../domain/documents.ts';
-import { parseRef } from '../../domain/id.ts';
-import type { Overlay, OverlayRewrite } from '../overlay/overlay.ts';
+import type { Bundle, Overlay, OverlayRewrite, TacticMetrics } from '@ludiars/commentarii-sdk/types';
+import { parseRef } from '@ludiars/commentarii-sdk/types';
 import type { LearningPolicy } from '../policy/learning-policy.ts';
 import { intentTouch } from './intent-touch.ts';
 import type { ProposalDraft } from './proposal.ts';

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { GuideMap } from '../../src/domain/documents.ts';
+import type { GuideMap } from '@ludiars/commentarii-sdk/types';
 import { drawHeatmap } from '../../src/render/heatmap/draw-heatmap.ts';
 import { drawScatter } from '../../src/render/heatmap/draw-scatter.ts';
 import { wellFormedProblems } from '../../src/render/heatmap/well-formed.ts';

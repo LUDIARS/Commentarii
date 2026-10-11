@@ -1,8 +1,7 @@
 // アイテム / スキル / アクター表.
 
-import type { Bundle } from '../bundle/bundle.ts';
-import type { Entity } from '../domain/documents.ts';
-import { localize } from '../domain/localize.ts';
+import type { Bundle, Entity } from '@ludiars/commentarii-sdk/types';
+import { localize } from '@ludiars/commentarii-sdk/types';
 import { document, table } from '../markdown/markdown.ts';
 import { formatValue, KNOWLEDGE_LEGEND } from './format-value.ts';
 

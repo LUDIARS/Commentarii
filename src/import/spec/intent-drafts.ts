@@ -3,7 +3,7 @@
 // number the document does not contain (time range_sec) is dropped; the intent is left out
 // when no item survives.
 
-import type { IntendedItem, Intent } from '../../domain/documents.ts';
+import type { IntendedItem, Intent } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import-error.ts';
 import type { DraftKindSpec } from './draft-kind.ts';
 import { describeViolations, draftSource, readReplyRecords } from './draft-records.ts';

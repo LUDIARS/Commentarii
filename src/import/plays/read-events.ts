@@ -2,7 +2,7 @@
 // (under the guide's kind); any other name is dropped and counted, since a free event name
 // could carry anything.
 
-import type { ObservedEvent } from '../../replay/observation-frame.ts';
+import type { ObservedEvent } from '@ludiars/commentarii-sdk/types';
 import type { MasterRow } from '../masters/master-table.ts';
 import { countIn, type ImportTally } from './import-tally.ts';
 import type { PlaysMapping } from './plays-mapping.ts';

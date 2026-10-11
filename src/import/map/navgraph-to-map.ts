@@ -1,6 +1,6 @@
 // Navgraph -> map.json: nodes keep their positions, edges and annotations are normalized.
 
-import type { GuideMap } from '../../domain/documents.ts';
+import type { GuideMap } from '@ludiars/commentarii-sdk/types';
 import { assertDeclaredCoordinates, assertPoint } from './check-coordinates.ts';
 import { convertAnnotations, convertEdges, knowledgeOr, toNodeId } from './convert-links.ts';
 import type { MapImportRequest } from './map-request.ts';

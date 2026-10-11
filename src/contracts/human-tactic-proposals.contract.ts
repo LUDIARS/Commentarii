@@ -2,7 +2,7 @@
 // tactics/ file holding a non-draft learned tactic, rests on the candidate's run IDs, and no
 // proposal is made for a tactic ID the bundle already has.
 
-import type { Bundle } from '../bundle/bundle.ts';
+import type { Bundle } from '@ludiars/commentarii-sdk/types';
 import type { HumanCandidates } from '../import/plays/human-candidates.ts';
 import type { ProposalDraft } from '../learn/consolidate/proposal.ts';
 

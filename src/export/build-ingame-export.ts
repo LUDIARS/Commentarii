@@ -5,10 +5,9 @@
 // unlocked, e.g. "enemy:g:x.stats.hp"). Tactics appear as hints under the same rule, and an
 // intent's teach item becomes a tutorial line only when the item itself is shown (or unlocked).
 
-import type { Bundle, LoadResult } from '../bundle/bundle.ts';
-import { toPlayerView } from '../bundle/player-view.ts';
-import type { GuideValue, LocalizedText } from '../domain/documents.ts';
-import { isJsonObject } from '../domain/value-node.ts';
+import type { Bundle, GuideValue, LoadResult, LocalizedText } from '@ludiars/commentarii-sdk/types';
+import { toPlayerView } from '@ludiars/commentarii-sdk/rulebook';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 import { contract } from '#contract-runtime'; /* augur-inject:import:2a3d880c */
 import augurContract_96eb191f from '../contracts/build-ingame-export.contract.ts'; /* augur-inject:contract-predicate:d45744e6 */
 

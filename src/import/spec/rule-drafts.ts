@@ -3,7 +3,7 @@
 // range / example, or an expression literal) is dropped whole: without that number it cannot
 // be evaluated, and keeping the model's estimate would break principle 3.
 
-import type { Rule } from '../../domain/documents.ts';
+import type { Rule } from '@ludiars/commentarii-sdk/types';
 import type { DraftKindSpec } from './draft-kind.ts';
 import { describeViolations, draftSource, readReplyRecords } from './draft-records.ts';
 import type { DraftDocument, SkippedDraft } from './draft-request.ts';

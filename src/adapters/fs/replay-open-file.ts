@@ -1,8 +1,7 @@
 // Composes the file system with the replay parser: replay/<run-id>.jsonl on disk -> ReplayLoad.
 
 import { readFile } from 'node:fs/promises';
-import { parseReplay, type ReplayLoad } from '../../replay/parse-replay.ts';
-import { createReplaySchema, type ReplaySchema } from '../../replay/replay-schema.ts';
+import { createReplaySchema, parseReplay, type ReplayLoad, type ReplaySchema } from '@ludiars/commentarii-sdk/replay';
 import { readReplaySchemaDocuments } from './replay-schema-documents.ts';
 
 let schema: Promise<ReplaySchema> | undefined;

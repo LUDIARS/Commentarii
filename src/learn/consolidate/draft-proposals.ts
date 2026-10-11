@@ -2,8 +2,7 @@
 // entities/<group>/<slug>.json, never applied automatically (a person names it and decides its
 // values). Unknowns the bundle meanwhile describes, or whose file exists, are skipped.
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import type { Overlay } from '../overlay/overlay.ts';
+import type { Bundle, Overlay } from '@ludiars/commentarii-sdk/types';
 import type { ProposalDraft } from './proposal.ts';
 
 export function draftProposals(bundle: Bundle, overlay: Overlay): ProposalDraft[] {

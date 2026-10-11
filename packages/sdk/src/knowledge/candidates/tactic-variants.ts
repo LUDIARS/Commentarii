@@ -13,8 +13,8 @@
 import { isDeepStrictEqual } from 'node:util';
 import type { LocalizedText, Tactic } from '../../domain/documents.ts';
 import { isJsonObject } from '../../domain/value-node.ts';
-import { contract } from '#contract-runtime'; /* augur-inject:import:9eabdc2e */
-import augurContract_fe88ecfc from '../../contracts/derive-variant.contract.ts'; /* augur-inject:contract-predicate:165c5463 */
+import { contract } from '#contract-runtime'; /* augur-inject:import:55b8c7ef */
+import augurContract_e85fa94e from '../../contracts/derive-variant.contract.ts'; /* augur-inject:contract-predicate:a1804df5 */
 
 export const TACTIC_MUTATIONS = ['reorder', 'relax', 'substitute'] as const;
 export type TacticMutation = (typeof TACTIC_MUTATIONS)[number];
@@ -115,7 +115,7 @@ export function deriveVariant(origin: Tactic, mutation: TacticMutation): TacticV
   return { tactic, of: origin.id, mutation };
 }
 // @ts-expect-error augur-inject
-deriveVariant = contract(deriveVariant, { ...augurContract_fe88ecfc, contractId: 'C-34', mode: 'observe', sample: 1, where: 'src/engine/candidates/tactic-variants.ts:100', rule: 'contract-wrap', id: 'fe88ecfc' }); /* augur-inject:contract-wrap:fe88ecfc */
+deriveVariant = contract(deriveVariant, { ...augurContract_e85fa94e, contractId: 'C-34', mode: 'observe', sample: 1, where: 'packages/sdk/src/knowledge/candidates/tactic-variants.ts:100', rule: 'contract-wrap', id: 'e85fa94e' }); /* augur-inject:contract-wrap:e85fa94e */
 
 /** Every variant of `origin`, in TACTIC_MUTATIONS order. */
 export function deriveVariants(origin: Tactic): TacticVariant[] {

@@ -3,9 +3,9 @@
 // Every page except masked.md is rendered from the player view (toPlayerView), so masked
 // data never reaches them, whatever the options. masked.md exists only with knowledge=full.
 
-import type { LoadResult } from '../bundle/bundle.ts';
-import { toPlayerView } from '../bundle/player-view.ts';
-import { localize } from '../domain/localize.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
+import { toPlayerView } from '@ludiars/commentarii-sdk/rulebook';
+import { localize } from '@ludiars/commentarii-sdk/types';
 import { document } from '../markdown/markdown.ts';
 import { buildKnowledgeReport } from '../report/build-knowledge-report.ts';
 import { formatKnowledgeMarkdown } from '../report/format-knowledge-markdown.ts';

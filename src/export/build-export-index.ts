@@ -2,8 +2,7 @@
 // Built from the documents that are being exported, so a player export never indexes a
 // record the player view dropped.
 
-import type { GuideMap } from '../domain/documents.ts';
-import type { ExportedDocuments, ExportIndex, IndexEntry } from './exported-bundle.ts';
+import type { ExportedDocuments, ExportIndex, GuideMap, IndexEntry } from '@ludiars/commentarii-sdk/types';
 
 function adjacencyOf(map: GuideMap): Record<string, string[]> {
   const neighbours = new Map<string, Set<string>>(map.nodes.map((node) => [node.id, new Set<string>()]));

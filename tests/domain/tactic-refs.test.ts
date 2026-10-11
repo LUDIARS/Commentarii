@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { Tactic } from '../../src/domain/documents.ts';
-import { collectTacticRefs } from '../../src/domain/tactic-refs.ts';
+import type { Tactic } from '@ludiars/commentarii-sdk/types';
+import { collectTacticRefs } from '@ludiars/commentarii-sdk/types';
 
 test('references come from when / do / expect / because, bindings are ignored', () => {
   const tactic: Tactic = {

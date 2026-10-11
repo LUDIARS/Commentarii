@@ -3,8 +3,7 @@
 // person may have edited it by hand), never silently dropped.
 
 import { join } from 'node:path';
-import type { DocumentSchemaName } from '../../schema/schema-names.ts';
-import type { SchemaRegistry, SchemaViolation } from '../../schema/schema-registry.ts';
+import type { DocumentSchemaName, SchemaRegistry, SchemaViolation } from '@ludiars/commentarii-sdk/schemas';
 import { FEASIBILITY_DIRECTORY, type FeasibilityDocument } from '../feasibility/feasibility-document.ts';
 import { DIVERGENCES_PATH, type DivergenceStore } from '../intent/divergence-store.ts';
 import { VerifyError } from '../verify-error.ts';

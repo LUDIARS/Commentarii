@@ -4,8 +4,8 @@
 import { callBuiltin } from './builtins.ts';
 import { ExpressionError } from './expression-error.ts';
 import { parseExpression, type Expr } from './parse.ts';
-import { contract } from '#contract-runtime'; /* augur-inject:import:faf88dc9 */
-import augurContract_a547f417 from '../../contracts/evaluate-expression.contract.ts'; /* augur-inject:contract-predicate:fdb6321a */
+import { contract } from '#contract-runtime'; /* augur-inject:import:da37a26e */
+import augurContract_a8102f52 from '../../contracts/evaluate-expression.contract.ts'; /* augur-inject:contract-predicate:22ed01a9 */
 
 export type Variables = Readonly<Record<string, number>>;
 
@@ -43,4 +43,4 @@ export function evaluateExpression(source: string, variables: Variables): number
   return result;
 }
 // @ts-expect-error augur-inject
-evaluateExpression = contract(evaluateExpression, { ...augurContract_a547f417, contractId: 'C-2', mode: 'observe', sample: 1, where: 'src/domain/expression/evaluate-expression.ts:38', rule: 'contract-wrap', id: 'a547f417' }); /* augur-inject:contract-wrap:a547f417 */
+evaluateExpression = contract(evaluateExpression, { ...augurContract_a8102f52, contractId: 'C-2', mode: 'observe', sample: 1, where: 'packages/sdk/src/domain/expression/evaluate-expression.ts:38', rule: 'contract-wrap', id: 'a8102f52' }); /* augur-inject:contract-wrap:a8102f52 */

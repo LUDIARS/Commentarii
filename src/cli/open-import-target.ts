@@ -1,7 +1,7 @@
 // The bundle an import writes into: its game ID and coordinates (from the manifest) and the
 // current content of every file, so that a re-import can merge instead of overwrite.
 
-import type { Manifest } from '../domain/documents.ts';
+import type { Manifest } from '@ludiars/commentarii-sdk/types';
 import { ImportError } from '../import/import-error.ts';
 import type { CliIo } from './cli-io.ts';
 

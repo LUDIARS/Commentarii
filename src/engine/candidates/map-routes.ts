@@ -1,7 +1,7 @@
 // Breadth-first search over a stage's node adjacency: the nearest node (by hops) that
 // satisfies a predicate. Ties go to adjacency order (sorted IDs), so the result is stable.
 
-import type { StageView } from '../world/engine-world.ts';
+import type { StageView } from '@ludiars/commentarii-sdk/knowledge';
 
 export function nearestNode(stage: StageView, from: string | undefined, accept: (node: string) => boolean): string | undefined {
   if (from === undefined || !stage.adjacency.has(from)) return stage.nodes.find(accept);

@@ -2,8 +2,8 @@
 // fixes its shape; a bundle without it cannot be learned from, which is an error rather than
 // a silent default (coding conventions 6: no fallback on a missing setting).
 
-import type { Manifest } from '../../domain/documents.ts';
-import { isJsonObject } from '../../domain/value-node.ts';
+import type { Manifest } from '@ludiars/commentarii-sdk/types';
+import { isJsonObject } from '@ludiars/commentarii-sdk/types';
 import { LearnError } from '../learn-error.ts';
 
 export interface MetricWeights {

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { isDeepStrictEqual } from 'node:util';
-import { buildEngineWorld } from '../../src/engine/world/build-engine-world.ts';
+import { buildEngineWorld } from '@ludiars/commentarii-sdk/knowledge';
 import { ingestRuns } from '../../src/learn/ingest/ingest-runs.ts';
 import { applyOverlay } from '../../src/learn/overlay/apply-overlay.ts';
 import { testPersona } from '../support/personas.ts';

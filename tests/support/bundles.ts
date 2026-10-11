@@ -4,10 +4,10 @@ import { join } from 'node:path';
 import { createFsBundleSource } from '../../src/adapters/fs/fs-bundle-source.ts';
 import { findPackageRoot } from '../../src/adapters/fs/package-root.ts';
 import { readSchemaDocuments } from '../../src/adapters/fs/read-schema-documents.ts';
-import type { LoadResult } from '../../src/bundle/bundle.ts';
-import type { BundleSource } from '../../src/bundle/bundle-source.ts';
-import { loadBundle } from '../../src/bundle/load-bundle.ts';
-import { createSchemaRegistry, type SchemaRegistry } from '../../src/schema/schema-registry.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
+import type { BundleSource } from '@ludiars/commentarii-sdk/bundle';
+import { loadBundle } from '@ludiars/commentarii-sdk/bundle';
+import { createSchemaRegistry, type SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 
 export const REPO_ROOT = findPackageRoot(import.meta.url);
 export const SAMPLE_DIR = join(REPO_ROOT, 'samples', 'bestia');

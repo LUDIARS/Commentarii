@@ -3,7 +3,7 @@
 // / node resolved to a guide ID. An empty or unmapped input, or an operand that does not
 // resolve, records `wait 0` (counted), so no raw game string reaches the action.
 
-import type { ActionOperand, ReplayAction } from '../../replay/replay-action.ts';
+import type { ActionOperand, ReplayAction } from '@ludiars/commentarii-sdk/types';
 import type { MasterRow } from '../masters/master-table.ts';
 import { readText } from '../masters/read-cell.ts';
 import { countIn, type ImportTally } from './import-tally.ts';

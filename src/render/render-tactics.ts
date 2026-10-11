@@ -1,8 +1,7 @@
 // 定石一覧 (実測つき) and the steps of each tactic.
 
-import type { Bundle } from '../bundle/bundle.ts';
-import type { Tactic } from '../domain/documents.ts';
-import { localize } from '../domain/localize.ts';
+import type { Bundle, Tactic } from '@ludiars/commentarii-sdk/types';
+import { localize } from '@ludiars/commentarii-sdk/types';
 import { codeBlock, document, percent, table } from '../markdown/markdown.ts';
 
 function metricsCells(tactic: Tactic): string[] {

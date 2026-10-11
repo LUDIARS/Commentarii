@@ -1,6 +1,6 @@
 // V07: a value drafted by an LLM stays draft until a human or a master source replaces it.
 
-import { findValueNodes, isJsonObject } from '../../domain/value-node.ts';
+import { findValueNodes, isJsonObject } from '@ludiars/commentarii-sdk/types';
 import { error, type Check, type Finding } from '../check.ts';
 
 export const v07LlmDraft: Check = {

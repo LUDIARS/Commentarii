@@ -4,7 +4,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { ListedFiles, VerifyIo } from '../../verify/cli/verify-io.ts';
-import { createSchemaRegistry, type SchemaRegistry } from '../../schema/schema-registry.ts';
+import { createSchemaRegistry, type SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { readSchemaDocuments } from './read-schema-documents.ts';
 import { replaySchema } from './replay-open-file.ts';
 

@@ -1,8 +1,7 @@
 // Input of guide import map after parsing: the source map in one of three shapes, plus the
 // stage and the manifest coordinates it has to agree with.
 
-import type { AnnotationKind, LocalizedText, Manifest } from '../../domain/documents.ts';
-import type { Knowledge } from '../../domain/knowledge.ts';
+import type { AnnotationKind, Knowledge, LocalizedText, Manifest } from '@ludiars/commentarii-sdk/types';
 import type { GridMapping } from '../mapping.ts';
 
 export type Coordinates = Manifest['coordinates'];

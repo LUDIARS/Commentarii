@@ -4,14 +4,11 @@
 // clearly better comes up). Sorted by ID so the decision log and tie-breaking do not depend
 // on generation order.
 
-import type { ObservationFrame } from '../../replay/observation-frame.ts';
-import type { Persona } from '../persona/persona.ts';
-import type { EngineWorld } from '../world/engine-world.ts';
-import type { Candidate } from './candidate.ts';
+import type { ObservationFrame } from '@ludiars/commentarii-sdk/types';
+import type { Candidate, EngineWorld, Persona, RunMemory } from '@ludiars/commentarii-sdk/knowledge';
 import { exploreCandidates } from './explore-candidates.ts';
 import { genericCandidates } from './generic-candidates.ts';
-import type { RunMemory } from './run-memory.ts';
-import { tacticCandidates } from './tactic-candidates.ts';
+import { tacticCandidates } from '@ludiars/commentarii-sdk/knowledge';
 import { variantCandidates } from './variant-candidates.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:49ae8bde */
 import augurContract_be9fda07 from '../../contracts/generate-candidates.contract.ts'; /* augur-inject:contract-predicate:a66c9057 */

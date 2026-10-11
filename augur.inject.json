@@ -1,7 +1,7 @@
 {
   "service": "commentarii",
-  "include": ["src/**/*.ts"],
-  "exclude": ["**/*.test.ts", "src/contracts/**"],
+  "include": ["src/**/*.ts", "packages/sdk/src/**/*.ts"],
+  "exclude": ["**/*.test.ts", "src/contracts/**", "packages/sdk/src/contracts/**"],
   "runtime": {
     "autoImport": false,
     "entrypoints": ["src/cli/main.ts"]

@@ -3,7 +3,7 @@
 //   attack   an enemy instance within range when the cooldown allows; a dodging enemy is missed
 //   wait, and verbs the sim has nothing for (use_item / use_skill / interact / custom), do nothing.
 
-import type { ActionOperand, ReplayAction } from '../../replay/replay-action.ts';
+import type { ActionOperand, ReplayAction } from '@ludiars/commentarii-sdk/types';
 import type { Point } from './sim-layout.ts';
 import { gap, stepToward } from './sim-motion.ts';
 import { damageOf, statsOf } from './sim-rules.ts';

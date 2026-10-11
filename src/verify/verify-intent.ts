@@ -3,11 +3,9 @@
 // merged divergence store. Omniscient runs are only listed (principle 2). Draft intents (LLM
 // drafts) are not verified against.
 
-import type { Bundle, LoadResult, StageFiles } from '../bundle/bundle.ts';
-import { toPlayerView } from '../bundle/player-view.ts';
-import type { Intent } from '../domain/documents.ts';
-import { buildEngineWorld } from '../engine/world/build-engine-world.ts';
-import type { ReplayRun } from '../replay/replay-record.ts';
+import type { Bundle, Intent, LoadResult, ReplayRun, StageFiles } from '@ludiars/commentarii-sdk/types';
+import { toPlayerView } from '@ludiars/commentarii-sdk/rulebook';
+import { buildEngineWorld } from '@ludiars/commentarii-sdk/knowledge';
 import { buildFeasibility } from './feasibility/build-feasibility.ts';
 import { feasibilityPath, type FeasibilityDocument } from './feasibility/feasibility-document.ts';
 import { thresholdsOf } from './feasibility/thresholds.ts';

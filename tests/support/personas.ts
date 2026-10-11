@@ -2,8 +2,8 @@
 // observation frame of the sample's dome arena.
 
 import { loadPersona } from '../../src/adapters/fs/load-persona.ts';
-import type { Persona } from '../../src/engine/persona/persona.ts';
-import type { ObservationFrame, ObservedEntity } from '../../src/replay/observation-frame.ts';
+import type { Persona } from '@ludiars/commentarii-sdk/knowledge';
+import type { ObservationFrame, ObservedEntity } from '@ludiars/commentarii-sdk/types';
 import { SAMPLE_DIR } from './bundles.ts';
 
 export async function shippedPersona(slug: string): Promise<Persona> {

@@ -24,12 +24,13 @@
 
 | 置き場所 | 中身 |
 |---|---|
-| `schema/` | JSON Schema (draft 2020-12)。`value` (共通フィールド) / `manifest` / `glossary` / `entity` / `entity.masked` / `stage` / `map` / `events` / `rule` / `state` / `tactic` / `intent` / `observation`、ID 形式は `id` |
+| `packages/sdk/` | `@ludiars/commentarii-sdk` (下の「SDK」節)。形式・検査・式言語・知識を読む部品と、両リポが共有するフィクスチャ |
+| `packages/sdk/schema/` | JSON Schema (draft 2020-12)。`value` (共通フィールド) / `manifest` / `glossary` / `entity` / `entity.masked` / `stage` / `map` / `events` / `rule` / `state` / `tactic` / `intent` / `observation`、ID 形式は `id` |
 | `samples/bestia/` | Bestia の archetype を手で起こした最小バンドル (敵 3・ステージ 1・ルール 2・状態機械 1・定石 2・意図 1・masked ファイル 1) |
 | `spec/feature/validate-checks.md` | `validate` の検査項目 V01〜V12 の固定リスト |
 | `samples/bestia/masters/` | 取り込みの入力例 (`archetypes.csv` / `mapping.json` / `ring.grid.txt`)。`validate` の対象外 |
 | `prompts/` | `import spec` / `intent import` の LLM プロンプト |
-| `personas/` | ゲーム非依存のペルソナ (`schema/persona.schema.json`)。バンドル内 `personas/` の同名が優先 |
+| `personas/` | ゲーム非依存のペルソナ (`packages/sdk/schema/persona.schema.json`)。バンドル内 `personas/` の同名が優先 |
 | `adapter/cpp/` | プロセス分離アダプタの C++ 最小ヘッダ (宣言のみ、ビルドしない) |
 
 ## 使い方
@@ -102,13 +103,35 @@ node dist/cli/main.js report feasibility --game <bundle>
 ## 開発
 
 ```sh
-npm run typecheck        # tsc --noEmit (src + tests)
-npm test                 # tsc で build-test/ に出力して node --test
+npm run typecheck        # tsc --noEmit (src + tests) と SDK 単独の型検査 (tsc -p packages/sdk/tsconfig.json --noEmit)
+npm test                 # SDK を packages/sdk/dist に build、src + tests を build-test/ に出力して node --test
+npm run build            # SDK → dist/ (guide CLI) の順に build
 ```
 
-- `src/domain/` 値・知識境界・ID・式評価の純関数 / `src/schema/` スキーマ検証 / `src/bundle/` ローダ・参照索引・player view / `src/validate/checks/` 検査項目 (1 ファイル 1 項目) / `src/render/` / `src/report/` / `src/cli/` / `src/import/` 取り込み (masters / map / spec) / `src/adapters/fs/` ファイル I/O / `src/adapters/sqlite/` `node:sqlite` / `src/adapters/llm/` `claude -p`。`tests/` は `src/` と対。
-- 受け入れ条件は Augur の契約 (`augur.contracts.json`、述語は `src/contracts/`)。`npm test` は `VESTIGIUM_LOGS_DIR=<repo>/logs` で契約の観測を記録する。CLI を普段使うときは記録しない。
-- 復旧: ビルド成果物がおかしいときは `dist/` と `build-test/` を消して `npm run build` / `npm test` をやり直す。生成物はどちらも git 管理外。
+- `packages/sdk/src/` SDK (値・知識境界・ID・式評価の純関数、スキーマ検証、ローダ・参照索引・player view、replay の読み取りと不変条件、観測境界、knowledge) / `src/validate/checks/` 検査項目 (1 ファイル 1 項目) / `src/render/` / `src/report/` / `src/cli/` / `src/import/` 取り込み (masters / map / spec) / `src/adapters/fs/` ファイル I/O / `src/adapters/sqlite/` `node:sqlite` / `src/adapters/llm/` `claude -p`。`tests/` は `src/` と対。
+- 受け入れ条件は Augur の契約 (`augur.contracts.json`、述語は `src/contracts/` と SDK 側の `packages/sdk/src/contracts/`。契約ランタイムは `packages/sdk/contract-runtime.mjs` を両方が `#contract-runtime` で使う)。`npm test` は `VESTIGIUM_LOGS_DIR=<repo>/logs` で契約の観測を記録する。CLI を普段使うときは記録しない。
+- 復旧: ビルド成果物がおかしいときは `dist/`・`build-test/`・`packages/sdk/dist/` を消して `npm run build` / `npm test` をやり直す。生成物はどちらも git 管理外。
+
+## SDK (`@ludiars/commentarii-sdk`)
+
+`packages/sdk/` は Commentarii が所有する形式とそれを読む部品のパッケージ (版 0.1.0)。オートプレイヤーは別リポ Ingenium (Ig) に分離し、依存は Ingenium → SDK の一方向 (設計: [spec/plan/2026-10-11-ingenium-integrated-design.md](spec/plan/2026-10-11-ingenium-integrated-design.md) §4)。Ingenium は `github:LUDIARS/Commentarii#sdk-vX.Y.Z` のタグで参照する。版の対応は [COMPAT.md](COMPAT.md)。
+
+| 入口 | 中身 |
+|---|---|
+| `@ludiars/commentarii-sdk` | 下の全入口をまとめた公開入口 |
+| `/schemas` | `schemaDirectory()` (`packages/sdk/schema/`)、スキーマ名、ajv の検証器 (`createSchemaRegistry`) |
+| `/types` | 文書モデル・ID・知識境界、`Bundle`、`ExportedBundle` (`bundle.json`)、replay 行・観測フレーム、overlay、bench 結果 |
+| `/bundle` | バンドルの読み込み (`BundleSource`、`loadBundle`)、パス分類、参照解決、ID 索引 |
+| `/expression` | 式言語 (tokenize / parse / evaluate) |
+| `/rulebook` | 知識ごとのビュー。現状は player ビュー (`toPlayerView`) だけ (R1 のルールブック読み込みはここに足す) |
+| `/replay` | `parseReplay`、tick の不変条件 (player の masked 禁止)、`findMaskedPointers`、行スキーマ、パス |
+| `/observation` | 観測境界の許可表と `observationBoundaryProblems` |
+| `/knowledge` | `buildEngineWorld`、`when` の照合、観測の読み取り、定石候補と変種、run memory、ペルソナの型、観測行の形 |
+| `/fixtures` | `samples/bestia` の `bundle.json` 書き出し (player / full)、replay 2 本、観測行 (`readFixtureBundle` / `readFixtureReplay` / パス関数) |
+
+- `src/` も SDK を公開入口だけで使う。`packages/sdk/src/**` の内部パスの import は `tests/sdk/sdk-boundary.test.ts` が失敗させる。SDK の実行時依存は `ajv` / `ajv-formats` だけ。
+- 実行時は `packages/sdk/dist/` (`npm test` / `npm run build` が作る)、型は `packages/sdk/src/` の TypeScript を直接読む。ルートは npm workspaces で `node_modules/@ludiars/commentarii-sdk` → `packages/sdk` をリンクする。
+- フィクスチャの `bundle.json` は `samples/bestia` の現在の書き出しと一致することを `tests/sdk/sdk-fixtures.test.ts` が検査する。サンプルを変えたら `node dist/cli/main.js export samples/bestia --out <dir> --knowledge player|full` の出力で `packages/sdk/fixtures/bestia/bundle.<knowledge>.json` を置き換える。
 
 ## サービス (Excubitor)
 

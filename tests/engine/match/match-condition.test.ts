@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { matchCondition } from '../../../src/engine/match/match-condition.ts';
+import { matchCondition } from '@ludiars/commentarii-sdk/knowledge';
 import { BEETLE, enemy, frame, SPIDER } from '../../support/personas.ts';
 
 const KITE_WHEN = { all: [{ entity: SPIDER, visible: true, distance_lt: 19 }, { self: { hp_ratio_lt: 0.5 } }] };

@@ -3,7 +3,7 @@
 // is the stage's own time limit; the designer's intended upper bound stands in only in the
 // intent-assisted test (Astra review P1-4). Silent when no limit is known.
 
-import { stageElapsed } from '../match/match-stage.ts';
+import { stageElapsed } from '@ludiars/commentarii-sdk/knowledge';
 import { clamp01, type Consideration } from './utility-context.ts';
 
 export const timeConsideration: Consideration = (candidate, { observation, stage, intentAssist }) => {

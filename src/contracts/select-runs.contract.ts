@@ -2,7 +2,7 @@
 // counted (the designer's intent handed to the decider is an answer-key test, not a persona's
 // ability); every run lands in exactly one list.
 
-import type { ReplayRun } from '../replay/replay-record.ts';
+import type { ReplayRun } from '@ludiars/commentarii-sdk/types';
 import type { RunSelection } from '../verify/runs/select-runs.ts';
 
 export default {

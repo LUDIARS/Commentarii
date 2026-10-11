@@ -1,7 +1,7 @@
 // What differs between rules, state machines and intents when drafting: the prompt, how the
 // model's JSON becomes bundle documents, and how undocumented numbers are screened out.
 
-import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import type { DocumentedNumbers } from './documented-numbers.ts';
 import type { DraftDocument, DraftRequest, DraftResult } from './draft-request.ts';
 

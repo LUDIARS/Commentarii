@@ -2,7 +2,7 @@
 // canonical bundle (every document by path, masked companions included: the engine's world is
 // built from them), the overlay and the persona. Paths stay out of the result; only hashes go in.
 
-import type { Bundle } from '../bundle/bundle.ts';
+import type { Bundle } from '@ludiars/commentarii-sdk/types';
 import { contentHash } from '../learn/approval/proposal-hash.ts';
 
 export function bundleHash(bundle: Bundle): string {

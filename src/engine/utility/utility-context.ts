@@ -1,8 +1,7 @@
 // What every consideration may look at besides the candidate itself.
 
-import type { ObservationFrame, ObservationPurpose } from '../../replay/observation-frame.ts';
-import type { Candidate } from '../candidates/candidate.ts';
-import type { EngineWorld, StageView } from '../world/engine-world.ts';
+import type { ObservationFrame, ObservationPurpose } from '@ludiars/commentarii-sdk/types';
+import type { Candidate, EngineWorld, StageView } from '@ludiars/commentarii-sdk/knowledge';
 
 export interface UtilityContext {
   readonly observation: ObservationFrame;

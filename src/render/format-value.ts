@@ -1,7 +1,7 @@
 // How a guide value appears in generated Markdown: value, unit, boundary marker, draft flag.
 
-import type { GuideValue, LocalizedText } from '../domain/documents.ts';
-import { localize } from '../domain/localize.ts';
+import type { GuideValue, LocalizedText } from '@ludiars/commentarii-sdk/types';
+import { localize } from '@ludiars/commentarii-sdk/types';
 
 const KNOWLEDGE_MARK = { shown: '', discoverable: ' ※推定', masked: ' ※masked' } as const;
 

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { EMPTY_MEMORY, type BtMemory } from '../../../src/engine/bt/bt-memory.ts';
-import type { BtNode } from '../../../src/engine/bt/bt-node.ts';
-import { buildTree, stepsTree } from '../../../src/engine/bt/build-tree.ts';
+import type { BtNode } from '@ludiars/commentarii-sdk/knowledge';
+import { buildTree, stepsTree } from '@ludiars/commentarii-sdk/knowledge';
 import { stepTree, type StepContext } from '../../../src/engine/bt/step-tree.ts';
 import type { StepResult } from '../../../src/engine/bt/step-result.ts';
 import { enemy, frame, SPIDER } from '../../support/personas.ts';

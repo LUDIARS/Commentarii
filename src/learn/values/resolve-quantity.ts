@@ -3,8 +3,7 @@
 // Looked up in the entity file and in its .masked.json, since learning works on the full
 // bundle (it is the guide maker, not the player engine) and promotion is about masked values.
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import type { GuideValue, StatMap } from '../../domain/documents.ts';
+import type { Bundle, GuideValue, StatMap } from '@ludiars/commentarii-sdk/types';
 
 export interface CanonicalValue {
   /** <entity ID>.stats.<key> */

@@ -1,7 +1,7 @@
 // C-77 buildIngameExport(load, unlocked): no value of a masked companion file reaches the in-game
 // export, and every encyclopedia stat is shown in the bundle or discoverable and unlocked.
 
-import type { LoadResult } from '../bundle/bundle.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
 import type { IngameExport } from '../export/build-ingame-export.ts';
 
 export default {

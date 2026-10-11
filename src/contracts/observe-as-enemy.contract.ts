@@ -3,8 +3,8 @@
 // observation holds no masked value.
 
 import type { SimEnemy, SimWorld } from '../adapters/sim/sim-world.ts';
-import { findMaskedPointers } from '../replay/find-masked-pointers.ts';
-import type { ObservationFrame, ObservationMode } from '../replay/observation-frame.ts';
+import { findMaskedPointers } from '@ludiars/commentarii-sdk/replay';
+import type { ObservationFrame, ObservationMode } from '@ludiars/commentarii-sdk/types';
 
 export default {
   post: (observation: ObservationFrame, world: SimWorld, enemy: SimEnemy, mode: ObservationMode) => {

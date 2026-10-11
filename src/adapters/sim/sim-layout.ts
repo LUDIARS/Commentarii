@@ -6,7 +6,7 @@
 //             fits arena-like zone maps (center / mid ring / outer ring / outside).
 // A map without usable positions is laid out as rings too.
 
-import type { GuideMap, MapNode } from '../../domain/documents.ts';
+import type { GuideMap, MapNode } from '@ludiars/commentarii-sdk/types';
 
 export type Point = readonly [number, number];
 

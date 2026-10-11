@@ -2,8 +2,7 @@
 // A tactic's own knowledge is derived from what it references (V10) and is exempt; its
 // masked label marks it for exclusion from player output instead of hiding a value.
 
-import { isMaskedFilePath } from '../../bundle/bundle.ts';
-import { findKnowledgeHolders } from '../../domain/value-node.ts';
+import { findKnowledgeHolders, isMaskedFilePath } from '@ludiars/commentarii-sdk/types';
 import { error, type Check, type Finding } from '../check.ts';
 
 export const v03MaskedOutside: Check = {

@@ -1,7 +1,7 @@
 // `guide audit mask` core: compare the scanned game files against the guide's masked values,
 // forbidden keys and known numbers, then apply the allow list. Pure: files are already read.
 
-import type { LoadResult } from '../bundle/bundle.ts';
+import type { LoadResult } from '@ludiars/commentarii-sdk/types';
 import { applyAllow } from './apply-allow.ts';
 import type { AuditConfig } from './audit-config.ts';
 import type { AuditReport, Finding, FindingKind } from './audit-report.ts';

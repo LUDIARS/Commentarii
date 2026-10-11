@@ -2,7 +2,7 @@
 // defaults, field by field. A metric whose change goes past its threshold is an experience-block
 // candidate; nothing else is.
 
-import type { Manifest } from '../domain/documents.ts';
+import type { Manifest } from '@ludiars/commentarii-sdk/types';
 
 export interface BenchThresholds {
   /** Absolute drop of the clear rate (0.1 = 10 points). */

@@ -1,15 +1,17 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import type { Tactic } from '../../../src/domain/documents.ts';
-import { EMPTY_RUN_MEMORY } from '../../../src/engine/candidates/run-memory.ts';
-import { tacticCandidate } from '../../../src/engine/candidates/tactic-candidates.ts';
+import type { ObservationFrame, Tactic } from '@ludiars/commentarii-sdk/types';
+import {
+  buildReflectWorld,
+  deriveVariant,
+  EMPTY_RUN_MEMORY,
+  type ReflectWorld,
+  tacticCandidate,
+} from '@ludiars/commentarii-sdk/knowledge';
 import { variantCandidateId } from '../../../src/engine/candidates/variant-candidates.ts';
-import { deriveVariant } from '../../../src/engine/candidates/tactic-variants.ts';
 import { newPlan, type RunningPlan } from '../../../src/engine/engine-state.ts';
-import type { OverlayLine } from '../../../src/engine/reflect/overlay-line.ts';
+import type { OverlayLine } from '@ludiars/commentarii-sdk/knowledge';
 import { INITIAL_REFLECT_STATE, reflectEnd, reflectTick, type ReflectState } from '../../../src/engine/reflect/reflect-tick.ts';
-import { buildReflectWorld, type ReflectWorld } from '../../../src/engine/reflect/reflect-world.ts';
-import type { ObservationFrame } from '../../../src/replay/observation-frame.ts';
 import { loadSample } from '../../support/bundles.ts';
 import { enemy, frame, SPIDER } from '../../support/personas.ts';
 

@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { evaluateExpression } from '../../../src/domain/expression/evaluate-expression.ts';
-import { ExpressionError } from '../../../src/domain/expression/expression-error.ts';
+import { evaluateExpression, ExpressionError } from '@ludiars/commentarii-sdk/expression';
 
 test('arithmetic follows precedence, parentheses and unary minus', () => {
   assert.equal(evaluateExpression('1 + 2 * 3', {}), 7);

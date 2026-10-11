@@ -6,7 +6,7 @@
 // The evidence is the sim: a candidate is a measured change in the simulated game, not a verified
 // change of the players' experience.
 
-import type { BenchResult } from '../bench/bench-result.ts';
+import type { BenchResult } from '@ludiars/commentarii-sdk/types';
 import type { BenchThresholds } from './bench-thresholds.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:2b99dbab */
 import augurContract_2b88a248 from '../contracts/compare-bench.contract.ts'; /* augur-inject:contract-predicate:6698819d */

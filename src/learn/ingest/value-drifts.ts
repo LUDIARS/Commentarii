@@ -2,9 +2,7 @@
 // the canonical value next to the estimates (count, mean, agreement). A value drifts when some
 // run's estimate disagrees with it; a value the bundle does not have is listed as such.
 
-import type { Bundle } from '../../bundle/bundle.ts';
-import type { Knowledge } from '../../domain/knowledge.ts';
-import type { Overlay } from '../overlay/overlay.ts';
+import type { Bundle, Knowledge, Overlay } from '@ludiars/commentarii-sdk/types';
 import { resolveQuantity } from '../values/resolve-quantity.ts';
 import { summarizeAgreement } from '../values/value-agreement.ts';
 
