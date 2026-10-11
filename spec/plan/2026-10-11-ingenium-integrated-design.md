@@ -69,9 +69,9 @@
 
 段 8 (2 本目のアダプタ) の受入に「`autonomous` でも動く」を足す。
 
-## 6. neco に決めてもらうこと (推奨つき)
+## 6. neco の決定 (2026-10-11)
 
-1. **既定の構え**: 推奨 `autonomous` (`guided` は `--stance guided` で残す)。
-2. **Ingenium リポの公開範囲**: 推奨 public (Commentarii と同じ。ゲーム固有情報を持たず、同梱サンプルは public の Bestia だけ)。
+1. **既定の構えは `autonomous`** (`guided` は `--stance guided` で残す。§14.C の基準値は構え別に取り直す)。
+2. **Ingenium リポは private** (GitHub `LUDIARS/Ingenium`、非公開)。Cm (public) の SDK を git タグ依存で読む方向は変わらない。Ig 側の成果物 (bench 結果・リプレイ) を Cm の public リポへ書き戻すときは、ゲーム固有の値を含めない既存の観測ログ規則 (§10) に従う。
 
 それ以外の論点 (Fable 案 §9 の 15 項目、Astra 案 §10) は上の決定表と 2 案の推奨どおりに進め、実装中に人の判断が要るものが出たらその時に聞く。
