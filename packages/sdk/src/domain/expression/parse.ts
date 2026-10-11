@@ -1,22 +1,42 @@
 // Recursive-descent parser: expression -> AST. No code generation, no eval / Function.
 //
-//   expr    := term (('+' | '-') term)*
+//   expr    := or
+//   or      := and ('||' and)*                                       expr/2
+//   and     := not ('&&' not)*                                       expr/2
+//   not     := '!' not | cmp                                         expr/2
+//   cmp     := sum (('<' | '<=' | '==' | '!=' | '>=' | '>') sum)?    expr/2
+//   sum     := term (('+' | '-') term)*
 //   term    := unary (('*' | '/') unary)*
 //   unary   := ('+' | '-') unary | primary
 //   primary := number | identifier | identifier '(' expr (',' expr)* ')' | '(' expr ')'
+//            | idtoken | '$' identifier                              expr/2
+//
+// expr/1 is the sum level alone, so an expr/1 text parses to the same tree under expr/2.
+// `if(c, a, b)` is a call; evaluators treat it lazily.
 
 import { ExpressionError } from './expression-error.ts';
-import { tokenize, type Token } from './tokenize.ts';
+import type { ExpressionLanguage } from './expression-language.ts';
+import { tokenize, type ComparisonSymbol, type Token } from './tokenize.ts';
 
 export type Expr =
   | { readonly type: 'number'; readonly value: number }
   | { readonly type: 'variable'; readonly name: string }
   | { readonly type: 'unary'; readonly op: '+' | '-'; readonly operand: Expr }
   | { readonly type: 'binary'; readonly op: '+' | '-' | '*' | '/'; readonly left: Expr; readonly right: Expr }
-  | { readonly type: 'call'; readonly name: string; readonly args: readonly Expr[] };
+  | { readonly type: 'call'; readonly name: string; readonly args: readonly Expr[] }
+  | { readonly type: 'compare'; readonly op: ComparisonSymbol; readonly left: Expr; readonly right: Expr }
+  | { readonly type: 'logical'; readonly op: '&&' | '||'; readonly left: Expr; readonly right: Expr }
+  | { readonly type: 'not'; readonly operand: Expr }
+  | { readonly type: 'id'; readonly id: string }
+  | { readonly type: 'param'; readonly name: string };
 
 /** Nesting deeper than this is rejected so a hostile expression cannot exhaust the stack. */
 export const MAX_NESTING_DEPTH = 64;
+
+export interface ParseOptions {
+  /** expr/2 unless the document says otherwise (rule documents are expr/1). */
+  readonly language?: ExpressionLanguage;
+}
 
 class Parser {
   private position = 0;
@@ -54,12 +74,55 @@ class Parser {
 
   private expression(): Expr {
     this.enter();
+    const expr = this.or();
+    this.leave();
+    return expr;
+  }
+
+  private or(): Expr {
+    let left = this.and();
+    for (let token = this.peek(); token?.type === 'logic' && token.symbol === '||'; token = this.peek()) {
+      this.next();
+      left = { type: 'logical', op: '||', left, right: this.and() };
+    }
+    return left;
+  }
+
+  private and(): Expr {
+    let left = this.not();
+    for (let token = this.peek(); token?.type === 'logic' && token.symbol === '&&'; token = this.peek()) {
+      this.next();
+      left = { type: 'logical', op: '&&', left, right: this.not() };
+    }
+    return left;
+  }
+
+  private not(): Expr {
+    const token = this.peek();
+    if (token?.type === 'logic' && token.symbol === '!') {
+      this.next();
+      this.enter();
+      const operand = this.not();
+      this.leave();
+      return { type: 'not', operand };
+    }
+    return this.comparison();
+  }
+
+  private comparison(): Expr {
+    const left = this.sum();
+    const token = this.peek();
+    if (token?.type !== 'comparison') return left;
+    this.next();
+    return { type: 'compare', op: token.symbol, left, right: this.sum() };
+  }
+
+  private sum(): Expr {
     let left = this.term();
     for (let token = this.peek(); token?.type === 'operator' && (token.symbol === '+' || token.symbol === '-'); token = this.peek()) {
       this.next();
       left = { type: 'binary', op: token.symbol, left, right: this.term() };
     }
-    this.leave();
     return left;
   }
 
@@ -87,6 +150,8 @@ class Parser {
   private primary(): Expr {
     const token = this.next();
     if (token.type === 'number') return { type: 'number', value: token.value };
+    if (token.type === 'id') return { type: 'id', id: token.id };
+    if (token.type === 'param') return { type: 'param', name: token.name };
     if (token.type === 'paren' && token.symbol === '(') {
       const inner = this.expression();
       this.expectClose();
@@ -119,6 +184,6 @@ class Parser {
   }
 }
 
-export function parseExpression(source: string): Expr {
-  return new Parser(tokenize(source)).parse();
+export function parseExpression(source: string, options: ParseOptions = {}): Expr {
+  return new Parser(tokenize(source, options.language ?? 'expr/2')).parse();
 }

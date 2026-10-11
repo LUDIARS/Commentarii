@@ -13,7 +13,13 @@ export type FileKind =
   | 'rule'
   | 'state'
   | 'tactic'
-  | 'intent';
+  | 'intent'
+  | 'variables'
+  | 'action'
+  | 'action-masked'
+  | 'process'
+  | 'behavior'
+  | 'objectives';
 
 export const SCHEMA_OF_KIND: Readonly<Record<FileKind, DocumentSchemaName>> = {
   manifest: 'manifest',
@@ -27,6 +33,12 @@ export const SCHEMA_OF_KIND: Readonly<Record<FileKind, DocumentSchemaName>> = {
   state: 'state',
   tactic: 'tactic',
   intent: 'intent',
+  variables: 'variables',
+  action: 'action',
+  'action-masked': 'action.masked',
+  process: 'process',
+  behavior: 'behavior',
+  objectives: 'objectives',
 };
 
 export type PathClass =
@@ -46,6 +58,12 @@ const PATTERNS: readonly { readonly pattern: RegExp; readonly kind: FileKind; re
   { pattern: new RegExp(`^stages/${SLUG}/events\\.json$`), kind: 'events' },
   { pattern: new RegExp(`^mechanics/rules/${SLUG}\\.json$`), kind: 'rule' },
   { pattern: new RegExp(`^mechanics/states/${SLUG}\\.json$`), kind: 'state' },
+  { pattern: /^mechanics\/variables\.json$/, kind: 'variables' },
+  { pattern: /^mechanics\/objectives\.json$/, kind: 'objectives' },
+  { pattern: new RegExp(`^mechanics/actions/${SLUG}\\.masked\\.json$`), kind: 'action-masked' },
+  { pattern: new RegExp(`^mechanics/actions/${SLUG}\\.json$`), kind: 'action' },
+  { pattern: new RegExp(`^mechanics/processes/${SLUG}\\.json$`), kind: 'process' },
+  { pattern: new RegExp(`^mechanics/behaviors/${SLUG}\\.json$`), kind: 'behavior' },
   { pattern: new RegExp(`^tactics/${SLUG}\\.json$`), kind: 'tactic' },
   { pattern: new RegExp(`^intent/${SLUG}\\.json$`), kind: 'intent' },
 ];

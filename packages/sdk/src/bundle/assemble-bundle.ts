@@ -13,6 +13,7 @@ import type {
   StateMachine,
   Tactic,
 } from '../domain/documents.ts';
+import { assembleRulebook } from './assemble-rulebook.ts';
 import type { Bundle, LoadedFile, Located, StageFiles } from './bundle.ts';
 
 function stageSlugOf(path: string): string {
@@ -79,6 +80,8 @@ export function assembleBundle(files: readonly LoadedFile[]): Bundle {
       case 'intent':
         intents.push({ path, doc: file.data as Intent });
         break;
+      default:
+        break;
     }
   }
 
@@ -96,5 +99,6 @@ export function assembleBundle(files: readonly LoadedFile[]): Bundle {
     states: byPath(states),
     tactics: byPath(tactics),
     intents: byPath(intents),
+    rulebook: assembleRulebook(files),
   };
 }

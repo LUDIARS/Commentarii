@@ -13,6 +13,14 @@ import { v09Units } from './v09-units.ts';
 import { v10TacticKnowledge } from './v10-tactic-knowledge.ts';
 import { v11Coverage } from './v11-coverage.ts';
 import { v12IntentRefs } from './v12-intent-refs.ts';
+import { v13RulebookSyntax } from './v13-rulebook-syntax.ts';
+import { v14RulebookReferences } from './v14-rulebook-references.ts';
+import { v15OutcomeProbabilities } from './v15-outcome-probabilities.ts';
+import { v16MapsTo } from './v16-maps-to.ts';
+import { v17MaskedSeparation } from './v17-masked-separation.ts';
+import { v18RulebookKnowledge } from './v18-rulebook-knowledge.ts';
+import { v19BehaviorReferences } from './v19-behavior-references.ts';
+import { v20NoHiddenTraces } from './v20-no-hidden-traces.ts';
 
 export const CHECKS: readonly Check[] = [
   v01Schema,
@@ -27,4 +35,12 @@ export const CHECKS: readonly Check[] = [
   v10TacticKnowledge,
   v11Coverage,
   v12IntentRefs,
+  v13RulebookSyntax,
+  v14RulebookReferences,
+  v15OutcomeProbabilities,
+  v16MapsTo,
+  v17MaskedSeparation,
+  v18RulebookKnowledge,
+  v19BehaviorReferences,
+  v20NoHiddenTraces,
 ];

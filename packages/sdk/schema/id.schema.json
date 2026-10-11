@@ -16,6 +16,19 @@
     "stateId": { "type": "string", "pattern": "^state:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
     "stateRef": { "type": "string", "pattern": "^state:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*(#[a-z0-9][a-z0-9_-]*)?$" },
     "tacticId": { "type": "string", "pattern": "^tactic:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "actionId": { "type": "string", "pattern": "^action:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "processId": { "type": "string", "pattern": "^process:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "behaviorId": { "type": "string", "pattern": "^behavior:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
+    "behaviorRef": {
+      "description": "What an entity behaves by: a behavior model (behavior:, the R1 form) or a state machine (state:, read as an fsm without an act table).",
+      "anyOf": [{ "$ref": "#/$defs/behaviorId" }, { "$ref": "#/$defs/stateRef" }]
+    },
+    "expression": {
+      "description": "An expr/2 expression (spec/feature/rulebook.md): arithmetic, comparison, && || !, if(c, a, b), ID tokens, $params and context functions. Checked by validate V13 / V14.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
     "intentId": { "type": "string", "pattern": "^intent:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
     "nodeId": { "type": "string", "pattern": "^node:[a-z0-9][a-z0-9_-]*$" },
     "runId": { "type": "string", "pattern": "^run:[a-z0-9][a-z0-9_-]*$" },

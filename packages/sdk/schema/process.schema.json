@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "process.schema.json",
+  "title": "Rulebook process (mechanics/processes/<slug>.json)",
+  "description": "A continuous change applied every sub-step while `when` holds (regeneration, cooldown, a projectile in flight). `dt` is the sub-step length (one turn in a turn-based game) (spec/feature/rulebook.md §3).",
+  "type": "object",
+  "required": ["id", "of", "when", "rate", "knowledge", "source"],
+  "properties": {
+    "id": { "$ref": "id.schema.json#/$defs/processId" },
+    "name": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "of": { "description": "Whose variables change: world, stage, self or entity (each living entity in turn).", "enum": ["world", "stage", "self", "entity"] },
+    "when": { "$ref": "id.schema.json#/$defs/expression" },
+    "rate": {
+      "description": "New value of each variable after one sub-step (an expression of the current values and dt).",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["var", "expr"],
+        "properties": {
+          "var": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "expr": { "$ref": "id.schema.json#/$defs/expression" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+    "source": { "$ref": "value.schema.json#/$defs/source" },
+    "draft": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

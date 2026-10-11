@@ -10,15 +10,15 @@
     { "id": "return", "label": { "ja": "リングへ戻る", "en": "RETURN TO RING" } }
   ],
   "transitions": [
-    { "from": "chase", "to": "attack", "on": "相手が射程内" },
-    { "from": "attack", "to": "chase", "on": "相手が射程外" },
-    { "from": "chase", "to": "dodge", "on": "弾が迫る", "rule": "rule:bestia:dodge-window" },
-    { "from": "attack", "to": "dodge", "on": "弾が迫る", "rule": "rule:bestia:dodge-window" },
-    { "from": "dodge", "to": "chase", "on": "脅威が去る" },
-    { "from": "attack", "to": "retreat", "on": "瀕死で相手が近い", "rule": "rule:bestia:wounded-retreat" },
-    { "from": "retreat", "to": "chase", "on": "攻撃準備が整う" },
-    { "from": "chase", "to": "return", "on": "リング外に出かけた" },
-    { "from": "return", "to": "chase", "on": "リング内に戻った" }
+    { "from": "chase", "to": "attack", "on": "相手が射程内", "when": "dist(actor, $target) <= range(actor)" },
+    { "from": "attack", "to": "chase", "on": "相手が射程外", "when": "dist(actor, $target) > range(actor)" },
+    { "from": "chase", "to": "dodge", "on": "弾が迫る", "rule": "rule:bestia:dodge-window", "when": "shot_at(actor)", "p": 0.25, "hold": "rule(rule:bestia:dodge-window)" },
+    { "from": "attack", "to": "dodge", "on": "弾が迫る", "rule": "rule:bestia:dodge-window", "when": "shot_at(actor)", "p": 0.25, "hold": "rule(rule:bestia:dodge-window)" },
+    { "from": "dodge", "to": "chase", "on": "脅威が去る", "when": "1" },
+    { "from": "attack", "to": "retreat", "on": "瀕死で相手が近い", "rule": "rule:bestia:wounded-retreat", "when": "hp(actor) <= rule(rule:bestia:wounded-retreat) && dist(actor, $target) <= range(actor)", "hold": "2" },
+    { "from": "retreat", "to": "chase", "on": "攻撃準備が整う", "when": "1" },
+    { "from": "chase", "to": "return", "on": "リング外に出かけた", "when": "node(actor) == node:outside" },
+    { "from": "return", "to": "chase", "on": "リング内に戻った", "when": "node(actor) != node:outside" }
   ],
   "knowledge": "discoverable",
   "source": { "kind": "master", "ref": "Bestia src/behavior.cpp tree" }

@@ -1,0 +1,34 @@
+{
+  "name": "rulebook",
+  "description": "ルールブック (mechanics/): 変数・行動の型 (masked 上書きを含む)・過程・挙動モデル・目標のスキーマ、式言語 v2 (expr/2: 比較・論理・if・ID トークン・$param・文脈関数・区間評価・静的検査)、loadRulebook (player / omniscient のビュー、上書き、overlay)、validate V13〜V20、rulebook.md の描画、samples の Bestia ルールブック。Ingenium の信念・前向きモデル・アフォーダンス・相手モデルが読む形式。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)packages/sdk/schema/(variables|action|action\\.masked|process|behavior|objectives)\\.schema\\.json$" },
+    { "pathPattern": "(^|/)packages/sdk/src/rulebook/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)packages/sdk/src/domain/rulebook-documents\\.ts$" },
+    { "pathPattern": "(^|/)packages/sdk/src/domain/expression/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)packages/sdk/src/bundle/assemble-rulebook\\.ts$" },
+    { "pathPattern": "(^|/)src/render/render-rulebook\\.ts$" },
+    { "pathPattern": "(^|/)src/render/rulebook/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)src/report/build-rulebook-knowledge\\.ts$" },
+    { "pathPattern": "(^|/)src/validate/checks/v(13|14|15|16|17|18|19|20)-[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)samples/[^/]+/mechanics/(variables|objectives)\\.json$" },
+    { "pathPattern": "(^|/)samples/[^/]+/mechanics/(actions|processes|behaviors)/[^/]+\\.json$" },
+    { "pathPattern": "(^|/)tests/domain/expression/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/sdk/load-rulebook\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/render/render-rulebook\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/validate/checks/v(13|14|15|16|17|18|19|20)-[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/fixtures/broken/v(13|14|15|16|17|18|19|20)-[^/]+/.+$" },
+    { "pathPattern": "(^|/)spec/feature/rulebook\\.md$" }
+  ],
+  "cardTemplate": "Summarise the \"rulebook\" domain: mechanics documents (variables / actions + masked overrides / processes / behaviors / objectives) -> expr/2 (point + interval + static check) -> validate V13-V20 -> bundle.json format 2 -> loadRulebook player / omniscient -> rulebook.md.",
+  "specRefs": [
+    "spec/feature/rulebook.md",
+    "spec/plan/2026-10-11-ingenium-integrated-design.md §1 §4 §5",
+    "spec/plan/2026-10-11-autoplayer-paradigms-fable.md §3.2 §3.3 §3.4 §3.5 §3.10 §7.1",
+    "spec/plan/2026-10-11-autoplayer-paradigms-astra.md §4.3 §4.4 §4.5 §4.6 §5",
+    "spec/tasks/2026-10-11-stage-r1-rulebook-forward-model.md"
+  ],
+  "rationale": "ゲームが「何であるか」を機械可読に持つ層で、形式の所有者は Commentarii (Ingenium は SDK の公開入口だけを読む、依存は一方向)。マスク原則は「存在の分離」で担保する: masked は上書きファイルにだけあり、player のビュー・書き出しには上書きという概念も痕跡も無い。"
+}

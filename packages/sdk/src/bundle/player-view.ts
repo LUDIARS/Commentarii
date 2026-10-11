@@ -3,7 +3,7 @@
 // even when a bundle wrongly keeps a masked value outside its .masked.json.
 
 import { isJsonObject } from '../domain/value-node.ts';
-import type { Bundle, Located, StageFiles } from './bundle.ts';
+import type { Bundle, Located, RulebookFiles, StageFiles } from './bundle.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:e726a455 */
 import augurContract_a1837d49 from '../contracts/to-player-view.contract.ts'; /* augur-inject:contract-predicate:802ff3b3 */
 
@@ -46,6 +46,20 @@ function stripStage(stage: StageFiles): StageFiles {
   };
 }
 
+/** The rulebook without its masked overrides: the player view has no notion of an override. */
+function stripRulebook(rulebook: RulebookFiles): RulebookFiles {
+  const variables = stripLocated(rulebook.variables);
+  const objectives = stripLocated(rulebook.objectives);
+  return {
+    ...(variables ? { variables } : {}),
+    actions: keepPlayerDocuments(rulebook.actions),
+    maskedActions: [],
+    processes: keepPlayerDocuments(rulebook.processes),
+    behaviors: keepPlayerDocuments(rulebook.behaviors),
+    ...(objectives ? { objectives } : {}),
+  };
+}
+
 export function toPlayerView(bundle: Bundle): Bundle {
   const manifest = stripLocated(bundle.manifest);
   const glossary = stripLocated(bundle.glossary);
@@ -59,6 +73,7 @@ export function toPlayerView(bundle: Bundle): Bundle {
     states: keepPlayerDocuments(bundle.states),
     tactics: keepPlayerDocuments(bundle.tactics),
     intents: keepPlayerDocuments(bundle.intents),
+    rulebook: stripRulebook(bundle.rulebook),
   };
 }
 // @ts-expect-error augur-inject

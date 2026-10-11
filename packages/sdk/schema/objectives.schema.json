@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "objectives.schema.json",
+  "title": "Rulebook objectives (mechanics/objectives.json)",
+  "description": "The game's own win / lose predicates and progress measures (the win condition made continuous). They are the only source of planner heuristics and rollout values; they never encode a strategy (spec/feature/rulebook.md §6).",
+  "type": "object",
+  "required": ["win", "lose", "knowledge", "source"],
+  "properties": {
+    "win": { "$ref": "id.schema.json#/$defs/expression" },
+    "lose": { "$ref": "id.schema.json#/$defs/expression" },
+    "progress": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "expr", "better", "knowledge", "source"],
+        "properties": {
+          "id": { "$ref": "id.schema.json#/$defs/slug" },
+          "expr": { "$ref": "id.schema.json#/$defs/expression" },
+          "better": { "enum": ["lower", "higher"] },
+          "scale": { "description": "Normaliser (the progress is expr / scale).", "$ref": "id.schema.json#/$defs/expression" },
+          "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+          "source": { "$ref": "value.schema.json#/$defs/source" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+    "source": { "$ref": "value.schema.json#/$defs/source" },
+    "draft": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

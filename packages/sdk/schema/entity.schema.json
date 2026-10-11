@@ -43,7 +43,7 @@
   "$defs": {
     "enemy": {
       "properties": {
-        "behavior": { "$ref": "id.schema.json#/$defs/stateRef" },
+        "behavior": { "$ref": "id.schema.json#/$defs/behaviorRef" },
         "weak_to": { "type": "array", "items": { "$ref": "value.schema.json#/$defs/idValue" } },
         "drops": { "type": "array", "items": { "$ref": "value.schema.json#/$defs/idValue" } }
       }
@@ -62,7 +62,7 @@
     },
     "actor": {
       "properties": {
-        "behavior": { "$ref": "id.schema.json#/$defs/stateRef" },
+        "behavior": { "$ref": "id.schema.json#/$defs/behaviorRef" },
         "skills": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/skillId" } }
       }
     }

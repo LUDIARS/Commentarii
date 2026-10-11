@@ -1,5 +1,6 @@
 // C-17 buildExport(load, options): a player export holds no masked value anywhere and no
-// masked companion files; every index entry points at the document with that ID.
+// masked companion files or action overrides; every index entry (ids and actions) points at the
+// document with that ID; view matches the knowledge level.
 
 import type { ExportedBundle, LoadResult } from '@ludiars/commentarii-sdk/types';
 import type { ExportOptions } from '../export/build-export.ts';
@@ -31,10 +32,15 @@ export default {
     if (exported.knowledge !== options.knowledge) return 'export reports another knowledge level';
     if (options.knowledge === 'player') {
       if (exported.documents.masked_entities.length > 0) return 'player export keeps masked companion files';
+      if (exported.documents.mechanics.masked_actions.length > 0) return 'player export keeps masked action overrides';
       if (containsMasked(exported)) return 'player export contains a masked value';
     }
     for (const [id, entry] of Object.entries(exported.index.ids)) {
       if (idAt(exported, entry.pointer) !== id) return `index entry ${id} does not point at its document`;
+    }
+    if (exported.view !== options.knowledge) return 'view differs from the knowledge level';
+    for (const [id, entry] of Object.entries(exported.index.actions)) {
+      if (idAt(exported, entry.pointer) !== id) return `action index entry ${id} does not point at its action`;
     }
     return true;
   },

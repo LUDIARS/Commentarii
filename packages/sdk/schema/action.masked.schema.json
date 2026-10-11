@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "action.masked.schema.json",
+  "title": "Masked override of an action (mechanics/actions/<slug>.masked.json)",
+  "description": "The true definition of the keys it names. Each key of `override` replaces the same key of the visible action wholesale (no merge), and only the omniscient view applies it. The player view has no notion of an override at all (spec/feature/rulebook.md §4).",
+  "type": "object",
+  "required": ["id", "override", "knowledge", "source"],
+  "properties": {
+    "id": { "$ref": "id.schema.json#/$defs/actionId" },
+    "override": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "pre": { "$ref": "action.schema.json#/properties/pre" },
+        "duration": { "$ref": "action.schema.json#/properties/duration" },
+        "motion": { "$ref": "action.schema.json#/properties/motion" },
+        "effects": { "$ref": "action.schema.json#/properties/effects" },
+        "cost": { "$ref": "action.schema.json#/properties/cost" },
+        "cooldown": { "$ref": "action.schema.json#/properties/cooldown" }
+      },
+      "additionalProperties": false
+    },
+    "knowledge": { "const": "masked" },
+    "source": { "$ref": "value.schema.json#/$defs/source" },
+    "draft": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

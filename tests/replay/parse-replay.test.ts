@@ -125,3 +125,18 @@ test('the header may name the recording engine, SDK, bundle format and hash and 
   assert.equal(bad.run, undefined);
   assert.equal(bad.issues[0]?.line, 1);
 });
+
+test('a tick may carry the decider model summary (SDK 0.3.0); an unknown affordance class is an issue', async () => {
+  const text = await fixtureText(BASE_RUN);
+  const model = {
+    belief: { tracked: 12, unknown: 3, intervals: { 'e:1.hp': [0, 140] } },
+    affordances: { now: ['action:bestia:move'], uncertain: ['action:bestia:shoot'], reachable: [], not_found: [], impossible: ['action:bestia:return'] },
+  };
+  const loaded = await parseText(withLine(text, 1, (line) => void (line.model = model)));
+  assert.deepEqual(loaded.issues, []);
+  const tick = loaded.run?.ticks[0];
+  assert.deepEqual(tick?.model, model);
+  const bad = await parseText(withLine(text, 1, (line) => void (line.model = { affordances: { maybe: ['action:bestia:move'] } })));
+  assert.equal(bad.run, undefined);
+  assert.equal(bad.issues[0]?.line, 2);
+});

@@ -1,0 +1,10 @@
+{
+  "win": "count(hostile) == 0",
+  "lose": "!alive(self)",
+  "progress": [
+    { "id": "hostile_hp", "expr": "sum(hostile, hp)", "better": "lower", "scale": "sum(hostile, max_hp)", "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia last monster standing" } },
+    { "id": "own_hp", "expr": "hp(self)", "better": "higher", "scale": "max_hp(self)", "knowledge": "discoverable", "source": { "kind": "master", "ref": "Bestia HP bar" } }
+  ],
+  "knowledge": "shown",
+  "source": { "kind": "master", "ref": "Bestia spec/feature/battle.md" }
+}

@@ -1,7 +1,8 @@
 // V08: every rule expression evaluates once with the example value of each variable, and each
-// example lies inside its declared range.
+// example lies inside its declared range. Rule documents are expr/1: comparisons, logic and the
+// other expr/2 forms are an error here, exactly as before expr/2 existed.
 
-import { evaluateExpression } from '@ludiars/commentarii-sdk/expression';
+import { evaluateExpression, parseExpression } from '@ludiars/commentarii-sdk/expression';
 import { error, type Check, type Finding } from '../check.ts';
 
 export const v08RuleExpressions: Check = {
@@ -20,6 +21,7 @@ export const v08RuleExpressions: Check = {
         examples[name] = variable.example;
       }
       try {
+        parseExpression(doc.expression, { language: 'expr/1' });
         evaluateExpression(doc.expression, examples);
       } catch (cause) {
         findings.push(error(path, '/expression', `cannot evaluate: ${(cause as Error).message}`));

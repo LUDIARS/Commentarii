@@ -1,0 +1,16 @@
+{
+  "id": "behavior:bestia:battle-ai",
+  "name": { "ja": "戦闘 AI", "en": "Battle AI" },
+  "paradigm": "fsm",
+  "machine": "state:bestia:battle-ai",
+  "targeting": { "var": "target", "pick": "nearest(hostile)" },
+  "act": {
+    "chase": { "action": "action:bestia:move", "params": { "goal": "$target", "keep": 1.5, "for": "dt" } },
+    "attack": { "action": "action:bestia:shoot", "params": { "target": "$target" } },
+    "dodge": { "action": "action:bestia:dodge", "params": { "toward": "$target", "for": "dt" } },
+    "retreat": { "action": "action:bestia:retreat", "params": { "threat": "$target", "for": "dt" } },
+    "return": { "action": "action:bestia:return", "params": { "for": "dt" } }
+  },
+  "knowledge": "discoverable",
+  "source": { "kind": "master", "ref": "Bestia src/behavior.cpp tree" }
+}

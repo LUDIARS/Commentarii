@@ -1,0 +1,15 @@
+{
+  "id": "action:bestia:return",
+  "name": { "ja": "リングへ戻る", "en": "Return to the ring" },
+  "actor": ["self", "entity"],
+  "params": {
+    "for": { "kind": "number", "unit": "s", "range": [0.1, 2], "step": 0.1, "default": 0.1 }
+  },
+  "maps_to": { "move_to": "node:center" },
+  "pre": "node(actor) != node:center",
+  "duration": "$for",
+  "motion": { "kind": "to_node", "goal": "node:center", "speed": "speed(actor)" },
+  "effects": [{ "at": "start", "outcomes": [{ "p": 1, "assign": [{ "var": "moved", "of": "actor", "expr": "1" }] }] }],
+  "knowledge": "discoverable",
+  "source": { "kind": "master", "ref": "Bestia src/behavior.cpp Task::ReturnToRing" }
+}

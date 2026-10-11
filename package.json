@@ -27,7 +27,7 @@
     "guide": "node dist/cli/main.js"
   },
   "dependencies": {
-    "@ludiars/commentarii-sdk": "0.2.0"
+    "@ludiars/commentarii-sdk": "0.3.0"
   },
   "devDependencies": {
     "@types/node": "^24.19.1",

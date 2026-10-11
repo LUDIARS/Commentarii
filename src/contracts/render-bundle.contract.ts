@@ -1,4 +1,5 @@
-// C-5 renderBundle(load, options): player output never shows masked names or values.
+// C-5 renderBundle(load, options): player output never shows masked names or values, nor what
+// only a masked action override says.
 
 import type { LoadResult } from '@ludiars/commentarii-sdk/types';
 import type { RenderOptions } from '../render/render-bundle.ts';
@@ -14,7 +15,20 @@ function maskedMarkers(load: LoadResult): string[] {
       if (typeof value.value === 'string') markers.push(value.value);
     }
   }
+  const visible = new Map(load.bundle.rulebook.actions.map(({ doc }) => [doc.id, new Set(strings(doc))]));
+  for (const { doc } of load.bundle.rulebook.maskedActions) {
+    const seen = visible.get(doc.id) ?? new Set<string>();
+    for (const text of [...strings(doc.override), doc.source.ref]) if (!seen.has(text)) markers.push(text);
+  }
   return markers;
+}
+
+/** Every string leaf of a JSON value. */
+function strings(value: unknown): string[] {
+  if (typeof value === 'string') return [value];
+  if (Array.isArray(value)) return value.flatMap(strings);
+  if (typeof value === 'object' && value !== null) return Object.values(value).flatMap(strings);
+  return [];
 }
 
 export default {

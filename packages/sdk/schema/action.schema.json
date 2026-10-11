@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "action.schema.json",
+  "title": "Rulebook action type (mechanics/actions/<slug>.json)",
+  "description": "What an actor (self and / or an entity) can do: parameters, the abstract adapter action it maps to, precondition, duration, motion, effects with mutually exclusive outcomes, cost and cooldown (spec/feature/rulebook.md §3). The visible definition is complete on its own; a .masked.json companion may replace whole keys of it for the omniscient view only.",
+  "type": "object",
+  "required": ["id", "name", "actor", "pre", "effects", "knowledge", "source"],
+  "properties": {
+    "id": { "$ref": "id.schema.json#/$defs/actionId" },
+    "name": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "description": { "$ref": "id.schema.json#/$defs/localizedText" },
+    "actor": {
+      "description": "Who can take the action. Only actions with self are the player's own affordances.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["self", "entity"] }
+    },
+    "params": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "$ref": "#/$defs/param" }
+    },
+    "maps_to": {
+      "description": "The abstract adapter action (one verb of replay.schema.json#/$defs/action, plus optional target / params). Operands are $params, IDs, node IDs or numbers; validate V16 checks the vocabulary.",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string", "minLength": 1 },
+          { "type": "number" },
+          { "type": "object", "additionalProperties": { "oneOf": [{ "type": "string", "minLength": 1 }, { "type": "number" }] } }
+        ]
+      }
+    },
+    "pre": { "$ref": "id.schema.json#/$defs/expression" },
+    "duration": { "description": "Seconds (turns in a turn-based game); default 0.", "$ref": "id.schema.json#/$defs/expression" },
+    "motion": { "$ref": "#/$defs/motion" },
+    "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+    "cost": {
+      "description": "Resources the action consumes (variable -> amount, expr/2), read by planners as the cost.",
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": { "$ref": "id.schema.json#/$defs/expression" }
+    },
+    "cooldown": { "description": "Seconds before the actor may take the action again.", "$ref": "id.schema.json#/$defs/expression" },
+    "effects_known": {
+      "description": "false: the action is publicly known to exist but its effects are not modelled (declared on the public side on its own, never derived from a masked file).",
+      "type": "boolean"
+    },
+    "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+    "source": { "$ref": "value.schema.json#/$defs/source" },
+    "draft": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "paramKind": { "enum": ["entity", "node", "point", "number", "enum"] },
+    "param": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "oneOf": [
+            { "$ref": "#/$defs/paramKind" },
+            { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/paramKind" } }
+          ]
+        },
+        "where": { "description": "Candidate filter (entity kind), with the candidate bound to the parameter.", "$ref": "id.schema.json#/$defs/expression" },
+        "domain": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "id.schema.json#/$defs/slug" } },
+        "unit": { "type": "string", "minLength": 1 },
+        "range": {
+          "type": "array",
+          "prefixItems": [{ "type": "number" }, { "type": "number" }],
+          "items": false,
+          "minItems": 2
+        },
+        "step": { "description": "Discretisation step of a number parameter (the planners' only view of a continuous space).", "type": "number", "exclusiveMinimum": 0 },
+        "default": { "oneOf": [{ "type": "number" }, { "type": "string", "minLength": 1 }] }
+      },
+      "additionalProperties": false
+    },
+    "motion": {
+      "description": "Motion primitive the forward model integrates over sub-steps.",
+      "type": "object",
+      "required": ["kind", "speed"],
+      "properties": {
+        "of": { "description": "Who moves (default actor).", "type": "string", "minLength": 1 },
+        "kind": {
+          "description": "toward / away / sideways / to_node / hold, or a $param holding one of them.",
+          "type": "string",
+          "pattern": "^(toward|away|sideways|to_node|hold|\\$[a-z][a-z0-9_]*)$"
+        },
+        "goal": { "description": "What the motion is relative to: a $param, an ID token or a node.", "type": "string", "minLength": 1 },
+        "speed": { "$ref": "id.schema.json#/$defs/expression" },
+        "keep": { "description": "Do not come closer than this (expr/2).", "$ref": "id.schema.json#/$defs/expression" }
+      },
+      "additionalProperties": false
+    },
+    "assignment": {
+      "type": "object",
+      "required": ["var", "expr"],
+      "properties": {
+        "var": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "of": { "description": "Owner of the assigned variable: actor, self, a $param or an ID token (none for world / stage variables).", "type": "string", "minLength": 1 },
+        "expr": { "$ref": "id.schema.json#/$defs/expression" }
+      },
+      "additionalProperties": false
+    },
+    "outcome": {
+      "type": "object",
+      "required": ["p", "assign"],
+      "properties": {
+        "p": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "assign": { "type": "array", "items": { "$ref": "#/$defs/assignment" } }
+      },
+      "additionalProperties": false
+    },
+    "effect": {
+      "description": "One draw: exactly one of `outcomes` happens (they are mutually exclusive and their p add up to 1); the assignments of that outcome happen together. Independent draws are separate effects.",
+      "type": "object",
+      "required": ["at", "outcomes"],
+      "properties": {
+        "at": {
+          "description": "When the effect applies: at the start, at the end, or this many seconds after the start.",
+          "oneOf": [{ "enum": ["start", "end"] }, { "type": "number", "minimum": 0 }]
+        },
+        "when": { "$ref": "id.schema.json#/$defs/expression" },
+        "outcomes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/outcome" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

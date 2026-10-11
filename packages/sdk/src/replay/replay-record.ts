@@ -66,6 +66,19 @@ export interface ReplayTick {
   readonly observation: ObservationFrame;
   readonly decision: readonly DecisionEntry[];
   readonly action: ReplayAction;
+  /** Optional (SDK 0.3.0): the decider's belief and affordances at this tick. */
+  readonly model?: ModelSummary;
+}
+
+export type AffordanceClass = 'now' | 'uncertain' | 'reachable' | 'not_found' | 'impossible';
+
+export interface ModelSummary {
+  readonly belief?: {
+    readonly tracked: number;
+    readonly unknown: number;
+    readonly intervals?: Readonly<Record<string, readonly [number, number]>>;
+  };
+  readonly affordances?: Readonly<Partial<Record<AffordanceClass, readonly string[]>>>;
 }
 
 export type ReplayResult = 'success' | 'fail' | 'abort';

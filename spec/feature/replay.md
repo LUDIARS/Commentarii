@@ -20,7 +20,7 @@
 | 行 | `type` | 必須フィールド | 任意 |
 |---|---|---|---|
 | 先頭 1 行 | `header` | `run_id`, `seed` (非負整数か文字列), `game_id`, `manifest_version`, `adapter_id`, `mode` (`player` / `omniscient`), `purpose` (`efficiency` / `coverage` / `human`), `started_at` (ISO 8601) | `persona`, `source` (`human`: `guide import plays` が取り込んだ人間のプレイ、`spec/feature/human-plays.md`) |
-| 以後 1 ティック 1 行 | `tick` | `tick`, `t`, `observation`, `decision`, `action` | |
+| 以後 1 ティック 1 行 | `tick` | `tick`, `t`, `observation`, `decision`, `action` | `model` (SDK 0.3.0: 判断器の信念の要約 `belief: {tracked, unknown, intervals?}` と自分の行動のアフォーダンス分類 `affordances: {now, uncertain, reachable, not_found, impossible}`、`spec/feature/rulebook.md` §8) |
 | 末尾 1 行 | `footer` | `ended_at`, `result` (`success` / `fail` / `abort`), `summary` (オブジェクト) | |
 
 - `observation` は §7.2 の完全な Observation (`schema/observation-frame.schema.json`)。段階 1 の `schema/observation.schema.json`

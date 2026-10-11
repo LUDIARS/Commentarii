@@ -12,6 +12,13 @@ export const DOCUMENT_SCHEMAS = [
   'state',
   'tactic',
   'intent',
+  // Rulebook (spec/feature/rulebook.md): mechanics/variables.json, actions/, processes/, behaviors/, objectives.json.
+  'variables',
+  'action',
+  'action.masked',
+  'process',
+  'behavior',
+  'objectives',
   'observation',
   // Learning overlay (stage 4): observations/overlay.json, never part of the canonical bundle.
   'overlay',

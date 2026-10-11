@@ -1,0 +1,9 @@
+{
+  "id": "process:bestia:regen",
+  "name": { "ja": "自然回復", "en": "Regeneration" },
+  "of": "self",
+  "when": "alive(self) && t - last_damaged_at(self) >= 1.5",
+  "rate": [{ "var": "hp", "expr": "min(max_hp(self), hp(self) + 8 * dt)" }],
+  "knowledge": "discoverable",
+  "source": { "kind": "master", "ref": "Bestia src/world.cpp regen (8 hp/s after 1.5 s unhurt)" }
+}

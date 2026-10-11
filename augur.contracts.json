@@ -5,7 +5,7 @@
   "contracts": [
     {
       "id": "C-1",
-      "criterion": "C-1 runValidation(load): V01〜V12 の 12 項目を固定順で必ず返し、各項目の status は error 所見があれば error・warning のみなら warning・所見なしなら ok で、ok は error 項目が 0 のときだけ true",
+      "criterion": "C-1 runValidation(load): V01〜V20 の 20 項目を固定順で必ず返し、各項目の status は error 所見があれば error・warning のみなら warning・所見なしなら ok で、ok は error 項目が 0 のときだけ true",
       "symbol": "runValidation",
       "file": "src/validate/run-validation.ts",
       "module": "src/contracts/run-validation.contract.ts",
@@ -23,7 +23,7 @@
     },
     {
       "id": "C-3",
-      "criterion": "C-3 toPlayerView(bundle): 返すバンドルのどこにも knowledge: masked が無く、masked 付随ファイル (maskedEntities) は空",
+      "criterion": "C-3 toPlayerView(bundle): 返すバンドルのどこにも knowledge: masked が無く、masked 付随ファイル (maskedEntities) と masked の行動の上書き (rulebook.maskedActions) は空",
       "symbol": "toPlayerView",
       "file": "packages/sdk/src/bundle/player-view.ts",
       "module": "packages/sdk/src/contracts/to-player-view.contract.ts",
@@ -41,7 +41,7 @@
     },
     {
       "id": "C-5",
-      "criterion": "C-5 renderBundle(load, options): 既定 (knowledge=player) の出力に masked.md が無く、masked の値 (masked 付随ファイルの項目名と文字列値) がどのファイルにも現れない。full のときだけ masked.md を出す",
+      "criterion": "C-5 renderBundle(load, options): 既定 (knowledge=player) の出力に masked.md が無く、masked の値 (masked 付随ファイルの項目名と文字列値、masked の行動の上書きにしか無い文字列) がどのファイルにも現れない。full のときだけ masked.md を出す",
       "symbol": "renderBundle",
       "file": "src/render/render-bundle.ts",
       "module": "src/contracts/render-bundle.contract.ts",
@@ -131,7 +131,7 @@
     },
     {
       "id": "C-17",
-      "criterion": "C-17 buildExport(load, options): knowledge=player の bundle.json のどこにも knowledge: masked が無く masked_entities は空で、索引 ids の全 pointer が同じ ID の文書を指す",
+      "criterion": "C-17 buildExport(load, options): player の書き出しのどこにも knowledge: masked が無く masked 付随ファイルも masked の行動の上書きも空、view は knowledge と一致し、index.ids と index.actions の各項目はその ID の文書を指す",
       "symbol": "buildExport",
       "file": "src/export/build-export.ts",
       "module": "src/contracts/build-export.contract.ts",
@@ -423,6 +423,51 @@
       "symbol": "buildCommentaryInput",
       "file": "src/commentary/commentary-input.ts",
       "module": "src/contracts/build-commentary-input.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-100",
+      "criterion": "C-100 evaluateInterval(source, context): 結果は lo <= hi の有限な区間で、評価できない式 (未定義の名前・0 を含む区間での除算・記号を数として使う) は ExpressionError で失敗する",
+      "symbol": "evaluateInterval",
+      "file": "packages/sdk/src/domain/expression/evaluate-interval.ts",
+      "module": "packages/sdk/src/contracts/evaluate-interval.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-101",
+      "criterion": "C-101 checkExpression(source, scope): 例外を投げず、構文誤りの式は syntax の問題 1 件だけを返し、どの問題にも説明文がある",
+      "symbol": "checkExpression",
+      "file": "packages/sdk/src/domain/expression/static-check.ts",
+      "module": "packages/sdk/src/contracts/check-expression.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-102",
+      "criterion": "C-102 loadRulebook(exported, mode): player のルールブックはどの深さにも knowledge: masked・override・overridden を持たず、omniscient は full の書き出しからだけ作る",
+      "symbol": "loadRulebook",
+      "file": "packages/sdk/src/rulebook/load-rulebook.ts",
+      "module": "packages/sdk/src/contracts/load-rulebook.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-103",
+      "criterion": "C-103 applyActionOverrides(actions, overrides): 入力と同じ順・同じ数の行動を返し、id / actor / params / maps_to は変えず、上書きのある行動は上書きのキーを丸ごと置き換えて overridden にそのキーを記録する",
+      "symbol": "applyActionOverrides",
+      "file": "packages/sdk/src/rulebook/apply-overrides.ts",
+      "module": "packages/sdk/src/contracts/apply-action-overrides.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-104",
+      "criterion": "C-104 renderRulebook(bundle): ルールブックの頁に全行動の ID と前提 (pre) の式があり、fsm の挙動モデルごとに Mermaid の stateDiagram がある",
+      "symbol": "renderRulebook",
+      "file": "src/render/render-rulebook.ts",
+      "module": "src/contracts/render-rulebook.contract.ts",
       "mode": "observe",
       "sample": 1
     }

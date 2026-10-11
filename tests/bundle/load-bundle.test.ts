@@ -11,10 +11,15 @@ test('the sample bundle loads without issues', async () => {
   assert.equal(bundle.maskedEntities.length, 1);
   assert.equal(bundle.stages.length, 1);
   assert.ok(bundle.stages[0]?.map && bundle.stages[0].events);
-  assert.equal(bundle.rules.length, 2);
+  assert.equal(bundle.rules.length, 3);
   assert.equal(bundle.states.length, 1);
   assert.equal(bundle.tactics.length, 2);
   assert.equal(bundle.intents.length, 1);
+  assert.ok(bundle.rulebook.variables && bundle.rulebook.objectives);
+  assert.equal(bundle.rulebook.actions.length, 5);
+  assert.equal(bundle.rulebook.maskedActions.length, 1);
+  assert.equal(bundle.rulebook.processes.length, 1);
+  assert.equal(bundle.rulebook.behaviors.length, 1);
 });
 
 test('unknown files, broken JSON and a missing manifest become issues', async () => {
