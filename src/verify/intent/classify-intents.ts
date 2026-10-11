@@ -9,6 +9,7 @@
 // set apart and not reported again. Omniscient runs never reach here (select-runs.ts).
 
 import type { AllowedDivergence, DivergenceReason, GuideMap, IntendedItem, Intent } from '../../domain/documents.ts';
+import type { PraeformaRef } from '../../praeforma/praeforma-ref.ts';
 import { unwalkableRoute } from '../feasibility/route-reachability.ts';
 import { wilsonInterval } from '../feasibility/sample-evidence.ts';
 import type { StageTrace } from '../runs/stage-trace.ts';
@@ -32,6 +33,8 @@ export interface IntentVerdict {
   readonly reproduced_interval: readonly [number, number] | null;
   /** The proof behind impossible (map or missing tactic). */
   readonly proof?: string;
+  /** The item's Praeforma scene / spec (spec/feature/praeforma-link.md). */
+  readonly praeforma?: PraeformaRef;
   /** IDs of the not-yet-accepted divergences found against this item. */
   readonly divergences: readonly string[];
   readonly allowed: number;
@@ -136,6 +139,7 @@ export function classifyIntents(input: ClassifyInput): IntentVerification {
       reproduced: judgement.reproduced.length,
       reproduced_interval: wilsonInterval(judgement.reproduced.length, judgement.targets.length),
       ...(proof === undefined ? {} : { proof }),
+      ...(item.praeforma === undefined ? {} : { praeforma: item.praeforma }),
       divergences: itemOpen.map((divergence) => divergence.id),
       allowed: found.length - itemOpen.length,
     });

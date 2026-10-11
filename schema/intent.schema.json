@@ -33,6 +33,7 @@
           "reason": { "$ref": "#/$defs/divergenceReason" },
           "divergence": { "description": "ID in observations/divergences.json.", "$ref": "#/$defs/divergenceId" },
           "signature": { "$ref": "#/$defs/signature" },
+          "praeforma": { "$ref": "praeforma-ref.schema.json#/$defs/ref" },
           "manifest_version": { "description": "Guide version the acceptance was judged under (guide verify intent --accept). Another version re-evaluates it.", "type": "string", "minLength": 1 }
         },
         "additionalProperties": false
@@ -90,7 +91,8 @@
       "properties": {
         "id": { "$ref": "id.schema.json#/$defs/intentId" },
         "note": { "type": "string", "minLength": 1 },
-        "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" }
+        "knowledge": { "$ref": "value.schema.json#/$defs/knowledge" },
+        "praeforma": { "$ref": "praeforma-ref.schema.json#/$defs/ref" }
       }
     },
     "route": {

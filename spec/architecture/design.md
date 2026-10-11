@@ -471,6 +471,7 @@ neco 指示 (2026-10-09): 攻略本には「人間がやってやれそうなこ
 
 - `intent/` の各項目に Praeforma のシーン ID / 仕様 ID を持たせ、`intent import` は Praeforma の UX 文書から下書きを起こす (draft)。
 - 意図ズレレポートを Praeforma 側で該当シーンに表示できるよう、レポートの JSON にシーン ID を含める。Praeforma への表示実装は Praeforma 側の PR。
+- 実装 (2026-10-09): `praeforma: {scene_id, spec_id, project_code}` を意図項目・許容ズレ・ステージに任意で持たせ、UX 文書の front matter / マーカーと `--praeforma` から取り込む (LLM には決めさせない)。検証レポートと feasibility の JSON に載せる。公開契約 `spec/feature/praeforma-link.md`。
 
 ## 15. 未決事項 (neco 判断)
 

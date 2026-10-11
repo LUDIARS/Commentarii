@@ -4,9 +4,9 @@
   "presetRules": [],
   "templateRules": [],
   "membership": [
-    { "pathPattern": "(^|/)src/gate/.+\.ts$" },
-    { "pathPattern": "(^|/)tests/gate/[^/]+\.test\.ts$" },
-    { "pathPattern": "(^|/)spec/feature/balance-gate\.md$" }
+    { "pathPattern": "(^|/)src/gate/.+\\.ts$" },
+    { "pathPattern": "(^|/)tests/gate/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)spec/feature/balance-gate\\.md$" }
   ],
   "cardTemplate": "Summarise the \"balance-gate\" domain: bench result (comparability key, versions, metrics) -> compareBench (refuse incomparable) -> gateBalance (fail-on) ; decision regression (replay) reported apart.",
   "specRefs": ["spec/architecture/design.md §14.C", "spec/feature/balance-gate.md"],

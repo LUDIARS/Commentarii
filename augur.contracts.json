@@ -470,6 +470,15 @@
       "module": "src/contracts/gate-balance.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-73",
+      "criterion": "C-73 extractPraeformaRef(markdown, explicitScene): 明示したシーン ID が常に優先し、返す値は全て文書に現れる (または明示した) 正しい形の Praeforma ID で、文書に何も無く明示も無ければ何も返さない",
+      "symbol": "extractPraeformaRef",
+      "file": "src/praeforma/praeforma-ref.ts",
+      "module": "src/contracts/extract-praeforma-ref.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }

@@ -15,7 +15,12 @@ export const intentDrafts: DraftKindSpec = {
   build(reply, request, registry) {
     if (request.stageSlug === undefined) throw new ImportError('intent import needs a stage');
     const { records, problems } = readReplyRecords(reply, 'intended');
-    const intended = records.map(({ slug, fields }) => ({ id: `intent:${request.gameId}:${request.stageSlug}:${slug}`, ...fields, knowledge: 'masked' }));
+    // The Praeforma scene / spec comes from the document (or --praeforma), never from the LLM reply.
+    const praeforma = request.praeforma === undefined ? {} : { praeforma: request.praeforma };
+    const intended = records.map(({ slug, fields }) => {
+      const { praeforma: _fromReply, ...own } = fields as Record<string, unknown>;
+      return { id: `intent:${request.gameId}:${request.stageSlug}:${slug}`, ...own, knowledge: 'masked', ...praeforma };
+    });
     const doc = {
       stage: `stage:${request.gameId}:${request.stageSlug}`,
       intended,

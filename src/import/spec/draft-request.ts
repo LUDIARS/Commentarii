@@ -2,6 +2,7 @@
 
 import type { Intent, Rule, StateMachine } from '../../domain/documents.ts';
 import type { SchemaRegistry } from '../../schema/schema-registry.ts';
+import type { PraeformaRef } from '../../praeforma/praeforma-ref.ts';
 import type { DraftLlm } from './draft-llm.ts';
 
 export type DraftKind = 'rules' | 'states' | 'intent';
@@ -15,6 +16,8 @@ export interface DraftRequest {
   readonly gameId: string;
   /** Stage slug; required for intent. */
   readonly stageSlug?: string;
+  /** intent: the Praeforma scene / spec the document belongs to (spec/feature/praeforma-link.md). */
+  readonly praeforma?: PraeformaRef;
 }
 
 export type DraftDocument =

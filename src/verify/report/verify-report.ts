@@ -2,6 +2,7 @@
 // --json` prints and observations/verify/report.json holds. guide render reads it back to put
 // the heatmaps and bands on the stage pages.
 
+import type { PraeformaRef } from '../../praeforma/praeforma-ref.ts';
 import type { Band, PlayAxes } from '../feasibility/feasibility-document.ts';
 import type { HeatPanel } from '../heatmap/aggregate-heatmap.ts';
 import type { IntentVerdict } from '../intent/classify-intents.ts';
@@ -41,6 +42,8 @@ export interface AcceptedSummary {
 export interface StageReport {
   readonly stage: string;
   readonly slug: string;
+  /** The stage's Praeforma scene; intents carry their own (spec/feature/praeforma-link.md). */
+  readonly praeforma?: PraeformaRef;
   readonly design_stance: string;
   readonly reach: { readonly autoplay: SideReach; readonly human: SideReach };
   readonly intents: readonly IntentVerdict[];

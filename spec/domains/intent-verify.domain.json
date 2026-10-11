@@ -4,11 +4,11 @@
   "presetRules": [],
   "templateRules": [],
   "membership": [
-    { "pathPattern": "(^|/)src/verify/.+\.ts$" },
-    { "pathPattern": "(^|/)src/render/heatmap/[^/]+\.ts$" },
-    { "pathPattern": "(^|/)tests/verify/[^/]+\.test\.ts$" },
+    { "pathPattern": "(^|/)src/verify/.+\\.ts$" },
+    { "pathPattern": "(^|/)src/render/heatmap/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)tests/verify/[^/]+\\.test\\.ts$" },
     { "pathPattern": "(^|/)tests/fixtures/verify/.+$" },
-    { "pathPattern": "(^|/)spec/feature/intent-verify\.md$" }
+    { "pathPattern": "(^|/)spec/feature/intent-verify\\.md$" }
   ],
   "cardTemplate": "Summarise the \"intent-verify\" domain: replays (coverage / human, omniscient excluded) -> stage traces -> intent classes and divergences (allowed ones not reported again, --accept the only canonical write) -> solution clusters, feasibility bands (illusory = visible via tacticCandidates on the player world + no success) and the two axes -> report, divergences.json, feasibility/, heatmap SVGs.",
   "specRefs": [

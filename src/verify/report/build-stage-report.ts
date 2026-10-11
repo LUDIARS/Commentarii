@@ -64,6 +64,7 @@ export function buildStageReport(input: StageReportInput): StageReport {
   return {
     stage: input.stage,
     slug: input.slug,
+    ...(feasibility.praeforma === undefined ? {} : { praeforma: feasibility.praeforma }),
     design_stance: feasibility.design_stance,
     reach: { autoplay: reachOf(traces.filter((trace) => trace.side === 'autoplay')), human: reachOf(traces.filter((trace) => trace.side === 'human')) },
     intents: verification?.verdicts ?? [],

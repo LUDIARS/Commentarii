@@ -33,3 +33,4 @@
   "cardTemplate": "Summarise the \"guide-maker\" domain: guide validate / render / report knowledge over a loaded bundle, and guide import (masters / map / spec / intent) into it.",
   "specRefs": ["spec/architecture/design.md §6", "spec/feature/validate-checks.md", "spec/feature/import.md", "spec/feature/human-plays.md", "spec/feature/engine.md §1"],
   "rationale": "ツクールの操作口。段階 2 以降の import / export / learn / verify もここへ足す。"
+}

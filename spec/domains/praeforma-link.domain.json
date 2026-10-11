@@ -1,0 +1,16 @@
+{
+  "name": "praeforma-link",
+  "description": "Praeforma 連携 (段階 5K): 意図・許容ズレ・ステージに Praeforma のシーン / 仕様 ID を保持し、UX 文書 (front matter / マーカー) と --praeforma から取り込み、検証レポートと feasibility に載せる。ID は解釈しない。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    { "pathPattern": "(^|/)src/praeforma/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)src/adapters/praeforma/[^/]+\\.ts$" },
+    { "pathPattern": "(^|/)tests/praeforma/[^/]+\\.test\\.ts$" },
+    { "pathPattern": "(^|/)tests/fixtures/praeforma/[^/]+$" },
+    { "pathPattern": "(^|/)spec/feature/praeforma-link\\.md$" }
+  ],
+  "cardTemplate": "Summarise the \"praeforma-link\" domain: UX markdown (front matter / markers / --praeforma) -> PraeformaRef on intent items and stages -> carried into verify / feasibility JSON (the public contract Praeforma reads).",
+  "specRefs": ["spec/architecture/design.md §14.K", "spec/feature/praeforma-link.md"],
+  "rationale": "仕様の正本 (Praeforma) との ID の受け渡しだけを持つ層。検証の規則 (src/verify/) には手を入れず、ID を運ぶだけにする。"
+}

@@ -1,5 +1,6 @@
 {
   "id": "stage:bestia:dome-arena",
+  "praeforma": { "scene_id": "sample-scene-dome-arena", "project_code": "Bestia" },
   "name": { "ja": "ドームアリーナ", "en": "Dome Arena" },
   "objectives": [
     { "value": { "ja": "最後の 1 体まで生き残る", "en": "Be the last monster standing" }, "knowledge": "shown", "source": { "kind": "master", "ref": "Bestia spec/feature/battle.md" } }

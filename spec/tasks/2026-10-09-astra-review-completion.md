@@ -71,7 +71,7 @@
 1. (完了) 段階 5 補正 (P1-3 / P1-4 / P2-8)。
 2. (第 3 PR) 5C バランス回帰ゲート: `spec/feature/balance-gate.md`。P1-6 を反映 (live balance と decision regression を分離、互換性キーで非互換比較を拒否、
    `evidence: sim` の明示)。実測で、kite 定石を外すと expert の p50 は改善 (20.6 → 17.4 秒) するが p90 は悪化 (21.4 → 29 秒) したため、p90 も比較対象にした。
-   5K Praeforma 連携は次。
+   5K Praeforma 連携も同じ第 3 PR 系列で実装 (`spec/feature/praeforma-link.md`、ID の保持・取り込み・レポート付与・公開契約。Praeforma 側の表示 PR は残件)。
 3. 5C バランス回帰ゲート (P1-6 を反映) → 5K Praeforma 連携 (`2026-10-09-stage-5c-balance-gate.md` / `2026-10-09-stage-5k-praeforma-link.md`)。
 3. 段 6 render-tap 受信・正規化 + 6F 敵 AI (確定契約に固定) と、6P Pictor フレームタップ・6B Bestia 実機アダプタ (各リポの別 Opus 委託、契約参照を同梱)。
 4. 段 7 Web 編集 (エンティティ / 地図注記 / 定石 / 意図 / 観測差分の採否 / ズレ判定)、7G ゲーム内図鑑・解放済み知識 export、7I 意味差分説明、

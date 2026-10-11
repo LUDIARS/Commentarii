@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "praeforma-ref.schema.json",
+  "title": "Praeforma reference (spec/feature/praeforma-link.md)",
+  "description": "Which Praeforma scene / specification an intended item, an accepted divergence or a stage belongs to. Praeforma IDs are opaque strings kept as they are.",
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[^\\s<>\"']{1,120}$" },
+    "ref": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "scene_id": { "$ref": "#/$defs/id" },
+        "spec_id": { "$ref": "#/$defs/id" },
+        "project_code": { "$ref": "#/$defs/id" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,6 +1,7 @@
 // feasibility/<stage-slug>.json (schema/feasibility.schema.json): the feasibility bands of a
 // stage's solutions and the two good-play axes per persona (design 8.5).
 
+import type { PraeformaRef } from '../../praeforma/praeforma-ref.ts';
 import type { SampleEvidence } from './sample-evidence.ts';
 import type { FeasibilityThresholds } from './thresholds.ts';
 
@@ -57,6 +58,8 @@ export interface PlayAxes {
 
 export interface FeasibilityDocument {
   readonly stage: string;
+  /** The stage's Praeforma scene (spec/feature/praeforma-link.md). */
+  readonly praeforma?: PraeformaRef;
   readonly design_stance: StanceOrUnspecified;
   readonly thresholds: FeasibilityThresholds;
   readonly runs: { readonly counted: readonly string[]; readonly ignored_omniscient: readonly string[] };

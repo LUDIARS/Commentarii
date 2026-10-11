@@ -38,7 +38,7 @@ export const DOCUMENT_SCHEMAS = [
 export type DocumentSchemaName = (typeof DOCUMENT_SCHEMAS)[number];
 
 /** Schemas that only provide shared definitions and are never applied to a whole file. */
-export const DEFINITION_SCHEMAS = ['id', 'value', 'observation-fields'] as const;
+export const DEFINITION_SCHEMAS = ['id', 'value', 'observation-fields', 'praeforma-ref'] as const;
 
 export const ALL_SCHEMAS = [...DEFINITION_SCHEMAS, ...DOCUMENT_SCHEMAS] as const;
 

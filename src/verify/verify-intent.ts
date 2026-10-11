@@ -45,6 +45,10 @@ function playerNodes(view: Bundle, stageId: string): Set<string> {
   return new Set((stage?.map?.doc.nodes ?? []).map((node) => node.id));
 }
 
+function stageDoc(bundle: Bundle, stageId: string) {
+  return bundle.stages.find((candidate) => stageIdOf(candidate) === stageId)?.stage?.doc;
+}
+
 function stageMap(bundle: Bundle, stageId: string) {
   return bundle.stages.find((candidate) => stageIdOf(candidate) === stageId)?.map?.doc;
 }
@@ -76,6 +80,7 @@ export function verifyIntent(input: VerifyInput): VerifyOutput {
       world,
       playerNodes: playerNodes(view, id),
       ...(stageMap(bundle, id) === undefined ? {} : { map: stageMap(bundle, id) }),
+      ...(stageDoc(bundle, id)?.praeforma === undefined ? {} : { praeforma: stageDoc(bundle, id)?.praeforma }),
       thresholds,
     });
     return { id, slug, intent, own, verification, feasibility };

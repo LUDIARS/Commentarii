@@ -5,6 +5,7 @@
 // solution: they get no band but still count in confusion depth.
 
 import type { GuideMap, Intent } from '../../domain/documents.ts';
+import type { PraeformaRef } from '../../praeforma/praeforma-ref.ts';
 import type { EngineWorld } from '../../engine/world/engine-world.ts';
 import type { StageTrace } from '../runs/stage-trace.ts';
 import { assignBands } from './assign-bands.ts';
@@ -30,6 +31,8 @@ export interface FeasibilityInput {
   readonly playerNodes: ReadonlySet<string>;
   /** The stage's full map: the only ground on which a route can be proven unwalkable. */
   readonly map?: GuideMap;
+  /** The stage's Praeforma scene (stage.json praeforma), carried into the document. */
+  readonly praeforma?: PraeformaRef;
   readonly thresholds: FeasibilityThresholds;
 }
 
@@ -69,6 +72,7 @@ export function buildFeasibility(input: FeasibilityInput): FeasibilityDocument {
   });
   return {
     stage: input.stage,
+    ...(input.praeforma === undefined ? {} : { praeforma: input.praeforma }),
     design_stance: stance,
     thresholds: input.thresholds,
     runs: { counted: [...new Set(traces.map((trace) => trace.run))].sort(), ignored_omniscient: [...input.ignoredOmniscient] },

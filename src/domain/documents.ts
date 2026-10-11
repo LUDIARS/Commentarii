@@ -2,6 +2,7 @@
 // source of truth; these types describe documents that already passed schema validation.
 
 import type { Knowledge } from './knowledge.ts';
+import type { PraeformaRef } from '../praeforma/praeforma-ref.ts';
 
 export type LocalizedText = Readonly<Record<string, string>>;
 
@@ -81,6 +82,8 @@ export interface Spawn {
 
 export interface Stage {
   readonly id: string;
+  /** Praeforma scene of the stage (spec/feature/praeforma-link.md). */
+  readonly praeforma?: PraeformaRef;
   readonly name: LocalizedText;
   readonly objectives: readonly GuideValue<LocalizedText>[];
   readonly clear_conditions?: readonly GuideValue<LocalizedText>[];
@@ -198,6 +201,8 @@ interface IntentCommon {
   readonly id: string;
   readonly note?: string;
   readonly knowledge?: Knowledge;
+  /** Praeforma scene / specification of the item (spec/feature/praeforma-link.md). */
+  readonly praeforma?: PraeformaRef;
 }
 
 export type IntendedItem =
@@ -226,6 +231,7 @@ export interface AllowedDivergence {
   readonly signature?: DivergenceSignature;
   /** Guide version the acceptance was judged under (set by guide verify intent --accept). */
   readonly manifest_version?: string;
+  readonly praeforma?: PraeformaRef;
 }
 
 export type DesignStance = 'open' | 'refined' | 'mixed';

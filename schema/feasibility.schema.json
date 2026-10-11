@@ -7,6 +7,7 @@
   "required": ["stage", "design_stance", "thresholds", "runs", "solutions", "axes"],
   "properties": {
     "stage": { "$ref": "id.schema.json#/$defs/stageId" },
+    "praeforma": { "description": "The stage's Praeforma scene (spec/feature/praeforma-link.md).", "$ref": "praeforma-ref.schema.json#/$defs/ref" },
     "design_stance": { "enum": ["open", "refined", "mixed", "unspecified"] },
     "thresholds": {
       "type": "object",
