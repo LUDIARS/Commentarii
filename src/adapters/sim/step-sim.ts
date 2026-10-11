@@ -1,11 +1,14 @@
 // One simulated tick: self acts, every living enemy picks its target (the nearest other
-// fighter), moves along its state machine and acts, the fallen are removed, self regenerates
+// fighter), moves along its state machine and acts - or, for an enemy the engine drives (stage
+// 6F), observes from its own viewpoint and does what its brain decides - the fallen are removed, self regenerates
 // when it has been left alone, the clock advances and the outcome is settled (every enemy down
 // = success; self down or time over = fail).
 
 import type { ReplayAction } from '../../replay/replay-action.ts';
 import { applySelfAction } from './apply-self-action.ts';
 import { actEnemy } from './enemy-act.ts';
+import { applyEnemyAction } from './apply-enemy-action.ts';
+import { observeAsEnemy } from './enemy-observation.ts';
 import { advanceEnemyState } from './enemy-transitions.ts';
 import { nearestTarget } from './sim-targets.ts';
 import type { SimWorld } from './sim-world.ts';
@@ -27,6 +30,11 @@ export function stepSim(world: SimWorld, action: ReplayAction): void {
   removeFallen(world);
   for (const enemy of world.enemies) {
     if (!enemy.alive || enemy.hp <= 0) continue;
+    const brain = world.enemyBrains?.brains.get(enemy.instance);
+    if (brain !== undefined && world.enemyBrains !== undefined) {
+      applyEnemyAction(world, enemy, brain.decide(observeAsEnemy(world, enemy, world.enemyBrains.mode, world.enemyBrains.playerEntity)));
+      continue;
+    }
     const target = nearestTarget(world, enemy);
     advanceEnemyState(world, enemy, target);
     actEnemy(world, enemy, target);

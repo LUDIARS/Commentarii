@@ -4,7 +4,7 @@
 import { parseArgs } from 'node:util';
 import type { ObservationMode, ObservationPurpose } from '../replay/observation-frame.ts';
 
-export const ADAPTER_KINDS = ['sim', 'stdio'] as const;
+export const ADAPTER_KINDS = ['sim', 'stdio', 'render-tap'] as const;
 export type AdapterKind = (typeof ADAPTER_KINDS)[number];
 
 export const DEFAULT_PERSONA = 'expert';
@@ -27,6 +27,12 @@ export interface RunCommand {
   readonly recordPath?: string;
   /** Reflect into this observation file (observations/runs/<run-slug>.jsonl, design 7.5). */
   readonly observePath?: string;
+  /** render-tap: the frame stream (a render-tap/1 JSON Lines file, or - for stdin). */
+  readonly framesPath?: string;
+  /** render-tap: where actions go (stdio = the protocol's action lines on stdout). */
+  readonly act: 'stdio' | 'none';
+  /** render-tap: the stage the frames show (default: the bundle's first stage). */
+  readonly stageId?: string;
 }
 
 export interface BenchCommand {
@@ -46,7 +52,7 @@ export interface BenchCommand {
 
 export type AutoplayCommand = RunCommand | BenchCommand;
 
-export const AUTOPLAY_USAGE = `  guide run --game <bundle-dir> [--adapter sim|stdio] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--intent-assist] [--record <out.jsonl>] [--observe <observations.jsonl>]
+export const AUTOPLAY_USAGE = `  guide run --game <bundle-dir> [--adapter sim|stdio|render-tap] [--frames <frames.jsonl|->] [--act stdio|none] [--stage <stage-id>] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--intent-assist] [--record <out.jsonl>] [--observe <observations.jsonl>]
   guide bench --game <bundle-dir> [--runs <n>] [--persona <slug>] [--mode player|omniscient] [--purpose efficiency|coverage] [--seed <n>] [--ticks <n>] [--intent-assist] [--no-tactics] [--save <bench/label.json>]
 `;
 
@@ -81,7 +87,7 @@ interface CommonValues {
   readonly 'intent-assist'?: boolean | undefined;
 }
 
-function common(values: CommonValues, verb: string): Omit<RunCommand, 'name' | 'adapter' | 'recordPath'> {
+function common(values: CommonValues, verb: string): Omit<RunCommand, 'name' | 'adapter' | 'recordPath' | 'act'> {
   if (values.game === undefined || values.game === '') throw new Error(`${verb} needs --game <bundle-dir>`);
   if (values.mode !== 'player' && values.mode !== 'omniscient') throw new Error('--mode must be player or omniscient');
   if (values.purpose !== 'efficiency' && values.purpose !== 'coverage') throw new Error('--purpose must be efficiency or coverage');
@@ -100,10 +106,13 @@ export function parseRunCommand(args: readonly string[]): RunCommand {
   const { values, positionals } = parseArgs({
     args: [...args],
     allowPositionals: true,
-    options: { ...COMMON_OPTIONS, adapter: { type: 'string', default: 'sim' }, record: { type: 'string' }, observe: { type: 'string' } },
+    options: { ...COMMON_OPTIONS, adapter: { type: 'string', default: 'sim' }, record: { type: 'string' }, observe: { type: 'string' }, frames: { type: 'string' }, act: { type: 'string', default: 'none' }, stage: { type: 'string' } },
   });
   if (positionals.length > 0) throw new Error('run takes no positional arguments');
-  if (values.adapter !== 'sim' && values.adapter !== 'stdio') throw new Error(`--adapter must be one of: ${ADAPTER_KINDS.join(', ')}`);
+  if (values.adapter !== 'sim' && values.adapter !== 'stdio' && values.adapter !== 'render-tap') throw new Error(`--adapter must be one of: ${ADAPTER_KINDS.join(', ')}`);
+  if (values.act !== 'stdio' && values.act !== 'none') throw new Error('--act must be stdio or none');
+  if (values.adapter === 'render-tap' && (values.frames === undefined || values.frames === '')) throw new Error('--adapter render-tap needs --frames <frames.jsonl|->');
+  if (values.adapter !== 'render-tap' && (values.frames !== undefined || values.act !== 'none' || values.stage !== undefined)) throw new Error('--frames, --act and --stage belong to --adapter render-tap');
   if (values.record === '') throw new Error('--record needs a path');
   if (values.observe === '') throw new Error('--observe needs a path');
   return {
@@ -112,6 +121,9 @@ export function parseRunCommand(args: readonly string[]): RunCommand {
     adapter: values.adapter,
     ...(values.record === undefined ? {} : { recordPath: values.record }),
     ...(values.observe === undefined ? {} : { observePath: values.observe }),
+    ...(values.frames === undefined ? {} : { framesPath: values.frames }),
+    act: values.act,
+    ...(values.stage === undefined ? {} : { stageId: values.stage }),
   };
 }
 

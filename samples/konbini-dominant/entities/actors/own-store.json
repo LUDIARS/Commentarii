@@ -1,0 +1,12 @@
+{
+  "id": "actor:konbini-dominant:own-store",
+  "name": {
+    "ja": "自チェーンの店",
+    "en": "Own store"
+  },
+  "behavior": "state:konbini-dominant:store",
+  "tags": [
+    "store",
+    "own"
+  ]
+}

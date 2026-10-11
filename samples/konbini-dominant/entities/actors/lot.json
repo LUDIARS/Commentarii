@@ -1,0 +1,10 @@
+{
+  "id": "actor:konbini-dominant:lot",
+  "name": {
+    "ja": "空き区画 (出店可能)",
+    "en": "Buildable lot"
+  },
+  "tags": [
+    "lot"
+  ]
+}

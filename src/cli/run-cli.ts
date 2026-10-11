@@ -2,6 +2,9 @@
 
 import { runAuditMask } from '../audit/run-audit-mask.ts';
 import { runAutoplayCommand } from '../autoplay/run-autoplay-command.ts';
+import { runCommentaryCommand } from '../commentary/run-commentary-command.ts';
+import { runReportSignatures } from '../render-tap/cli/run-report-signatures.ts';
+import { runDiffCommand } from '../diff/run-diff-command.ts';
 import { runExportCommand } from '../export/run-export-command.ts';
 import { runLearnCommand } from '../learn/cli/run-learn-command.ts';
 import { runPlaysCommand } from '../import/plays/run-plays-command.ts';
@@ -57,6 +60,12 @@ async function execute(command: Command, io: CliIo): Promise<number> {
       return runAuditMask(command, io);
     case 'export':
       return runExportCommand(command, io);
+    case 'diff-explain':
+      return runDiffCommand(command, io);
+    case 'commentary':
+      return runCommentaryCommand(command, io);
+    case 'report-signatures':
+      return runReportSignatures(command, io);
     case 'run':
     case 'bench':
       return runAutoplayCommand(command, io);
@@ -73,6 +82,7 @@ async function execute(command: Command, io: CliIo): Promise<number> {
       return runPlaysCommand(command, io);
     case 'verify-intent':
     case 'verify-accept':
+    case 'verify-reject':
     case 'report-feasibility':
       return runVerifyCommand(command, io);
   }

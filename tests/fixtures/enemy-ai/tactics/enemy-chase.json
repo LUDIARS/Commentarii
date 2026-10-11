@@ -1,0 +1,43 @@
+{
+  "id": "tactic:bestia:enemy-chase",
+  "name": {
+    "ja": "射程外なら追う",
+    "en": "Chase when out of reach"
+  },
+  "when": {
+    "all": [
+      {
+        "entity": "actor:bestia:player",
+        "visible": true,
+        "within_reach": false,
+        "as": "$player"
+      },
+      {
+        "not": {
+          "event": "shot-at"
+        }
+      },
+      {
+        "not": {
+          "self": {
+            "at_node": "node:outside"
+          }
+        }
+      }
+    ]
+  },
+  "do": [
+    {
+      "move_to": "$player"
+    }
+  ],
+  "expect": {
+    "reflex": true
+  },
+  "because": [
+    "state:bestia:battle-ai"
+  ],
+  "knowledge": "discoverable",
+  "confidence": "authored",
+  "superseded_by": null
+}

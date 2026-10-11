@@ -1,0 +1,23 @@
+{
+  "name": "semantic-diff",
+  "description": "攻略本の意味差分 (段 7I): 2 つの攻略本を同じ knowledge で書き出し、ID で対応付けて値の変化・境界の昇格 / 降格・定石の置換・意図の変更を Markdown / JSON にする。公開用は player view 同士の差分。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    {
+      "pathPattern": "(^|/)src/diff/[^/]+[.]ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/diff/[^/]+[.]test[.]ts$"
+    },
+    {
+      "pathPattern": "(^|/)spec/feature/semantic-diff[.]md$"
+    }
+  ],
+  "cardTemplate": "Summarise the semantic-diff domain: ExportedBundle x2 -> semanticDiff (records by ID, leaf changes, boundary direction, tactic replacement) -> formatDiffMarkdown; CLI guide diff --explain.",
+  "specRefs": [
+    "spec/architecture/design.md §14.I",
+    "spec/feature/semantic-diff.md"
+  ],
+  "rationale": "数値は差分から機械的に出し、文章が値から漂わないようにする。公開用は player view 同士で比べるので masked が入らない。"
+}

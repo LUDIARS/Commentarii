@@ -1,0 +1,42 @@
+{
+  "id": "stage:konbini-dominant:first-playable",
+  "name": {
+    "ja": "N-KXi 第 1 区",
+    "en": "N-KXi first district"
+  },
+  "objectives": [
+    {
+      "value": {
+        "ja": "制限時間内に支配率 60% に届く",
+        "en": "Reach 60% domination in time"
+      },
+      "knowledge": "shown",
+      "source": {
+        "kind": "master",
+        "ref": "KonbiniDominant data/content/first-playable.json phase1.dominationPercent"
+      }
+    }
+  ],
+  "clear_conditions": [
+    {
+      "value": {
+        "ja": "支配率 60% 以上で第 1 フェーズを終える",
+        "en": "End phase 1 at 60% domination or more"
+      },
+      "knowledge": "shown",
+      "source": {
+        "kind": "master",
+        "ref": "KonbiniDominant data/content/first-playable.json phase1.dominationPercent"
+      }
+    }
+  ],
+  "time_limit": {
+    "value": 300,
+    "unit": "s",
+    "knowledge": "shown",
+    "source": {
+      "kind": "master",
+      "ref": "KonbiniDominant data/content/first-playable.json phase1.durationTicks / simulation.ticksPerSecond"
+    }
+  }
+}

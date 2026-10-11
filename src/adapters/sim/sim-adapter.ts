@@ -9,7 +9,7 @@ import type { ObservationMode, ObservationPurpose } from '../../replay/observati
 import { createSimWorld } from './create-sim-world.ts';
 import { DEFAULT_SIM_CONFIG, type SimConfig } from './sim-config.ts';
 import { observeSim } from './sim-observation.ts';
-import type { SimOutcome } from './sim-world.ts';
+import type { SimEnemyBrains, SimOutcome } from './sim-world.ts';
 import { stepSim } from './step-sim.ts';
 
 export const SIM_ADAPTER_ID = 'commentarii-sim';
@@ -22,6 +22,8 @@ export interface SimOptions {
   readonly seed: number;
   readonly config?: SimConfig;
   readonly stageId?: string;
+  /** Enemies the engine drives instead of their fixed tree (stage 6F). */
+  readonly enemyBrains?: SimEnemyBrains;
 }
 
 export interface SimStats {
@@ -42,7 +44,7 @@ function round(value: number): number {
 }
 
 export function createSimAdapter(options: SimOptions): SimAdapter {
-  const world = createSimWorld({ bundle: options.bundle, seed: options.seed, config: options.config ?? DEFAULT_SIM_CONFIG, ...(options.stageId ? { stageId: options.stageId } : {}) });
+  const world = createSimWorld({ bundle: options.bundle, seed: options.seed, config: options.config ?? DEFAULT_SIM_CONFIG, ...(options.stageId ? { stageId: options.stageId } : {}), ...(options.enemyBrains === undefined ? {} : { enemyBrains: options.enemyBrains }) });
   const gameId = options.bundle.manifest?.doc.game_id;
   if (gameId === undefined) throw new Error('the sim needs a bundle with a manifest (game_id)');
   const stats = (): SimStats => ({

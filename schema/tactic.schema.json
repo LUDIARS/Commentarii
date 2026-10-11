@@ -15,6 +15,7 @@
       "minProperties": 1,
       "properties": {
         "within_sec": { "type": "number", "exclusiveMinimum": 0 },
+        "reflex": { "description": "true: the tactic waits for no outcome (attack what is in reach, chase what is not); it is met at once and may be proposed again on the next tick (spec/feature/engine.md 2).", "const": true },
         "entity_state": { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } }
       }
     },
@@ -67,7 +68,12 @@
         "wait": { "type": "number", "minimum": 0 },
         "interact": { "type": "string", "minLength": 1 },
         "custom": { "type": "string", "minLength": 1 },
-        "target": { "type": "string", "minLength": 1 }
+        "target": { "type": "string", "minLength": 1 },
+        "params": {
+          "description": "Game-specific operands passed through to the adapter as-is (e.g. KonbiniDominant select_chain { chain }, build { slot }); spec/feature/adapter-protocol.md.",
+          "type": "object",
+          "additionalProperties": { "type": ["string", "number", "boolean"] }
+        }
       },
       "additionalProperties": false,
       "oneOf": [

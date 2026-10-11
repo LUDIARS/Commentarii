@@ -1,0 +1,72 @@
+{
+  "game_id": "konbini-dominant",
+  "title": {
+    "ja": "KonbiniDominant 攻略本 (サンプル)",
+    "en": "KonbiniDominant guide (sample)"
+  },
+  "version": "0.1.0",
+  "builds": [
+    "main"
+  ],
+  "coordinates": {
+    "system": "world-xyz",
+    "unit": "m"
+  },
+  "lexicon": {
+    "version": "0"
+  },
+  "observation": {
+    "fields": [
+      {
+        "path": "self.resources.cash",
+        "knowledge": "shown",
+        "origin": "cash on the HUD (KonbiniDominant HudViewModel (src/app/hud_text_model.cpp) cashCredits)"
+      },
+      {
+        "path": "self.resources.stores",
+        "knowledge": "shown",
+        "origin": "own store count on the HUD (storeCount)"
+      },
+      {
+        "path": "self.resources.customers",
+        "knowledge": "shown",
+        "origin": "own customers on the HUD (CUSTOMERS <own>/<total>)"
+      },
+      {
+        "path": "self.resources.population",
+        "knowledge": "shown",
+        "origin": "total population on the HUD (CUSTOMERS <own>/<total>)"
+      },
+      {
+        "path": "self.resources.domination",
+        "knowledge": "shown",
+        "origin": "floor(customers * 100 / population), computed from the HUD CUSTOMERS line"
+      },
+      {
+        "path": "self.resources.ticks_remaining",
+        "knowledge": "shown",
+        "origin": "phase timer on the HUD (ticksRemaining)"
+      },
+      {
+        "path": "self.resources.economy_in",
+        "knowledge": "shown",
+        "origin": "next income countdown on the HUD (ticksUntilEconomy)"
+      },
+      {
+        "path": "self.resources.chain_selected",
+        "knowledge": "shown",
+        "origin": "1 once the chain select screen is closed (phase != ChainSelect)"
+      },
+      {
+        "path": "extra.phase",
+        "knowledge": "shown",
+        "origin": "phase banner on the HUD (GamePhase)"
+      },
+      {
+        "path": "extra.chain",
+        "knowledge": "shown",
+        "origin": "own chain name on the HUD (playerChain)"
+      }
+    ]
+  }
+}

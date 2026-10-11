@@ -1,0 +1,45 @@
+{
+  "id": "state:konbini-dominant:store",
+  "name": {
+    "ja": "店の状態",
+    "en": "Store state"
+  },
+  "initial": "open",
+  "states": [
+    {
+      "id": "open",
+      "label": {
+        "ja": "営業中"
+      }
+    },
+    {
+      "id": "capturing",
+      "label": {
+        "ja": "出店中 (建設待ち)"
+      }
+    },
+    {
+      "id": "encircled",
+      "label": {
+        "ja": "包囲されている"
+      }
+    }
+  ],
+  "transitions": [
+    {
+      "from": "capturing",
+      "to": "open",
+      "on": "建設完了"
+    },
+    {
+      "from": "open",
+      "to": "encircled",
+      "on": "他チェーンの商圏に囲まれる"
+    }
+  ],
+  "knowledge": "shown",
+  "source": {
+    "kind": "master",
+    "ref": "KonbiniDominant include/konbini/sim/render_snapshot.h RenderStore isEncircled / captureTicksRemaining"
+  }
+}

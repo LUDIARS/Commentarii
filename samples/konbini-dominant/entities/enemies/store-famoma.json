@@ -1,0 +1,32 @@
+{
+  "id": "enemy:konbini-dominant:store-famoma",
+  "name": {
+    "ja": "サンフォールド の店 (他チェーン)",
+    "en": "SUNFOLD store (rival)"
+  },
+  "stats": {
+    "build_cost": {
+      "value": 1250,
+      "unit": "credits",
+      "knowledge": "shown",
+      "source": {
+        "kind": "master",
+        "ref": "KonbiniDominant data/content/first-playable.json chains[1].buildCostCredits"
+      }
+    },
+    "zoc_radius": {
+      "value": 24,
+      "unit": "m",
+      "knowledge": "shown",
+      "source": {
+        "kind": "master",
+        "ref": "KonbiniDominant data/content/first-playable.json chains[1].zocRadiusMeters"
+      }
+    }
+  },
+  "behavior": "state:konbini-dominant:store",
+  "tags": [
+    "store",
+    "famoma"
+  ]
+}

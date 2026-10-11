@@ -1,0 +1,49 @@
+{
+  "terms": [
+    {
+      "text": "MOONPANTRY",
+      "lang": "en",
+      "ref": "enemy:konbini-dominant:store-losan"
+    },
+    {
+      "text": "ムーンパントリー",
+      "lang": "ja",
+      "ref": "enemy:konbini-dominant:store-losan"
+    },
+    {
+      "text": "SUNFOLD",
+      "lang": "en",
+      "ref": "enemy:konbini-dominant:store-famoma"
+    },
+    {
+      "text": "サンフォールド",
+      "lang": "ja",
+      "ref": "enemy:konbini-dominant:store-famoma"
+    },
+    {
+      "text": "DAYLARK",
+      "lang": "en",
+      "ref": "enemy:konbini-dominant:store-seban_ileban"
+    },
+    {
+      "text": "デイラーク",
+      "lang": "ja",
+      "ref": "enemy:konbini-dominant:store-seban_ileban"
+    }
+  ],
+  "ui": [
+    {
+      "element": "チェーン選択画面の建設費",
+      "shows": "enemy:konbini-dominant:store-losan.stats.build_cost"
+    },
+    {
+      "element": "チェーン選択画面の建設費",
+      "shows": "enemy:konbini-dominant:store-famoma.stats.build_cost"
+    },
+    {
+      "element": "チェーン選択画面の建設費",
+      "shows": "enemy:konbini-dominant:store-seban_ileban.stats.build_cost"
+    }
+  ],
+  "glyphs": []
+}

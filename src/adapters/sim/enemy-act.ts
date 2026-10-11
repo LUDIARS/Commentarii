@@ -9,9 +9,9 @@ import { hitTarget, targetPos, type SimTarget } from './sim-targets.ts';
 import type { SimEnemy, SimWorld } from './sim-world.ts';
 
 /** How close a chasing enemy comes (it stops instead of standing on the target). */
-const CLOSEST_APPROACH = 1.5;
+export const CLOSEST_APPROACH = 1.5;
 
-function attack(world: SimWorld, enemy: SimEnemy, target: SimTarget, distance: number): void {
+export function attackTarget(world: SimWorld, enemy: SimEnemy, target: SimTarget, distance: number): void {
   if (world.t < enemy.readyAt || distance > enemy.range) return;
   enemy.readyAt = world.t + enemy.cooldown;
   const damage = damageOf(world, enemy, distance, statsOf(enemy.entity, enemy.masked));
@@ -28,7 +28,7 @@ export function actEnemy(world: SimWorld, enemy: SimEnemy, target: SimTarget): v
       enemy.pos = stepToward(enemy.pos, goal, step, CLOSEST_APPROACH);
       return;
     case 'attack':
-      attack(world, enemy, target, distance);
+      attackTarget(world, enemy, target, distance);
       return;
     case 'dodge':
       enemy.pos = stepSideways(enemy.pos, goal, step);

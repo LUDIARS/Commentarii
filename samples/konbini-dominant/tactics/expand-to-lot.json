@@ -1,0 +1,41 @@
+{
+  "id": "tactic:konbini-dominant:expand-to-lot",
+  "name": {
+    "ja": "資金が貯まったら近い空き区画に出店する",
+    "en": "Build on the nearest lot once cash allows"
+  },
+  "when": {
+    "all": [
+      {
+        "self": {
+          "resource_gte": {
+            "chain_selected": 1,
+            "cash": 800
+          }
+        }
+      },
+      {
+        "entity": "actor:konbini-dominant:lot",
+        "visible": true,
+        "as": "$lot"
+      }
+    ]
+  },
+  "do": [
+    {
+      "interact": "$lot",
+      "params": {
+        "slot": 0
+      }
+    }
+  ],
+  "expect": {
+    "reflex": true
+  },
+  "because": [
+    "enemy:konbini-dominant:store-seban_ileban.stats.build_cost"
+  ],
+  "knowledge": "shown",
+  "confidence": "authored",
+  "superseded_by": null
+}

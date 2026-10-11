@@ -38,6 +38,32 @@
       "properties": { "fields": { "$ref": "observation-fields.schema.json#/$defs/fields" } },
       "additionalProperties": false
     },
+    "render_tap": {
+      "description": "How the render tap maps to the player observation (spec/feature/render-tap-contract.md 8): the avatar appearance (self.pos) and which UI element shows which observation place (self.hp or a declared observation field).",
+      "type": "object",
+      "properties": {
+        "self": {
+          "type": "object",
+          "required": ["mesh"],
+          "properties": { "mesh": { "type": "string", "minLength": 1 }, "material": { "type": "array", "items": { "type": "string", "minLength": 1 } } },
+          "additionalProperties": false
+        },
+        "ui": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["element", "read", "path"],
+            "properties": {
+              "element": { "type": "string", "minLength": 1 },
+              "read": { "enum": ["fill", "number"] },
+              "path": { "type": "string", "pattern": "^(self\\.hp|self\\.resources\\.[a-z][a-z0-9_]*|extra\\.[A-Za-z0-9_-]+)$" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "bench": {
       "description": "Balance gate thresholds (spec/feature/balance-gate.md 3). Every field is optional; absent ones take the defaults.",
       "type": "object",

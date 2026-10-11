@@ -1,4 +1,4 @@
-// Runs guide verify intent (verification or --accept) and guide report feasibility. Input
+// Runs guide verify intent (verification, --accept or --reject) and guide report feasibility. Input
 // problems (VerifyError) are printed and exit 1 with nothing written.
 
 import { EXIT_INVALID, EXIT_OK, type CliIo } from '../../cli/cli-io.ts';
@@ -6,6 +6,7 @@ import { formatFeasibilityMarkdown } from '../report/format-feasibility-markdown
 import { VerifyError } from '../verify-error.ts';
 import { readFeasibilityDocuments } from './read-documents.ts';
 import { runVerifyAccept } from './run-verify-accept.ts';
+import { runVerifyReject } from './run-verify-reject.ts';
 import { runVerifyIntent } from './run-verify-intent.ts';
 import type { ReportFeasibilityCommand, VerifyCommand } from './verify-command.ts';
 import type { VerifyIo } from './verify-io.ts';
@@ -27,6 +28,8 @@ export async function runVerifyCommand(command: VerifyCommand, io: VerifyCommand
         return await runVerifyIntent(command, io, verifyIo);
       case 'verify-accept':
         return await runVerifyAccept(command, io, verifyIo);
+      case 'verify-reject':
+        return await runVerifyReject(command, io, verifyIo);
       case 'report-feasibility':
         return await reportFeasibility(command, io, verifyIo);
     }

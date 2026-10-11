@@ -1,0 +1,31 @@
+{
+  "id": "tactic:konbini-dominant:select-cheapest-chain",
+  "name": {
+    "ja": "建設費の安いチェーンで始める",
+    "en": "Start with the cheapest chain"
+  },
+  "when": {
+    "self": {
+      "resource_lt": {
+        "chain_selected": 1
+      }
+    }
+  },
+  "do": [
+    {
+      "custom": "select_chain",
+      "params": {
+        "chain": "seban_ileban"
+      }
+    }
+  ],
+  "expect": {
+    "reflex": true
+  },
+  "because": [
+    "enemy:konbini-dominant:store-seban_ileban.stats.build_cost"
+  ],
+  "knowledge": "shown",
+  "confidence": "authored",
+  "superseded_by": null
+}

@@ -1,4 +1,4 @@
-// `guide export <bundle-dir> --out <dir> [--knowledge player|full] [--target runtime]` arguments.
+// `guide export <bundle-dir> --out <dir> [--knowledge player|full] [--target runtime|ingame] [--unlocked <file>]` arguments.
 // Errors are thrown as plain Errors; parse-command.ts turns them into usage errors.
 
 import { parseArgs } from 'node:util';
@@ -10,9 +10,11 @@ export interface ExportCommand {
   readonly outDir: string;
   readonly knowledge: ExportKnowledge;
   readonly target: ExportTarget;
+  /** ingame: a JSON file {"unlocked": [value refs]} of what the player has discovered. */
+  readonly unlockedPath?: string;
 }
 
-export const EXPORT_USAGE = `  guide export <bundle-dir> --out <dir> [--knowledge player|full] [--target ${EXPORT_TARGETS.join('|')}]
+export const EXPORT_USAGE = `  guide export <bundle-dir> --out <dir> [--knowledge player|full] [--target ${EXPORT_TARGETS.join('|')}] [--unlocked <unlocked.json>]
 `;
 
 function isTarget(value: string): value is ExportTarget {
@@ -23,12 +25,14 @@ export function parseExportCommand(args: readonly string[]): ExportCommand {
   const { values, positionals } = parseArgs({
     args: [...args],
     allowPositionals: true,
-    options: { out: { type: 'string' }, knowledge: { type: 'string', default: 'player' }, target: { type: 'string', default: 'runtime' } },
+    options: { out: { type: 'string' }, knowledge: { type: 'string', default: 'player' }, target: { type: 'string', default: 'runtime' }, unlocked: { type: 'string' } },
   });
   const [bundleDir, ...extra] = positionals;
   if (bundleDir === undefined || extra.length > 0) throw new Error('export needs exactly one <bundle-dir>');
   if (values.out === undefined || values.out === '') throw new Error('export needs --out <dir>');
   if (values.knowledge !== 'player' && values.knowledge !== 'full') throw new Error('--knowledge must be player or full');
   if (!isTarget(values.target)) throw new Error(`--target must be one of: ${EXPORT_TARGETS.join(', ')}`);
-  return { name: 'export', bundleDir, outDir: values.out, knowledge: values.knowledge, target: values.target };
+  if (values.target === 'ingame' && values.knowledge !== 'player') throw new Error('--target ingame is the player view: --knowledge player only');
+  if (values.unlocked !== undefined && values.target !== 'ingame') throw new Error('--unlocked goes with --target ingame');
+  return { name: 'export', bundleDir, outDir: values.out, knowledge: values.knowledge, target: values.target, ...(values.unlocked === undefined ? {} : { unlockedPath: values.unlocked }) };
 }

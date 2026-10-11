@@ -33,6 +33,11 @@ export interface Manifest {
   readonly learning?: { readonly policy: unknown };
   /** Game-declared observation fields (spec/feature/observation-boundary.md). */
   readonly observation?: { readonly fields: readonly { readonly path: string; readonly knowledge: Knowledge; readonly origin: string }[] };
+  /** Render tap mapping (spec/feature/render-tap-contract.md §8): the avatar's appearance and UI element -> observation place. */
+  readonly render_tap?: {
+    readonly self?: { readonly mesh: string; readonly material?: readonly string[] };
+    readonly ui?: readonly { readonly element: string; readonly read: 'fill' | 'number'; readonly path: string }[];
+  };
   /** Balance gate thresholds (spec/feature/balance-gate.md §3); defaults when absent. */
   readonly bench?: { readonly thresholds?: Readonly<Record<string, number>> };
   /** Feasibility band thresholds (spec/feature/intent-verify.md 6.3); defaults when absent. */
@@ -187,7 +192,7 @@ export interface Tactic {
   readonly id: string;
   readonly name: LocalizedText;
   readonly when: unknown;
-  readonly do: readonly Readonly<Record<string, string | number>>[];
+  readonly do: readonly (Readonly<Record<string, string | number>> & { readonly params?: Readonly<Record<string, string | number | boolean>> })[];
   readonly expect: Readonly<Record<string, unknown>>;
   readonly because: readonly string[];
   readonly knowledge: Knowledge;

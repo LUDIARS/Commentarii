@@ -102,5 +102,6 @@ game  -> {"type":"bye","result":"success","summary":{"time_sec":41.2}}
 |---|---|---|
 | `commentarii-sim` | `src/adapters/sim/` | 模擬アダプタ (テスト・ベンチ)。[engine.md](engine.md) §8 |
 | stdio | `src/adapters/stdio/` | 上のプロトコルで別プロセスのゲームとつなぐ |
+| `render-tap` | `src/adapters/render-tap/` | 描画タップ (段 2)。`render-tap/1` の行を `--frames <file|->` で受け、`selectPlayerDraws` の結果だけから player 観測を組む。行動は `--act stdio` でこのプロトコルの `action` 行として出すか、`--act none` で出さない。[render-tap-contract.md](render-tap-contract.md) |
 
-Bestia 実機アダプタ (段 1: ゲーム内 API) は Bestia リポ側の次の run で作る。
+Bestia 実機アダプタ (段 1: ゲーム内 API) は Bestia リポ側で作る (段階 6B、子委託)。
