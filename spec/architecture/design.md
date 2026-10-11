@@ -608,6 +608,11 @@ mechanics/
 | R2 | 判断方式 5 種を共通契約で: FSM、BT (既存の一般化)、Utility (目標・計画対象に拡張)、GOAP (A*)、MCTS (UCT、相手手番、予算、seed 決定性)。相手の挙動モデルの解釈器 (5 方式) | 方式ごとの単体テスト (既知解のある小問題)。同 seed で同判断 |
 | R3 | 方式選択器 (対応表 + 局面署名 + UCB 補正)、`autonomous` / `hybrid` 構え、実験目標と効果学習、判断ログと replay diff の拡張、ペルソナに方式の好みと予算、`guide bench --stance`、`learned` 候補の書き出し | sim の Bestia を定石なしの `autonomous` でクリアし、ルールブック無しより明確に強い。masked の効果を実験で推定できる。局面ごとに想定した方式が選ばれる。リプレイで判断が再現する |
 
+### 16.9 Commentarii からの切り離しと名前 (neco 2026-10-11)
+
+- オートプレイヤーは Commentarii から切り離した別プロジェクトで運用する (neco 指示)。境界・契約・移行は設計委託 (Fable / Astra) の結果で確定する。
+- 名前は **Ingenium** (略称 `Ig`、ラテン語で「才知・工夫する力」)。neco: 「Ingenium が思想には近い」= 定石に頼らず、ルールと自分の能力から手を考え出す頭脳。候補は Lusor / Sollers / Tentator / Ingenium / Peritus (名前・略称とも既存と衝突なしを確認済み)。
+
 R1 → R2 → R3 の順 (R2 の GOAP / MCTS は R1 の前向きモデルを使う)。段 6 (描画タップ) とは独立。R3 の後、段 8 (2 本目のアダプタ) の受入に「`autonomous` でも動く」を足す。
 
 ## 15. 未決事項 (neco 判断)
