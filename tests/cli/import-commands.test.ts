@@ -67,7 +67,7 @@ test('import masters into an empty bundle, then validate passes every check', as
 
   const validated = await guide(['validate', bundle]);
   assert.equal(validated.code, 0, validated.stdout);
-  assert.equal(validated.stdout.match(/^OK {3}V\d\d /gm)?.length, 20, validated.stdout);
+  assert.equal(validated.stdout.match(/^OK {3}V\d\d /gm)?.length, 26, validated.stdout);
 });
 
 test('import masters over the hand-written sample keeps it valid; --dry-run writes nothing', async () => {

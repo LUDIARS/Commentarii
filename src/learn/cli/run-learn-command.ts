@@ -1,6 +1,8 @@
 // Runs `guide learn ingest` (run observations -> observations/overlay.json + differences) and
 // `guide learn consolidate` (overlay -> proposals; --apply writes the auto ones into the
-// bundle) and `guide learn approve` (binds a person's approval to a proposal's content hash).
+// bundle) and `guide learn approve` (binds a person's approval to a proposal's content hash). An
+// engine's budget table proposals (observations/planning/proposals.json, SDK 0.5.0) are reviewed,
+// approved and written (observations/planning/approved-budget-table.json) the same way.
 // Ingest and approve write observations/ only, never a canonical file. Input problems (LearnError)
 // are printed and exit 1 with nothing written.
 
@@ -12,11 +14,12 @@ import { planConsolidation, type Consolidation } from '../consolidate/plan-conso
 import { APPROVALS_PATH, type ApprovalsFile } from '../approval/approvals.ts';
 import { approveProposal } from '../approval/approve-proposal.ts';
 import { readApprovals, readHumanCandidates } from '../approval/read-approvals.ts';
+import { readPlanningProposals } from '../budget/read-planning-proposals.ts';
 import { formatIngestMarkdown } from '../ingest/format-ingest-markdown.ts';
 import { ingestRuns } from '../ingest/ingest-runs.ts';
 import { LearnError } from '../learn-error.ts';
 import { parseRunObservations, type RunObservations } from '../observations/run-observations.ts';
-import { OVERLAY_PATH, type Overlay } from '@ludiars/commentarii-sdk/types';
+import { emptyOverlay, OVERLAY_PATH, type Overlay } from '@ludiars/commentarii-sdk/types';
 import { readOverlay } from '../overlay/read-overlay.ts';
 import { learningPolicyOf } from '../policy/learning-policy.ts';
 import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
@@ -75,8 +78,11 @@ async function planFor(gameDir: string, apply: boolean, io: LearnCliIo, learnIo:
   }
   const gameId = gameIdOf(load, gameDir);
   const policy = learningPolicyOf(load.bundle.manifest?.doc);
-  const overlay = await readOverlay(learnIo, gameDir, gameId);
-  if (overlay === undefined) throw new LearnError(`${OVERLAY_PATH} does not exist; run guide learn ingest first`);
+  const stored = await readOverlay(learnIo, gameDir, gameId);
+  const planningProposals = await readPlanningProposals(learnIo, gameDir);
+  // Budget table proposals alone need no overlay: nothing else is proposed then.
+  if (stored === undefined && planningProposals === undefined) throw new LearnError(`${OVERLAY_PATH} does not exist; run guide learn ingest first`);
+  const overlay = stored ?? emptyOverlay(gameId);
   const approvals = await readApprovals(learnIo, gameDir, gameId);
   const humanCandidates = await readHumanCandidates(learnIo, gameDir, gameId);
   const result = planConsolidation({
@@ -87,6 +93,7 @@ async function planFor(gameDir: string, apply: boolean, io: LearnCliIo, learnIo:
     registry: await learnIo.schemaRegistry(),
     approvals: approvals?.approvals ?? [],
     ...(humanCandidates === undefined ? {} : { humanCandidates }),
+    ...(planningProposals === undefined ? {} : { planningProposals }),
   });
   return { gameId, approvals, result };
 }

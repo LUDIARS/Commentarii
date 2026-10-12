@@ -5,7 +5,7 @@
   "contracts": [
     {
       "id": "C-1",
-      "criterion": "C-1 runValidation(load): V01〜V20 の 20 項目を固定順で必ず返し、各項目の status は error 所見があれば error・warning のみなら warning・所見なしなら ok で、ok は error 項目が 0 のときだけ true",
+      "criterion": "C-1 runValidation(load): V01〜V26 の 26 項目を固定順で必ず返し、各項目の status は error 所見があれば error・warning のみなら warning・所見なしなら ok で、ok は error 項目が 0 のときだけ true",
       "symbol": "runValidation",
       "file": "src/validate/run-validation.ts",
       "module": "src/contracts/run-validation.contract.ts",
@@ -149,7 +149,7 @@
     },
     {
       "id": "C-32",
-      "criterion": "C-32 planConsolidation(input): --apply なしでは何も書かない。自動反映は auto_apply の定石書き換えで intent の teach が参照しないものだけで、昇格候補と未知 entity の雛形は常に承認待ち。反映はファイルを消さず、旧定石に superseded_by を付けて残す",
+      "criterion": "C-32 planConsolidation(input): --apply なしでは何も書かない。自動反映は auto_apply の定石書き換えで intent の teach が参照しないものだけで、昇格候補と未知 entity の雛形は常に承認待ち。反映はファイルを消さず、旧定石に superseded_by を付けて残す。承認済みの予算表の変更案は observations/planning/approved-budget-table.json だけを書き、承認 (変更案のハッシュ) を持つ",
       "symbol": "planConsolidation",
       "file": "src/learn/consolidate/plan-consolidation.ts",
       "module": "src/contracts/plan-consolidation.contract.ts",
@@ -468,6 +468,33 @@
       "symbol": "renderRulebook",
       "file": "src/render/render-rulebook.ts",
       "module": "src/contracts/render-rulebook.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-105",
+      "criterion": "C-105 readEngineOutput(schema, text, registry): 指定したスキーマに適合し、その形式名 (format) を持つ文書だけを返し、それ以外は例外にする (半端に読まない)",
+      "symbol": "readEngineOutput",
+      "file": "packages/sdk/src/planning/engine-outputs.ts",
+      "module": "packages/sdk/src/contracts/read-engine-output.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-106",
+      "criterion": "C-106 budgetTableProposal(proposals): 予算表の変更案は常に承認待ち (pending) で、ID は budget-table:<表の版>、正本のファイルを変えず、エンジンの変更案の一覧とハッシュをそのまま持つ",
+      "symbol": "budgetTableProposal",
+      "file": "src/learn/budget/budget-table-proposal.ts",
+      "module": "src/contracts/budget-table-proposal.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-107",
+      "criterion": "C-107 approvedBudgetTable(budget, approval): 承認済みの予算表は、レビューした変更案 (一覧・ハッシュ・元の表) をそのまま持ち、承認はそのハッシュと承認記録の承認者を名指す",
+      "symbol": "approvedBudgetTable",
+      "file": "src/learn/budget/budget-table-proposal.ts",
+      "module": "src/contracts/approved-budget-table.contract.ts",
       "mode": "observe",
       "sample": 1
     }

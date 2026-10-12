@@ -23,7 +23,13 @@ export type CheckId =
   | 'V17'
   | 'V18'
   | 'V19'
-  | 'V20';
+  | 'V20'
+  | 'V21'
+  | 'V22'
+  | 'V23'
+  | 'V24'
+  | 'V25'
+  | 'V26';
 
 export type Severity = 'error' | 'warning';
 

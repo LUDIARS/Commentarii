@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "planning-proposals.schema.json",
+  "title": "Budget table proposals: what an engine's offline method evaluation proposes to change in its budget table (Ingenium R3, SDK 0.5.0)",
+  "description": "Written by the engine (Ingenium bench --report methods --propose; read from observations/planning/proposals.json by guide learn consolidate). Each proposal changes one planner's budget in one cell (form / regime) from -> to and cites the method report row it rests on. The file names the table it was made against (version and content hash) and hashes its own proposal list (sha256 over the canonical JSON), so an approval binds to exactly these changes on exactly that table. A proposal never changes a table; only an approved copy (approved-budget-table) does.",
+  "type": "object",
+  "required": ["format", "table_version", "table_hash", "proposals", "proposals_hash"],
+  "properties": {
+    "format": { "const": "planning-proposals/1" },
+    "table_version": { "type": "string", "minLength": 1 },
+    "table_hash": { "$ref": "#/$defs/hash" },
+    "proposals": { "type": "array", "items": { "$ref": "#/$defs/proposal" } },
+    "proposals_hash": { "description": "Content hash of `proposals`.", "$ref": "#/$defs/hash" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "share": { "type": "number", "minimum": 0, "maximum": 1 },
+    "proposal": {
+      "type": "object",
+      "required": ["id", "cell", "planner", "from", "to", "because"],
+      "properties": {
+        "id": { "description": "<cell>:<planner>", "type": "string", "pattern": "^(realtime/(calm|threat|critical)|turn/any):(goap|mcts)$" },
+        "cell": { "type": "string", "pattern": "^(realtime/(calm|threat|critical)|turn/any)$" },
+        "planner": { "enum": ["goap", "mcts"] },
+        "from": { "description": "The budget now (node expansions for goap, iterations for mcts).", "type": "integer", "minimum": 1 },
+        "to": { "type": "integer", "minimum": 0 },
+        "because": {
+          "description": "The method report row the proposal rests on.",
+          "type": "object",
+          "required": ["row", "episodes", "success_rate", "realized_mean", "abs_error", "share"],
+          "properties": {
+            "row": { "type": "string", "pattern": "^(realtime/(calm|threat|critical)|turn/any)/(high|low)-trust$" },
+            "episodes": { "type": "integer", "minimum": 1 },
+            "success_rate": { "$ref": "#/$defs/share" },
+            "realized_mean": { "type": "number" },
+            "abs_error": { "type": "number", "minimum": 0 },
+            "share": { "$ref": "#/$defs/share" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

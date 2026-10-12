@@ -21,6 +21,12 @@ import { v17MaskedSeparation } from './v17-masked-separation.ts';
 import { v18RulebookKnowledge } from './v18-rulebook-knowledge.ts';
 import { v19BehaviorReferences } from './v19-behavior-references.ts';
 import { v20NoHiddenTraces } from './v20-no-hidden-traces.ts';
+import { v21EngineOutputSchema } from './v21-engine-output-schema.ts';
+import { v22BudgetProposalsHash } from './v22-budget-proposals-hash.ts';
+import { v23BudgetApproval } from './v23-budget-approval.ts';
+import { v24OpponentModelEntity } from './v24-opponent-model-entity.ts';
+import { v25BanditRewards } from './v25-bandit-rewards.ts';
+import { v26MethodReportShares } from './v26-method-report-shares.ts';
 
 export const CHECKS: readonly Check[] = [
   v01Schema,
@@ -43,4 +49,10 @@ export const CHECKS: readonly Check[] = [
   v18RulebookKnowledge,
   v19BehaviorReferences,
   v20NoHiddenTraces,
+  v21EngineOutputSchema,
+  v22BudgetProposalsHash,
+  v23BudgetApproval,
+  v24OpponentModelEntity,
+  v25BanditRewards,
+  v26MethodReportShares,
 ];

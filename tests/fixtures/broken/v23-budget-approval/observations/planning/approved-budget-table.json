@@ -1,0 +1,31 @@
+{
+  "format": "approved-budget-table/1",
+  "proposals": {
+    "format": "planning-proposals/1",
+    "table_version": "budget-table/2",
+    "table_hash": "sha256:724b3bb02c56fa7da021a25dee23c20a123fdede01359bdc66dbb3c3be72f30c",
+    "proposals": [
+      {
+        "id": "realtime/threat:mcts",
+        "cell": "realtime/threat",
+        "planner": "mcts",
+        "from": 72,
+        "to": 36,
+        "because": {
+          "row": "realtime/threat/low-trust",
+          "episodes": 146,
+          "success_rate": 0.1027,
+          "realized_mean": -0.0051,
+          "abs_error": 0.0584,
+          "share": 0.5931
+        }
+      }
+    ],
+    "proposals_hash": "sha256:305ef220858f1f7e894d76a297614216af3cc3cfef544e6b31290f786b0954de"
+  },
+  "approval": {
+    "proposals_hash": "sha256:1584d46201619e929aeacdeeca0548a6d2e33245effdb194fdebea5b58a867fc",
+    "approved_by": "reviewer",
+    "approved_at": "2026-10-12T00:00:00.000Z"
+  }
+}

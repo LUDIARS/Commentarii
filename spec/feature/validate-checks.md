@@ -28,6 +28,12 @@
 | V18 | ルールブックの knowledge が参照先から伝播している | error | 行動・過程・挙動モデル・状態機械・集合・目標・進捗尺度の `knowledge` が、参照する変数・集合・rule・状態機械・行動の最も厳しい knowledge 以上 (shown の行動が discoverable の変数を読めば誤り)。変数の宣言は自分の値の境界を宣言するので対象外 |
 | V19 | 挙動モデルの参照が切れていない | error | `machine` が存在し、`act` のキーがその状態機械の状態で、`act` / `timeline` / `tree` / `candidates` / `actions` の行動が存在して `actor` に `entity` を含み、渡すパラメータを行動が宣言している |
 | V20 | player 側の定義に隠れた分岐の痕跡が無い | error | `.masked.json` 以外のルールブック文書 (variables / actions / processes / behaviors / objectives / states / rules) に `override` `masked` `hidden` などのキーや `.masked.json` を指す文字列が無く、masked 上書きを持つ行動が `effects_known: false` を宣言していない (未モデル化の宣言は公開側の独立宣言であり、masked ファイルの影にしない) |
+| V21 | エンジン出力がスキーマどおり | error | バンドルの隣のエンジン出力 (`observations/planning/{method-report,proposals,approved-budget-table}.json`、`observations/selection/method-bandit.json`、`observations/opponents/<slug>.json`、SDK 0.5.0) が JSON として読めて、それぞれのスキーマに適合する。正本の文書ではないので V01 は見ない ([engine-planning-formats.md](engine-planning-formats.md)) |
+| V22 | 予算表の変更案のハッシュと ID が整合する | error | 変更案 (`proposals.json` と `approved-budget-table.json` の中の写し) の `proposals_hash` が一覧の内容ハッシュに一致し (作った後で書き換えていない)、各案の ID が `<cell>:<planner>` で重複せず、`from` と `to` が違う |
+| V23 | 承認済み予算表の承認が変更案と一致する | error | `approved-budget-table.json` の `approval.proposals_hash` が中の変更案の `proposals_hash` と一致する (誰もレビューしていない変更を通さない) |
+| V24 | 相手モデルのファイルと entity が一致する | error | `observations/opponents/<slug>.json` の `entity` の最後の区切りが `<slug>` で、ID のゲームが manifest の `game_id` |
+| V25 | オンライン補正の報酬合計が回数以下 | error | `method-bandit.json` の各腕で報酬の合計 `total` がエピソード数 `n` 以下 (1 回の報酬は 0..1) |
+| V26 | 方式レポートの回数と割合が整合する | error | `method-report.json` の行のエピソード数の和が `episodes` に一致し、予算表の行ごとの提案者の割合・全体の提案者の割合・選択器の規則の割合がそれぞれ 1 になる (各値が 1e-4 に丸めてある分の誤差は許す) |
 
 終了コード: error が 1 項目でもあれば 1、warning だけなら 0、使い方の誤りは 2。
 

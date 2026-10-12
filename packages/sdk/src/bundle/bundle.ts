@@ -21,6 +21,7 @@ import type {
   ProcessDefinition,
   RulebookVariables,
 } from '../domain/rulebook-documents.ts';
+import type { EngineOutputSchema } from '../planning/engine-outputs.ts';
 import type { FileKind } from './classify-path.ts';
 
 /** A schema-valid document and the bundle-relative path it came from. */
@@ -80,10 +81,25 @@ export interface LoadIssue {
   readonly message: string;
 }
 
+/**
+ * An engine output next to the bundle (observations/planning, observations/selection,
+ * observations/opponents; SDK 0.5.0). Never part of the bundle: kept apart with its own schema
+ * violations (validate V21 reports them, never V01). `data` is undefined when the text is not JSON.
+ */
+export interface EngineOutputFile {
+  readonly path: string;
+  readonly schema: EngineOutputSchema;
+  readonly data: unknown;
+  /** Schema violations (an unreadable text is one violation at ''). */
+  readonly violations: readonly LoadIssue[];
+}
+
 export interface LoadResult {
   readonly bundle: Bundle;
   readonly files: readonly LoadedFile[];
   readonly issues: readonly LoadIssue[];
+  /** Engine outputs found next to the bundle (absent when the source has none; SDK 0.5.0). */
+  readonly outputs?: readonly EngineOutputFile[];
 }
 
 export function isMaskedFilePath(path: string): boolean {

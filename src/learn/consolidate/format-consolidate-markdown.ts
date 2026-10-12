@@ -31,6 +31,15 @@ function detail(proposal: Proposal): string[] {
     lines.push(`- 値: ${promotion.ref} = ${promotion.value} (masked → discoverable)`);
     lines.push(`- player run ${promotion.player_runs} 本 / 一致率 ${promotion.agreement} (必要: ${promotion.requires.player_runs} 本 / ${promotion.requires.agreement})`);
   }
+  if (proposal.budget !== undefined) {
+    const { budget } = proposal;
+    lines.push(`- 変更案: ${budget.source} (予算表 ${budget.table_version} / ${budget.table_hash})`);
+    for (const change of budget.changes) {
+      const why = change.because;
+      lines.push(`- ${change.cell} の ${change.planner}: ${change.from} → ${change.to} (根拠 ${why.row}: エピソード ${why.episodes} / 達成率 ${why.success_rate} / 実現進捗 ${why.realized_mean} / 予測誤差 ${why.abs_error} / 占有率 ${why.share})`);
+    }
+    lines.push(`- 承認すると書くファイル: ${budget.target} (変更案のハッシュ ${budget.proposals_hash})`);
+  }
   if (proposal.human !== undefined) {
     const { human } = proposal;
     lines.push(`- 人間の別解: ${human.stage} / ${human.occurrences} 回 / run ${human.runs} 本 / プレイヤー ${human.players} 人 / 成功率 ${human.success_rate ?? '-'}`);
@@ -69,5 +78,6 @@ export function formatConsolidateMarkdown(consolidation: Consolidation): string 
     section('境界の昇格候補 (人間承認)', of('promotion'), state),
     section('未知 entity の雛形 (人間承認)', of('entity-draft'), state),
     section('人間プレイの別解 (人間承認)', of('human-tactic'), state),
+    section('予算表の変更案 (人間承認)', of('budget-table'), state),
   ].join('\n');
 }

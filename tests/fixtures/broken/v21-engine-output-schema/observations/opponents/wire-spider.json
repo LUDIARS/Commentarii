@@ -1,0 +1,10 @@
+{
+  "format": "opponent-model/1",
+  "entity": "enemy:bestia:wire-spider",
+  "runs": 3,
+  "counts": {
+    "near|own:moved": {
+      "fly": 2
+    }
+  }
+}

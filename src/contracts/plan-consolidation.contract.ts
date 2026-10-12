@@ -2,8 +2,10 @@
 // pending ones with a matching approval (same content hash and guide version) are applied; a
 // proposal is auto only for a non-relax tactic rewrite under auto_apply that no intent `teach`
 // refers to; promotions, draft entities and human tactics always wait for a person; applying
-// never removes a file and keeps the old tactic with superseded_by set.
+// never removes a file and keeps the old tactic with superseded_by set; an approved budget table
+// proposal writes only observations/planning/approved-budget-table.json, carrying the approval.
 
+import { APPROVED_BUDGET_TABLE_PATH, type ApprovedBudgetTable } from '@ludiars/commentarii-sdk/types';
 import type { Consolidation, ConsolidationInput } from '../learn/consolidate/plan-consolidation.ts';
 
 function field(document: unknown, key: string): unknown {
@@ -29,11 +31,13 @@ export default {
       if (approval.content_hash !== proposal.content_hash || approval.manifest_version !== proposal.basis.manifest_version) return `${id} is approved by a stale approval`;
     }
     for (const id of result.applied) if (byId.get(id)?.status !== 'auto' && !result.approved.includes(id)) return `${id} was applied without being auto or approved`;
-    const allowed = new Set(result.applied.flatMap((id) => byId.get(id)?.files.map((file) => file.path) ?? []));
+    const allowed = new Set(result.applied.flatMap((id) => [...(byId.get(id)?.files.map((file) => file.path) ?? []), ...(byId.get(id)?.kind === 'budget-table' ? [APPROVED_BUDGET_TABLE_PATH] : [])]));
     for (const change of result.changes) {
       if (change.after === undefined) return `${change.path} would be removed`;
       if (!allowed.has(change.path)) return `${change.path} is changed by no applied proposal`;
     }
+    const budget = result.changes.find((change) => change.path === APPROVED_BUDGET_TABLE_PATH)?.after as ApprovedBudgetTable | undefined;
+    if (budget !== undefined && (budget.approval.proposals_hash !== budget.proposals.proposals_hash || budget.approval.approved_by.trim() === '')) return 'the approved budget table does not carry its approval';
     for (const id of result.applied) {
       const rewrite = byId.get(id)?.rewrite;
       if (rewrite === undefined) continue;

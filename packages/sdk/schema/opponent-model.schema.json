@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "opponent-model.schema.json",
+  "title": "Learned opponent model: observations/opponents/<entity-slug>.json (Ingenium R3, SDK 0.5.0)",
+  "description": "Written by the engine (Ingenium run --learn) for an opponent whose behavior model the engine's view does not hold: how often it was seen to approach, retreat, strafe, attack or stand still, by context (the distance band to the engine's own entity, and whether that entity had just moved). Counts only, summed run after run; never part of the canonical bundle. The file slug is the entity ID's last segment.",
+  "type": "object",
+  "required": ["format", "entity", "runs", "counts"],
+  "properties": {
+    "format": { "const": "opponent-model/1" },
+    "entity": { "$ref": "id.schema.json#/$defs/entityId" },
+    "runs": { "description": "Runs whose observations went into the counts.", "type": "integer", "minimum": 0 },
+    "counts": {
+      "description": "context key -> motion class -> times seen.",
+      "type": "object",
+      "propertyNames": { "pattern": "^(near|mid|far)\\|own:(moved|still)$" },
+      "additionalProperties": {
+        "type": "object",
+        "propertyNames": { "enum": ["approach", "retreat", "strafe", "attack", "still"] },
+        "additionalProperties": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "additionalProperties": false
+}

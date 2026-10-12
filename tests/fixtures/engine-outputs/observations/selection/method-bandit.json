@@ -1,0 +1,23 @@
+{
+  "format": "method-bandit/1",
+  "versions": {
+    "budget-table/2|sha256:1c9f1671251dd9d6474e86872347421e53a53b731f00a0667b50f6add11066cd": {
+      "realtime|threat|trust-high|now:3|uncertain:0|opponents:2": {
+        "mcts": {
+          "n": 3,
+          "total": 1.9
+        },
+        "goap": {
+          "n": 1,
+          "total": 0.5
+        }
+      },
+      "realtime|calm|trust-high|now:2|uncertain:0|opponents:1": {
+        "mcts": {
+          "n": 2,
+          "total": 1.2
+        }
+      }
+    }
+  }
+}

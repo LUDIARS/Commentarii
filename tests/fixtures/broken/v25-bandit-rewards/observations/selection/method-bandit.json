@@ -1,0 +1,13 @@
+{
+  "format": "method-bandit/1",
+  "versions": {
+    "budget-table/2|x": {
+      "realtime|threat|trust-high|now:3|uncertain:0|opponents:2": {
+        "mcts": {
+          "n": 3,
+          "total": 5
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "method-report.schema.json",
+  "title": "Method report: an engine's offline method evaluation, bench episodes aggregated by situation (budget row) and proposer (Ingenium R3, SDK 0.5.0)",
+  "description": "Measurement only, written by the engine (Ingenium bench --report methods; kept at observations/planning/method-report.json when saved next to a bundle). Per budget row and proposer: episodes, ticks, the share of the row's ticks, the mean predicted and realized progress, the mean absolute prediction error, the delivery rate (realized >= 70 % of a positive prediction), the clear rate of the runs and the decision wall clock (recorded, never used to decide). It is the evidence a budget table proposal cites and never changes a table. Counts and numbers only.",
+  "type": "object",
+  "required": ["format", "episodes", "rows", "proposer_share", "rule_share"],
+  "properties": {
+    "format": { "const": "method-report/1" },
+    "episodes": { "type": "integer", "minimum": 0 },
+    "rows": { "type": "array", "items": { "$ref": "#/$defs/row" } },
+    "proposer_share": { "description": "Share of all ticks by proposer.", "$ref": "#/$defs/shares" },
+    "rule_share": { "description": "Share of replanning episodes by selector rule.", "$ref": "#/$defs/shares" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "share": { "type": "number", "minimum": 0, "maximum": 1 },
+    "shares": {
+      "type": "object",
+      "propertyNames": { "minLength": 1 },
+      "additionalProperties": { "$ref": "#/$defs/share" }
+    },
+    "row": {
+      "type": "object",
+      "required": ["row", "proposer", "episodes", "ticks", "share", "predicted_mean", "realized_mean", "abs_error", "success_rate", "clear_rate"],
+      "properties": {
+        "row": { "description": "<form>/<regime>/<band>-trust of the budget table.", "type": "string", "pattern": "^(realtime/(calm|threat|critical)|turn/any)/(high|low)-trust$" },
+        "proposer": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "episodes": { "type": "integer", "minimum": 1 },
+        "ticks": { "type": "integer", "minimum": 0 },
+        "share": { "description": "Share of the row's ticks this proposer's plans ran.", "$ref": "#/$defs/share" },
+        "predicted_mean": { "type": "number" },
+        "realized_mean": { "type": "number" },
+        "abs_error": { "type": "number", "minimum": 0 },
+        "success_rate": { "$ref": "#/$defs/share" },
+        "clear_rate": { "$ref": "#/$defs/share" },
+        "wall_p50_ms": { "type": "number", "minimum": 0 },
+        "wall_p95_ms": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

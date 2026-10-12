@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "approved-budget-table.schema.json",
+  "title": "Approved budget table proposal: observations/planning/approved-budget-table.json (Ingenium R3, SDK 0.5.0)",
+  "description": "The proposal file exactly as the engine made it plus the approval naming its proposals hash and who approved. Commentarii writes it through the consolidate approval path (guide learn approve, then guide learn consolidate --apply; the same flow as the tactic rewrites, design 8.2). The engine applies it only to the very table the proposals were made against and refuses a missing or mismatched approval. Never part of the canonical bundle.",
+  "type": "object",
+  "required": ["format", "proposals", "approval"],
+  "properties": {
+    "format": { "const": "approved-budget-table/1" },
+    "proposals": { "$ref": "planning-proposals.schema.json" },
+    "approval": {
+      "type": "object",
+      "required": ["proposals_hash", "approved_by"],
+      "properties": {
+        "proposals_hash": { "description": "Must equal proposals.proposals_hash.", "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "approved_by": { "type": "string", "pattern": "\\S" },
+        "approved_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

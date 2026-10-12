@@ -13,7 +13,7 @@
         "type": "object",
         "required": ["proposal", "content_hash", "manifest_version", "approved_by", "rationale", "approved_at"],
         "properties": {
-          "proposal": { "type": "string", "pattern": "^(rewrite|promotion|entity-draft|human-tactic):\\S+$" },
+          "proposal": { "type": "string", "pattern": "^(rewrite|promotion|entity-draft|human-tactic|budget-table):\\S+$" },
           "content_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
           "manifest_version": { "type": "string", "minLength": 1 },
           "approved_by": { "type": "string", "pattern": "\\S" },

@@ -1,12 +1,13 @@
 // An update guide learn consolidate proposes to the canonical bundle (design 8.2, 8.4): one or
 // more files, each with a JSON Patch (RFC 6902) over that file's document (a new file is one
 // `add` at the root). `auto` proposals may be applied by --apply; `pending` ones wait for a
-// person (approval), with the reason.
+// person (approval), with the reason. A budget-table proposal (SDK 0.5.0) changes no bundle file:
+// approved, it becomes observations/planning/approved-budget-table.json.
 
-import type { TacticMetrics } from '@ludiars/commentarii-sdk/types';
+import type { BudgetProposal, TacticMetrics } from '@ludiars/commentarii-sdk/types';
 import type { JsonPatchOperation } from '../patch/json-patch.ts';
 
-export type ProposalKind = 'rewrite' | 'promotion' | 'entity-draft' | 'human-tactic';
+export type ProposalKind = 'rewrite' | 'promotion' | 'entity-draft' | 'human-tactic' | 'budget-table';
 export type ProposalStatus = 'auto' | 'pending';
 
 export interface FilePatch {
@@ -43,6 +44,18 @@ export interface HumanTacticDetail {
   readonly success_rate?: number;
 }
 
+/** An engine's budget table proposals (planning-proposals/1) as a person reviews them. */
+export interface BudgetTableDetail {
+  /** The proposal file read (observations/planning/proposals.json). */
+  readonly source: string;
+  /** The file an approval writes (observations/planning/approved-budget-table.json). */
+  readonly target: string;
+  readonly table_version: string;
+  readonly table_hash: string;
+  readonly proposals_hash: string;
+  readonly changes: readonly BudgetProposal[];
+}
+
 /**
  * What a proposal was measured and judged against (spec/feature/learning.md §4.2): the game and
  * guide version, the condition it compares under and the units of its metrics. Part of the
@@ -71,6 +84,7 @@ export interface ProposalDraft {
   readonly rewrite?: RewriteDetail;
   readonly promotion?: PromotionDetail;
   readonly human?: HumanTacticDetail;
+  readonly budget?: BudgetTableDetail;
   /** The condition the proposal compares under (folded into the basis). */
   readonly condition?: unknown;
 }
