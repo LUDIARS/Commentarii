@@ -53,7 +53,19 @@
           "description": "The engine's stance (spec/plan/2026-10-11-ingenium-integrated-design.md): guided = the authored tactics' Utility + BT, autonomous = no tactic or intent as input, hybrid = both through one evaluator.",
           "enum": ["autonomous", "guided", "hybrid"]
         },
+        "decider": { "description": "Optional (SDK 0.4.0, Ingenium R2): the decider id that recorded the run (ingenium replay play --decider re-judges with it).", "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$" },
+        "curriculum": { "$ref": "#/$defs/curriculum" },
         "started_at": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "curriculum": {
+      "description": "Optional (SDK 0.4.0, Ingenium R2): the initial knowledge the decider started from. approved-guide = the player rulebook with the approved learning (overlay, effect hypotheses); fresh-player = the player rulebook alone. Runs of different curricula are never compared.",
+      "type": "object",
+      "required": ["kind", "hash"],
+      "properties": {
+        "kind": { "enum": ["approved-guide", "fresh-player"] },
+        "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
       },
       "additionalProperties": false
     },
@@ -67,10 +79,102 @@
         "observation": { "$ref": "observation-frame.schema.json" },
         "decision": { "type": "array", "items": { "$ref": "#/$defs/decisionEntry" } },
         "action": { "$ref": "#/$defs/action" },
-        "model": { "$ref": "#/$defs/modelSummary" }
+        "model": { "$ref": "#/$defs/modelSummary" },
+        "planning": { "$ref": "#/$defs/planningTrace" }
       },
       "additionalProperties": false
     },
+    "planningTrace": {
+      "description": "Optional (SDK 0.4.0, Ingenium R2): why the decider chose what it chose at this tick: the situation signature, the budget table row, every proposer's plans and logical work, the plan carried out, the experiment and the adapter receipts. Logical work only (no wall clock): the same run replays to the same trace. A player run holds only what the player rulebook and the observations give (the masked check covers it like every line).",
+      "type": "object",
+      "required": ["stance", "signature", "regime", "trust", "budget_row", "replanned", "proposers"],
+      "properties": {
+        "stance": { "enum": ["autonomous", "guided", "hybrid"] },
+        "signature": { "description": "Situation signature: the public features the budget row was picked from.", "type": "string", "minLength": 1 },
+        "regime": { "enum": ["calm", "threat", "critical"] },
+        "trust": { "type": "number", "minimum": 0, "maximum": 1 },
+        "budget_row": { "description": "<execution form>/<regime>/<trust band> of the budget table.", "type": "string", "minLength": 1 },
+        "replanned": { "type": "boolean" },
+        "trigger": { "type": "string", "minLength": 1 },
+        "goal": {
+          "type": "object",
+          "required": ["source", "expr", "clear_guaranteed"],
+          "properties": {
+            "source": { "description": "objectives = the rulebook's win condition; provisional = survival and information only (no readable win condition).", "enum": ["objectives", "provisional"] },
+            "expr": { "type": "string", "minLength": 1 },
+            "clear_guaranteed": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "proposers": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[a-z][a-z-]*$" },
+          "additionalProperties": {
+            "type": "object",
+            "required": ["plans"],
+            "properties": {
+              "plans": { "type": "integer", "minimum": 0 },
+              "budget": { "type": "integer", "minimum": 0 },
+              "used": { "type": "integer", "minimum": 0 },
+              "status": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "plan": { "$ref": "#/$defs/planSummary" },
+        "experiment": {
+          "type": "object",
+          "required": ["action", "info"],
+          "properties": {
+            "action": { "$ref": "#/$defs/actionId" },
+            "info": { "type": "number", "minimum": 0 },
+            "causes": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          },
+          "additionalProperties": false
+        },
+        "receipts": { "type": "array", "items": { "$ref": "#/$defs/receipt" } }
+      },
+      "additionalProperties": false
+    },
+    "planSummary": {
+      "type": "object",
+      "required": ["plan_id", "proposer", "goal", "steps"],
+      "properties": {
+        "plan_id": { "type": "string", "pattern": "^plan:[a-z][a-z-]*:t[0-9]+:[0-9]+$" },
+        "proposer": { "type": "string", "pattern": "^[a-z][a-z-]*$" },
+        "goal": { "type": "string", "minLength": 1 },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["action"],
+            "properties": {
+              "action": { "$ref": "#/$defs/actionId" },
+              "params": { "type": "object", "additionalProperties": { "anyOf": [{ "type": "string" }, { "type": "number" }] } },
+              "expect": { "type": "string", "minLength": 1 },
+              "repeat_until": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "valid_while": { "type": "string", "minLength": 1 },
+        "cursor": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "receipt": {
+      "description": "An adapter/2 receipt for a command: started, rejected, completed or cancelled. inferred: the adapter cannot report it and the engine inferred it from what it could see (protocol 1 bridge).",
+      "type": "object",
+      "required": ["command_id", "status"],
+      "properties": {
+        "command_id": { "type": "string", "pattern": "^cmd:[a-z0-9:-]+$" },
+        "status": { "enum": ["started", "rejected", "completed", "cancelled"] },
+        "reason": { "type": "string", "minLength": 1 },
+        "inferred": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "actionId": { "type": "string", "pattern": "^action:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_-]*$" },
     "modelSummary": {
       "description": "Optional (SDK 0.3.0, Ingenium R1): the decider's belief and affordances at this tick. A player run holds only what the player rulebook and the observations give (the masked check covers it like every line).",
       "type": "object",
@@ -132,7 +236,25 @@
       "properties": {
         "candidate": { "type": "string", "minLength": 1 },
         "utility": { "type": "number" },
-        "chosen": { "type": "boolean" }
+        "chosen": { "type": "boolean" },
+        "proposer": { "description": "Optional (SDK 0.4.0): the proposer of a plan candidate (continuation, reactive, goap, experiment, ...).", "type": "string", "pattern": "^[a-z][a-z-]*$" },
+        "parts": { "description": "Optional (SDK 0.4.0): the arbiter's consideration values (0..1).", "type": "object", "additionalProperties": { "type": "number" } },
+        "predicted": { "$ref": "#/$defs/prediction" },
+        "rejected": { "description": "Optional (SDK 0.4.0): why the candidate never reached scoring (a hard constraint).", "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "prediction": {
+      "description": "Optional (SDK 0.4.0): what the forward model predicts for a plan candidate, in the arbiter's common currency.",
+      "type": "object",
+      "properties": {
+        "p_success": { "type": "number", "minimum": 0, "maximum": 1 },
+        "progress": { "type": "number" },
+        "time_sec": { "type": "number", "minimum": 0 },
+        "resource": { "type": "number", "minimum": 0 },
+        "damage": { "type": "number", "minimum": 0 },
+        "info": { "type": "number", "minimum": 0 },
+        "trust": { "type": "number", "minimum": 0, "maximum": 1 }
       },
       "additionalProperties": false
     },

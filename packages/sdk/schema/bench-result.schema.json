@@ -29,7 +29,9 @@
         "stance": { "description": "Engine stance (absent in results recorded before Ingenium: those compare with none of its results).", "enum": ["autonomous", "guided", "hybrid"] },
         "decider": { "description": "Decider id the bench ran.", "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$" },
         "engine_version": { "description": "Engine version (also in versions): results of different engine versions are not compared.", "type": "string", "minLength": 1 },
-        "sdk_version": { "description": "@ludiars/commentarii-sdk version the engine read the bundle with.", "type": "string", "minLength": 1 }
+        "sdk_version": { "description": "@ludiars/commentarii-sdk version the engine read the bundle with.", "type": "string", "minLength": 1 },
+        "curriculum": { "description": "Optional (SDK 0.4.0, Ingenium R2): the initial knowledge kind (replay.schema.json#/$defs/curriculum). Results of different curricula are not compared.", "enum": ["approved-guide", "fresh-player"] },
+        "curriculum_hash": { "description": "Optional (SDK 0.4.0): hash of the initial knowledge (rulebook view + approved learning).", "$ref": "#/$defs/hash" }
       },
       "additionalProperties": false
     },
@@ -55,7 +57,27 @@
         "time_p50": { "anyOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }] },
         "time_p90": { "anyOf": [{ "type": "number", "minimum": 0 }, { "type": "null" }] },
         "damage_p50": { "type": "number", "minimum": 0 },
-        "tactic_share": { "type": "object", "propertyNames": { "pattern": "^tactic:" }, "additionalProperties": { "$ref": "#/$defs/ratio" } }
+        "tactic_share": { "type": "object", "propertyNames": { "pattern": "^tactic:" }, "additionalProperties": { "$ref": "#/$defs/ratio" } },
+        "proposer_share": { "description": "Optional (SDK 0.4.0, Ingenium R2): share of the ticks each proposer's plan was carried out.", "type": "object", "propertyNames": { "pattern": "^[a-z][a-z-]*$" }, "additionalProperties": { "$ref": "#/$defs/ratio" } }
+      },
+      "additionalProperties": false
+    },
+    "latency": {
+      "description": "Optional (SDK 0.4.0, Ingenium R2): wall-clock time of the decisions, recorded only (never used to decide), against a calibration point (not an SLA).",
+      "type": "object",
+      "required": ["decisions", "p50_ms", "p99_ms", "max_ms", "over_deadline", "calibration"],
+      "properties": {
+        "decisions": { "type": "integer", "minimum": 0 },
+        "p50_ms": { "type": "number", "minimum": 0 },
+        "p99_ms": { "type": "number", "minimum": 0 },
+        "max_ms": { "type": "number", "minimum": 0 },
+        "over_deadline": { "type": "integer", "minimum": 0 },
+        "calibration": {
+          "type": "object",
+          "required": ["hz", "p99_ms", "deadline_ms"],
+          "properties": { "hz": { "type": "number", "exclusiveMinimum": 0 }, "p99_ms": { "type": "number", "minimum": 0 }, "deadline_ms": { "type": "number", "minimum": 0 } },
+          "additionalProperties": false
+        }
       },
       "additionalProperties": false
     },

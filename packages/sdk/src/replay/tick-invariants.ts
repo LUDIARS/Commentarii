@@ -89,6 +89,7 @@ export function checkTickRecord(header: ReplayHeader, previous: ReplayTick | und
   problems.push(...checkObservation(header, previous, record.observation));
   problems.push(...decisionProblems(record));
   for (const key of ['decision', 'action'] as const) problems.push(...maskedProblems(header, record[key], `/${key}`));
+  if (record.planning !== undefined) problems.push(...maskedProblems(header, record.planning, '/planning'));
   return problems;
 }
 // @ts-expect-error augur-inject

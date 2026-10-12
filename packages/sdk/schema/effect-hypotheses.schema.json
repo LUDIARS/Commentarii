@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "effect-hypotheses.schema.json",
+  "title": "Effect hypotheses: observations/rules/<action-slug>.json, what an engine estimated about an action's effect from player runs (Ingenium R2)",
+  "description": "Written by the engine (Ingenium reflect), never merged into the canonical bundle (loaders skip observations/). Each hypothesis is an estimate of how an observable quantity changes when the action takes place under a condition, from the before / after difference of the observations. A difference is not taken as the causal effect: confounded samples (another cause in the same window) and censored ones (the outcome could not be seen) are counted apart and never enter the estimate, and a holdout share of the samples checks the estimate. Only player runs count; omniscient runs are listed as ignored. Promotion to the canonical rulebook goes through Commentarii's approval path (approved_for_canonical is always false here).",
+  "type": "object",
+  "required": ["format", "game_id", "action", "runs", "hypotheses"],
+  "properties": {
+    "format": { "const": "effect-hypotheses/1" },
+    "game_id": { "$ref": "id.schema.json#/$defs/slug" },
+    "action": { "$ref": "id.schema.json#/$defs/actionId" },
+    "runs": {
+      "type": "object",
+      "required": ["player", "ignored_omniscient"],
+      "properties": {
+        "player": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/runId" }, "uniqueItems": true },
+        "ignored_omniscient": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/runId" }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "hypotheses": { "type": "array", "items": { "$ref": "#/$defs/hypothesis" } }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "range": {
+      "type": "object",
+      "required": ["lo", "hi"],
+      "properties": { "lo": { "type": "number" }, "hi": { "type": "number" } },
+      "additionalProperties": false
+    },
+    "hypothesis": {
+      "type": "object",
+      "required": ["id", "action", "role", "observable", "condition", "predicted_delta", "observed_delta", "interval", "samples", "evidence", "holdout", "runs", "status", "knowledge", "source", "approved_for_canonical"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^hypothesis:[a-z0-9][a-z0-9_-]*:[a-z0-9][a-z0-9_.-]*$" },
+        "action": { "$ref": "id.schema.json#/$defs/actionId" },
+        "role": { "description": "Whose quantity changes: the action's target or its actor.", "enum": ["target", "actor"] },
+        "observable": { "description": "The observation the quantity is read from (an observation-frame path such as self.hp.value).", "type": "string", "minLength": 1 },
+        "unit": { "type": "string", "minLength": 1 },
+        "condition": { "description": "Expression (expr/2) under which the samples were taken; \"1\" = unconditional.", "$ref": "id.schema.json#/$defs/expression" },
+        "predicted_delta": { "description": "What the rulebook the engine played with predicts for one occurrence (the visible definition in player runs).", "$ref": "#/$defs/range" },
+        "observed_delta": {
+          "type": "object",
+          "required": ["lo", "hi", "mean", "sd"],
+          "properties": { "lo": { "type": "number" }, "hi": { "type": "number" }, "mean": { "type": "number" }, "sd": { "type": "number", "minimum": 0 } },
+          "additionalProperties": false
+        },
+        "interval": {
+          "description": "Confidence interval of the mean change (normal approximation).",
+          "type": "object",
+          "required": ["lo", "hi", "level"],
+          "properties": { "lo": { "type": "number" }, "hi": { "type": "number" }, "level": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 } },
+          "additionalProperties": false
+        },
+        "samples": { "description": "Estimation samples (the holdout excluded).", "type": "integer", "minimum": 0 },
+        "evidence": {
+          "type": "object",
+          "required": ["completed", "censored", "confounded"],
+          "properties": {
+            "completed": { "type": "integer", "minimum": 0 },
+            "censored": { "type": "integer", "minimum": 0 },
+            "confounded": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "holdout": {
+          "type": "object",
+          "required": ["samples", "inside"],
+          "properties": {
+            "samples": { "type": "integer", "minimum": 0 },
+            "mean": { "type": "number" },
+            "inside": { "description": "The holdout mean lies inside the observed range of the estimation samples.", "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "runs": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/runId" }, "uniqueItems": true },
+        "status": { "enum": ["provisional", "retracted"] },
+        "retracted_because": { "type": "string", "minLength": 1 },
+        "knowledge": { "const": "discoverable" },
+        "source": {
+          "type": "object",
+          "required": ["kind", "ref"],
+          "properties": { "kind": { "const": "observed" }, "ref": { "type": "string", "minLength": 1 } },
+          "additionalProperties": false
+        },
+        "approved_for_canonical": { "const": false }
+      },
+      "additionalProperties": false
+    }
+  }
+}
