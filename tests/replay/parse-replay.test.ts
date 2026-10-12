@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { checkTickRecord } from '@ludiars/commentarii-sdk/replay';
+import type { ReplayTick } from '@ludiars/commentarii-sdk/types';
 import { BASE_RUN, BRANCH_RUN, fixtureText, parseText } from './replay-fixtures.ts';
 
 function lines(text: string): string[] {
@@ -139,4 +141,47 @@ test('a tick may carry the decider model summary (SDK 0.3.0); an unknown afforda
   const bad = await parseText(withLine(text, 1, (line) => void (line.model = { affordances: { maybe: ['action:bestia:move'] } })));
   assert.equal(bad.run, undefined);
   assert.equal(bad.issues[0]?.line, 2);
+});
+
+test('an autonomous tick may carry the planning trace and plan candidates (SDK 0.4.0); a masked value inside it is refused', async () => {
+  const text = await fixtureText(BASE_RUN);
+  const planning = {
+    stance: 'autonomous',
+    signature: 'realtime|threat|trust-low|hostile:3',
+    regime: 'threat',
+    trust: 0.42,
+    budget_row: 'realtime/threat/low-trust',
+    replanned: true,
+    trigger: 'expect-broken',
+    goal: { source: 'objectives', expr: 'count(hostile) == 0', clear_guaranteed: true },
+    proposers: { continuation: { plans: 1 }, reactive: { plans: 3, budget: 8, used: 3 }, goap: { plans: 1, budget: 60, used: 41, status: 'partial' } },
+    plan: {
+      plan_id: 'plan:goap:t744:1',
+      proposer: 'goap',
+      goal: 'hp(e:2) <= 0',
+      steps: [
+        { action: 'action:bestia:move', params: { goal: 'e:2', for: 0.5 } },
+        { action: 'action:bestia:shoot', params: { target: 'e:2' }, repeat_until: '!alive(e:2)' },
+      ],
+      cursor: 0,
+    },
+    experiment: { action: 'action:bestia:shoot', info: 0.4, causes: ['power(self)'] },
+    receipts: [{ command_id: 'cmd:743', status: 'completed' }],
+  };
+  const decision = [{ candidate: 'plan:goap:t744:1', utility: 0.61, chosen: true, proposer: 'goap', parts: { value: 0.7 }, predicted: { p_success: 0.8, progress: 0.2, time_sec: 3.1, damage: 4 } }];
+  const header = { stance: 'autonomous', decider: 'autonomous', curriculum: { kind: 'fresh-player', hash: `sha256:${'a'.repeat(64)}` } };
+  const loaded = await parseText(withLine(withLine(text, 0, (line) => void Object.assign(line, header)), 1, (line) => void Object.assign(line, { planning, decision })));
+  assert.deepEqual(loaded.issues, []);
+  assert.deepEqual(loaded.run?.ticks[0]?.planning, planning);
+  assert.equal(loaded.run?.header.curriculum?.kind, 'fresh-player');
+  const bad = await parseText(withLine(text, 1, (line) => void (line.planning = { ...planning, regime: 'panic' })));
+  assert.equal(bad.run, undefined);
+  const run = loaded.run;
+  const tick = run?.ticks[0];
+  assert.ok(run !== undefined && tick !== undefined);
+  const leaked = { ...tick, planning: { ...planning, proposers: { goap: { plans: 1, leak: { value: 1, knowledge: 'masked' } } } } } as unknown as ReplayTick;
+  assert.deepEqual(
+    checkTickRecord(run.header, undefined, leaked).map((problem) => problem.pointer),
+    ['/planning/proposers/goap/leak'],
+  );
 });

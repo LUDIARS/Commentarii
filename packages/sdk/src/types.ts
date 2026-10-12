@@ -16,4 +16,6 @@ export * from './replay/replay-record.ts';
 export * from './replay/replay-action.ts';
 export * from './replay/observation-frame.ts';
 export * from './overlay/overlay.ts';
+export * from './overlay/effect-hypotheses.ts';
+export * from './overlay/plan-record.ts';
 export * from './bench/bench-result.ts';

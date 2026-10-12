@@ -27,6 +27,9 @@ export interface BenchCompatibility {
   readonly decider?: string;
   readonly engine_version?: string;
   readonly sdk_version?: string;
+  /** Ingenium R2 (SDK 0.4.0): the initial knowledge kind and its hash; results of different curricula are not compared. */
+  readonly curriculum?: 'approved-guide' | 'fresh-player';
+  readonly curriculum_hash?: string;
 }
 
 /** What was measured (allowed to differ between base and head). */
@@ -46,6 +49,19 @@ export interface BenchMetrics {
   readonly time_p90: number | null;
   readonly damage_p50: number;
   readonly tactic_share: Readonly<Record<string, number>>;
+  /** Ingenium R2 (SDK 0.4.0): share of the ticks each proposer's plan was carried out. */
+  readonly proposer_share?: Readonly<Record<string, number>>;
+}
+
+/** Wall-clock time of the decisions (SDK 0.4.0): recorded only, never used to decide. */
+export interface BenchLatency {
+  readonly decisions: number;
+  readonly p50_ms: number;
+  readonly p99_ms: number;
+  readonly max_ms: number;
+  readonly over_deadline: number;
+  /** The calibration point compared against (not an SLA): 60 Hz, p99 2 ms, deadline 4 ms. */
+  readonly calibration: { readonly hz: number; readonly p99_ms: number; readonly deadline_ms: number };
 }
 
 export interface BenchDivergences {
@@ -74,4 +90,6 @@ export interface BenchResult {
   /** Intent verification of the bench runs (coverage benches only, else null). */
   readonly divergences: BenchDivergences | null;
   readonly per_run: readonly BenchResultRun[];
+  /** Optional (SDK 0.4.0): decision wall-clock time against the calibration point. */
+  readonly latency?: BenchLatency;
 }

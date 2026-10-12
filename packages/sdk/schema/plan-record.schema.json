@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "plan-record.schema.json",
+  "title": "Plan record: one line of observations/plans/<run-slug>.jsonl, a plan the engine carried out to the end with what it measured (Ingenium R2)",
+  "description": "The input of the learned-tactic rewrite path (design 8.2): guide learn ingest groups records by goal and action sequence and proposes learned tactics from the ones that keep succeeding. A record is an output of the decision, never an input of the autonomous stance (which does not read tactics). when_expr is the conjunction of what held when the plan started (expr/2); params keep only the kind of each parameter, never instance numbers. Only player runs are recorded.",
+  "type": "object",
+  "required": ["format", "run", "game_id", "tick", "stance", "proposer", "goal", "when_expr", "steps", "because", "predicted", "measured", "outcome", "confidence"],
+  "properties": {
+    "format": { "const": "plan-record/1" },
+    "run": { "$ref": "id.schema.json#/$defs/runId" },
+    "game_id": { "$ref": "id.schema.json#/$defs/slug" },
+    "tick": { "description": "Tick the plan started on.", "type": "integer", "minimum": 0 },
+    "stance": { "enum": ["autonomous", "hybrid"] },
+    "proposer": { "type": "string", "pattern": "^[a-z][a-z-]*$" },
+    "goal": { "$ref": "id.schema.json#/$defs/expression" },
+    "when_expr": { "$ref": "id.schema.json#/$defs/expression" },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["action", "params"],
+        "properties": {
+          "action": { "$ref": "id.schema.json#/$defs/actionId" },
+          "params": { "description": "Parameter name -> kind of the bound value (entity, node, point, number).", "type": "object", "additionalProperties": { "enum": ["entity", "node", "point", "number"] } },
+          "repeat_until": { "$ref": "id.schema.json#/$defs/expression" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "because": {
+      "type": "object",
+      "required": ["actions", "rules"],
+      "properties": {
+        "actions": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/actionId" }, "uniqueItems": true },
+        "rules": { "type": "array", "items": { "$ref": "id.schema.json#/$defs/ruleId" }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "predicted": {
+      "type": "object",
+      "required": ["progress"],
+      "properties": { "progress": { "type": "number" }, "time_sec": { "type": "number", "minimum": 0 } },
+      "additionalProperties": false
+    },
+    "measured": {
+      "type": "object",
+      "required": ["progress", "time_sec", "damage"],
+      "properties": { "progress": { "type": "number" }, "time_sec": { "type": "number", "minimum": 0 }, "damage": { "type": "number", "minimum": 0 } },
+      "additionalProperties": false
+    },
+    "outcome": { "enum": ["success", "failure"] },
+    "confidence": { "const": "learned" }
+  },
+  "additionalProperties": false
+}

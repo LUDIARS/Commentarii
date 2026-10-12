@@ -1,6 +1,6 @@
 {
   "name": "@ludiars/commentarii-sdk",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "Commentarii SDK: guide bundle and run-time data formats, invariants, mask checks, expression language and the parts that read what a guide makes possible",
   "type": "module",

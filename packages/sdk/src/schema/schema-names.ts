@@ -40,6 +40,9 @@ export const DOCUMENT_SCHEMAS = [
   'render-frame',
   // Live bench results (stage 5C, spec/feature/balance-gate.md): bench/<label>.json.
   'bench-result',
+  // Engine learning outputs (Ingenium R2): observations/rules/<action>.json and observations/plans/<run>.jsonl lines, never canonical.
+  'effect-hypotheses',
+  'plan-record',
 ] as const;
 
 export type DocumentSchemaName = (typeof DOCUMENT_SCHEMAS)[number];
