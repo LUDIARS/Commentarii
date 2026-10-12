@@ -3,13 +3,16 @@
 // human tactics), each sealed with its basis and content hash. With --apply, the file changes
 // of the auto proposals and of the pending ones holding a valid approval (same content hash,
 // same guide version). Pure: the caller writes the changes. Without --apply, or with nothing
-// applicable, the bundle is left exactly as it is.
+// applicable, the bundle is left exactly as it is. An engine's budget table proposals (SDK 0.5.0)
+// go the same way and, approved, become observations/planning/approved-budget-table.json.
 
-import type { Bundle, Overlay } from '@ludiars/commentarii-sdk/types';
+import { APPROVED_BUDGET_TABLE_PATH, type Bundle, type Overlay, type PlanningProposals } from '@ludiars/commentarii-sdk/types';
 import type { FileChange } from '../../import/plan/file-change.ts';
 import type { HumanCandidates } from '../../import/plays/human-candidates.ts';
 import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import { approvalState, type Approval } from '../approval/approvals.ts';
+import { approvedBudgetTable, budgetTableProposal } from '../budget/budget-table-proposal.ts';
+import { LearnError } from '../learn-error.ts';
 import { sealProposal } from '../approval/seal-proposal.ts';
 import type { LearningPolicy } from '../policy/learning-policy.ts';
 import { applyProposals } from './apply-proposals.ts';
@@ -31,6 +34,8 @@ export interface ConsolidationInput {
   readonly approvals?: readonly Approval[];
   /** observations/human/candidates.json, when guide import plays wrote one. */
   readonly humanCandidates?: HumanCandidates;
+  /** observations/planning/proposals.json, when the engine proposed budget table changes. */
+  readonly planningProposals?: PlanningProposals;
 }
 
 export interface StaleApproval {
@@ -60,6 +65,7 @@ export function planConsolidation(input: ConsolidationInput): Consolidation {
     ...promotionProposals(bundle, overlay, policy),
     ...draftProposals(bundle, overlay),
     ...humanTacticProposals(bundle, input.humanCandidates),
+    ...(input.planningProposals === undefined ? [] : [budgetTableProposal(input.planningProposals)]),
   ];
   const proposals = drafts.map((draft) => sealProposal(draft, context));
   const approved: string[] = [];
@@ -72,13 +78,22 @@ export function planConsolidation(input: ConsolidationInput): Consolidation {
   }
   const applicable = input.apply ? proposals.filter((proposal) => proposal.status === 'auto' || approved.includes(proposal.id)) : [];
   const applied = new Set(applicable.map((proposal) => proposal.id));
+  const documents = applicable.filter((proposal) => proposal.kind !== 'budget-table');
+  const budgets = applicable.flatMap((proposal) => {
+    const approval = approvalState(proposal, input.approvals ?? []);
+    if (proposal.budget === undefined || approval.state !== 'approved') return [];
+    const after = approvedBudgetTable(proposal.budget, approval.approval);
+    const violations = input.registry.validate('approved-budget-table', after);
+    if (violations.length > 0) throw new LearnError(`${proposal.id}: the approved budget table would be invalid: ${violations.map((v) => `${v.pointer} ${v.message}`).join('; ')}`);
+    return [{ path: APPROVED_BUDGET_TABLE_PATH, before: undefined, after }];
+  });
   return {
     proposals,
     applied: [...applied],
     approved,
     stale,
     remaining: proposals.filter((proposal) => !applied.has(proposal.id)).map((proposal) => proposal.id),
-    changes: applicable.length === 0 ? [] : applyProposals(bundle, applicable, input.registry),
+    changes: [...(documents.length === 0 ? [] : applyProposals(bundle, documents, input.registry)), ...budgets],
   };
 }
 // @ts-expect-error augur-inject

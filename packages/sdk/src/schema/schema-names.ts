@@ -43,6 +43,12 @@ export const DOCUMENT_SCHEMAS = [
   // Engine learning outputs (Ingenium R2): observations/rules/<action>.json and observations/plans/<run>.jsonl lines, never canonical.
   'effect-hypotheses',
   'plan-record',
+  // Engine planning and opponent outputs (Ingenium R3, SDK 0.5.0): observations/planning/, observations/selection/, observations/opponents/, never canonical.
+  'method-report',
+  'planning-proposals',
+  'approved-budget-table',
+  'opponent-model',
+  'method-bandit',
 ] as const;
 
 export type DocumentSchemaName = (typeof DOCUMENT_SCHEMAS)[number];

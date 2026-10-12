@@ -12,6 +12,8 @@ import { createSchemaRegistry, type SchemaRegistry } from '@ludiars/commentarii-
 export const REPO_ROOT = findPackageRoot(import.meta.url);
 export const SAMPLE_DIR = join(REPO_ROOT, 'samples', 'bestia');
 export const BROKEN_DIR = join(REPO_ROOT, 'tests', 'fixtures', 'broken');
+/** Valid engine outputs (SDK 0.5.0) to lay over the sample: observations/planning, selection, opponents. */
+export const ENGINE_OUTPUTS_DIR = join(REPO_ROOT, 'tests', 'fixtures', 'engine-outputs');
 
 let registry: SchemaRegistry | undefined;
 
@@ -43,5 +45,11 @@ export async function loadSample(): Promise<LoadResult> {
 
 export async function loadBroken(fixture: string): Promise<LoadResult> {
   const source = overlaySource(await createFsBundleSource(SAMPLE_DIR), await createFsBundleSource(join(BROKEN_DIR, fixture)));
+  return loadBundle(source, await schemaRegistry());
+}
+
+/** The sample with valid engine outputs next to it (tests/fixtures/engine-outputs). */
+export async function loadSampleWithOutputs(): Promise<LoadResult> {
+  const source = overlaySource(await createFsBundleSource(SAMPLE_DIR), await createFsBundleSource(ENGINE_OUTPUTS_DIR));
   return loadBundle(source, await schemaRegistry());
 }

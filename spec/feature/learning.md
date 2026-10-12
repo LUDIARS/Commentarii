@@ -132,6 +132,14 @@ guide learn approve --game <bundle-dir> --proposal <id> --by <name> --reason <te
 `draft: false` の learned 定石として入る (承認がドラフトを外すレビューに当たる)。境界の昇格根拠には人間 run を数えない
 (人間 run から値の推定を作る段が未実装。[human-plays.md](human-plays.md) §4)。
 
+### 4.4 予算表の変更案 (SDK 0.5.0、Ingenium R4)
+
+Ingenium のオフライン補正が作る予算表の変更案 (`observations/planning/proposals.json`、`planning-proposals/1`) も同じ consolidate / approve /
+`--apply` で扱う。提案 ID は `budget-table:<表の版>`、種類は `budget-table`、常に承認待ち (C-106)。正本のファイルは変えず、承認済みの案は
+`--apply` で `observations/planning/approved-budget-table.json` (`approved-budget-table/1`) になる (C-107)。内容ハッシュは変更案の一覧・元の表の
+版とハッシュ・basis を含むので、新しい変更案が来れば承認は失効する。変更案ファイル自身の `proposals_hash` が一覧と合わなければ読まない。
+オーバーレイが無くても変更案だけで consolidate できる。詳細は [engine-planning-formats.md](engine-planning-formats.md) §3。
+
 ## 5. 探索の混入 (段階 3 の確認と補い)
 
 段階 3 のエンジンは探索候補を毎ティック生成し、`purpose=coverage` では常に、`efficiency` ではペルソナの `exploration_rate` の確率で

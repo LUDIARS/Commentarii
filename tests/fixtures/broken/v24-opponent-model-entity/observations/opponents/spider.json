@@ -1,0 +1,18 @@
+{
+  "format": "opponent-model/1",
+  "entity": "enemy:bestia:wire-spider",
+  "runs": 3,
+  "counts": {
+    "near|own:moved": {
+      "approach": 4,
+      "attack": 2
+    },
+    "mid|own:still": {
+      "still": 5,
+      "strafe": 1
+    },
+    "far|own:moved": {
+      "approach": 3
+    }
+  }
+}

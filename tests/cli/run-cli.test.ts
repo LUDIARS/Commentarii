@@ -41,7 +41,7 @@ test('validate on the sample exits 0 and reports every check OK', async () => {
   const run = capture();
   assert.equal(await runCli(['validate', SAMPLE_DIR], run.io), 0);
   assert.match(run.stdout(), /result: OK/);
-  assert.equal(run.stdout().match(/^OK {3}V\d\d /gm)?.length, 20);
+  assert.equal(run.stdout().match(/^OK {3}V\d\d /gm)?.length, 26);
 });
 
 test('validate --json prints the machine report', async () => {
@@ -49,7 +49,7 @@ test('validate --json prints the machine report', async () => {
   await runCli(['validate', SAMPLE_DIR, '--json'], run.io);
   const report = JSON.parse(run.stdout()) as { ok: boolean; checks: { id: string }[] };
   assert.equal(report.ok, true);
-  assert.equal(report.checks.length, 20);
+  assert.equal(report.checks.length, 26);
 });
 
 test('render writes the page set to --out', async () => {

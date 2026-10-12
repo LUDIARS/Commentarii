@@ -9,7 +9,7 @@ test('the sample passes every check', async () => {
   assert.equal(report.ok, true);
   assert.deepEqual(
     report.checks.map((check) => [check.id, check.status]),
-    Array.from({ length: 20 }, (_, i) => [`V${String(i + 1).padStart(2, '0')}`, 'ok']),
+    Array.from({ length: 26 }, (_, i) => [`V${String(i + 1).padStart(2, '0')}`, 'ok']),
   );
 });
 

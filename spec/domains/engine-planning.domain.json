@@ -1,0 +1,55 @@
+{
+  "name": "engine-planning",
+  "description": "エンジンの計画・相手モデルの出力形式 (SDK 0.5.0、Ingenium R4): method-report/1・planning-proposals/1・approved-budget-table/1・opponent-model/1・method-bandit/1 のスキーマ・型・読み書き関数・置き場所、ローダーの LoadResult.outputs、validate V21〜V26、予算表の変更案の承認経路 (consolidate / approve / --apply → approved-budget-table.json)。中身を作るのは Ingenium。",
+  "presetRules": [],
+  "templateRules": [],
+  "membership": [
+    {
+      "pathPattern": "(^|/)packages/sdk/src/planning/[^/]+\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)packages/sdk/src/overlay/opponent-model\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)packages/sdk/src/contracts/read-engine-output\\.contract\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)packages/sdk/schema/(method-report|planning-proposals|approved-budget-table|opponent-model|method-bandit)\\.schema\\.json$"
+    },
+    {
+      "pathPattern": "(^|/)src/validate/checks/(engine-outputs|v2[1-6]-[^/]+)\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)src/learn/budget/[^/]+\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)src/contracts/(budget-table-proposal|approved-budget-table)\\.contract\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/sdk/engine-planning-formats\\.test\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/learn/budget-approval\\.test\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/validate/checks/v2[1-6]-[^/]+\\.test\\.ts$"
+    },
+    {
+      "pathPattern": "(^|/)tests/fixtures/engine-outputs/.+$"
+    },
+    {
+      "pathPattern": "(^|/)tests/fixtures/broken/v2[1-6]-[^/]+/.+$"
+    },
+    {
+      "pathPattern": "(^|/)spec/feature/engine-planning-formats\\.md$"
+    }
+  ],
+  "cardTemplate": "Summarise the \"engine-planning\" domain: Ingenium's planning and opponent outputs as SDK formats (schemas, types, read/write, paths) -> LoadResult.outputs -> validate V21-V26 -> budget table proposals through consolidate / approve / --apply -> approved-budget-table.json that Ingenium's selector reads.",
+  "specRefs": [
+    "spec/feature/engine-planning-formats.md",
+    "spec/feature/learning.md §4.4",
+    "spec/feature/validate-checks.md V21-V26",
+    "spec/plan/2026-10-11-ingenium-integrated-design.md §2 §4"
+  ],
+  "rationale": "形式は Commentarii (SDK) が所有し、実行は Ingenium が所有する (依存は一方向)。予算表の変更はエンジンの判断を変えるので、定石の書き換えと同じ承認経路で人がレビューし、承認済みの写しだけを Ingenium が読む。どの出力も正本ではなく、回数・数値・ID だけを持つ。"
+}

@@ -1,9 +1,12 @@
 // Loader: read every bundle file through a BundleSource, parse it, validate it against its
-// schema and assemble the in-memory bundle. Problems become LoadIssues (validate V01).
+// schema and assemble the in-memory bundle. Problems become LoadIssues (validate V01). Engine
+// outputs under observations/ (SDK 0.5.0) are kept apart in `outputs` with their own violations
+// (validate V21), never as LoadIssues.
 
 import type { SchemaRegistry } from '../schema/schema-registry.ts';
 import { assembleBundle } from './assemble-bundle.ts';
-import type { LoadedFile, LoadIssue, LoadResult } from './bundle.ts';
+import type { EngineOutputFile, LoadedFile, LoadIssue, LoadResult } from './bundle.ts';
+import { engineOutputSchemaOf } from '../planning/engine-outputs.ts';
 import type { BundleSource } from './bundle-source.ts';
 import { classifyPath, SCHEMA_OF_KIND } from './classify-path.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:8c2fe2e0 */
@@ -28,10 +31,18 @@ function parseJson(text: string): { ok: true; data: unknown } | { ok: false; mes
 export function loadBundleFromTexts(texts: readonly BundleText[], registry: SchemaRegistry): LoadResult {
   const files: LoadedFile[] = [];
   const issues: LoadIssue[] = [];
+  const outputs: EngineOutputFile[] = [];
   const ordered = [...texts].sort((a, b) => a.path.localeCompare(b.path));
   for (const { path, text } of ordered) {
     const pathClass = classifyPath(path);
-    if (pathClass.type === 'ignored') continue;
+    if (pathClass.type === 'ignored') {
+      const schema = engineOutputSchemaOf(path);
+      if (schema === undefined) continue;
+      const parsed = parseJson(text);
+      if (!parsed.ok) outputs.push({ path, schema, data: undefined, violations: [{ path, pointer: '', message: parsed.message }] });
+      else outputs.push({ path, schema, data: parsed.data, violations: registry.validate(schema, parsed.data).map((violation) => ({ path, ...violation })) });
+      continue;
+    }
     if (pathClass.type === 'unknown') {
       issues.push({ path, pointer: '', message: 'file is not part of the bundle layout (design 4.2)' });
       continue;
@@ -48,7 +59,7 @@ export function loadBundleFromTexts(texts: readonly BundleText[], registry: Sche
   if (!ordered.some(({ path }) => path === 'manifest.json')) {
     issues.push({ path: 'manifest.json', pointer: '', message: 'manifest.json is required' });
   }
-  return { bundle: assembleBundle(files), files, issues };
+  return { bundle: assembleBundle(files), files, issues, ...(outputs.length === 0 ? {} : { outputs }) };
 }
 // @ts-expect-error augur-inject
 loadBundleFromTexts = contract(loadBundleFromTexts, { ...augurContract_b0161617, contractId: 'C-4', mode: 'observe', sample: 1, where: 'packages/sdk/src/bundle/load-bundle.ts:26', rule: 'contract-wrap', id: 'b0161617' }); /* augur-inject:contract-wrap:b0161617 */
@@ -57,7 +68,7 @@ export async function loadBundle(source: BundleSource, registry: SchemaRegistry)
   const paths = await source.listFiles();
   const texts: BundleText[] = [];
   for (const path of paths) {
-    if (classifyPath(path).type === 'ignored') continue;
+    if (classifyPath(path).type === 'ignored' && engineOutputSchemaOf(path) === undefined) continue;
     texts.push({ path, text: await source.readText(path) });
   }
   return loadBundleFromTexts(texts, registry);
