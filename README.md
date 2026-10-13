@@ -27,6 +27,7 @@
 | `packages/sdk/` | `@ludiars/commentarii-sdk` (下の「SDK」節)。形式・検査・式言語・知識を読む部品と、両リポが共有するフィクスチャ |
 | `packages/sdk/schema/` | JSON Schema (draft 2020-12)。`value` (共通フィールド) / `manifest` / `glossary` / `entity` / `entity.masked` / `stage` / `map` / `events` / `rule` / `state` / `tactic` / `intent` / `observation`、ID 形式は `id` |
 | `samples/bestia/` | Bestia の archetype を手で起こした最小バンドル (敵 3・ステージ 1・ルール 2・状態機械 1・定石 2・意図 1・masked ファイル 1) |
+| `spec/feature/private-title-registration.md` | 非公開タイトルのバンドルをワークスペースの git 管理外 (`.commentarii/games/<id>/`) に置く規則と登録手順 |
 | `spec/feature/validate-checks.md` | `validate` の検査項目 V01〜V12 の固定リスト |
 | `samples/bestia/masters/` | 取り込みの入力例 (`archetypes.csv` / `mapping.json` / `ring.grid.txt`)。`validate` の対象外 |
 | `prompts/` | `import spec` / `intent import` の LLM プロンプト |
