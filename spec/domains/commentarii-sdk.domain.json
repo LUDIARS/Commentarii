@@ -8,6 +8,9 @@
     { "pathPattern": "(^|/)packages/sdk/schema/[^/]+\\.schema\\.json$" },
     { "pathPattern": "(^|/)packages/sdk/fixtures/.+$" },
     { "pathPattern": "(^|/)packages/sdk/(package|tsconfig)\\.json$" },
+    { "pathPattern": "(^|/)packages/sdk/CHANGELOG\\.md$" },
+    { "pathPattern": "(^|/)spec/feature/level-design-formats\\.md$" },
+    { "pathPattern": "(^|/)src/contracts/hint-syntax-issue\\.contract\\.ts$" },
     { "pathPattern": "(^|/)packages/sdk/contract-runtime\\.(mjs|d\\.mts)$" },
     { "pathPattern": "(^|/)tests/sdk/[^/]+\\.test\\.ts$" },
     { "pathPattern": "(^|/)COMPAT\\.md$" }
@@ -16,7 +19,8 @@
   "specRefs": [
     "spec/plan/2026-10-11-ingenium-integrated-design.md §4 §5",
     "spec/plan/2026-10-11-autoplayer-paradigms-fable.md §10.1 §10.3",
-    "spec/tasks/2026-10-11-ingenium-r0a-commentarii-sdk.md"
+    "spec/tasks/2026-10-11-ingenium-r0a-commentarii-sdk.md",
+    "spec/feature/level-design-formats.md"
   ],
   "rationale": "Ingenium (Ig) は Commentarii SDK にだけ一方向に依存する (Ingenium R0-A)。データ形式とマスク原則の構造的担保 (不変条件・観測境界・player ビュー) は原則を所有する Commentarii が持つので、それを 1 つのパッケージに閉じ、src/ からも公開入口だけで使う (tests/sdk/sdk-boundary.test.ts が内部パスの import を検査)。実行時の依存は ajv 系のみ。"
 }

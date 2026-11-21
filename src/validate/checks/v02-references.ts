@@ -88,13 +88,22 @@ function checkEntities(bundle: Bundle, refs: ReferenceCollector): void {
 function checkStages(bundle: Bundle, refs: ReferenceCollector): void {
   for (const stage of bundle.stages) {
     const stageId = stage.stage?.doc.id;
-    if (stage.stage) refs.placement(stage.stage.path, stage.stage.doc.id, 'stage', stage.slug);
+    if (stage.stage) {
+      const { path, doc } = stage.stage;
+      refs.placement(path, doc.id, 'stage', stage.slug);
+      refs.spawns(path, '/spawns', doc.id, doc.spawns);
+      for (const field of ['introduces', 'teaches'] as const) {
+        doc[field]?.forEach(({ action, target_kind }, position) => {
+          refs.ref(path, `/${field}/${position}/action`, action);
+          refs.ref(path, `/${field}/${position}/target_kind`, target_kind);
+        });
+      }
+    }
     for (const companion of [stage.map, stage.events]) {
       if (companion === undefined) continue;
       if (stageId === undefined) refs.findings.push(error(companion.path, '/stage', `stages/${stage.slug}/stage.json is missing`));
       else if (companion.doc.stage !== stageId) refs.findings.push(error(companion.path, '/stage', `${companion.doc.stage} is not ${stageId}`));
     }
-    if (stage.stage) refs.spawns(stage.stage.path, '/spawns', stage.stage.doc.id, stage.stage.doc.spawns);
     if (stage.map) {
       const { path, doc } = stage.map;
       doc.edges.forEach((edge, position) => {

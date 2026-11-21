@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
+import type { Intent } from '@ludiars/commentarii-sdk/types';
 import { openBundleDir } from '../../src/adapters/fs/open-bundle-dir.ts';
 import { openReplayFile } from '../../src/adapters/fs/replay-open-file.ts';
 import { createFsVerifyIo } from '../../src/adapters/fs/verify-io-fs.ts';
@@ -59,6 +60,12 @@ async function readJson<T>(path: string): Promise<T> {
 
 test('verify intent writes the overlay side only; --accept writes the intent and the divergence is not reported again', async () => {
   await withSampleCopy(async (directory) => {
+    const intentPath = join(directory, 'intent', 'dome-arena.json');
+    const original = await readJson<Intent>(intentPath);
+    const hints = [{ when: 'hp(self) < 2', kind: 'solution', target: 's1' }] as const;
+    assert.ok(original.intended.some(({ kind }) => kind === 'teach'));
+    const intended = original.intended.map((item) => item.kind === 'teach' ? { ...item, hints } : item);
+    await writeFile(intentPath, JSON.stringify({ ...original, intended }), 'utf8');
     const before = await canonicalTexts(directory);
     const first = await run(['verify', 'intent', '--game', directory, '--runs', MAIN_RUNS, '--json']);
     assert.equal(first.code, 0, first.stderr);
@@ -79,7 +86,8 @@ test('verify intent writes the overlay side only; --accept writes the intent and
     assert.match(accept.stdout, /tactic:bestia:kite-wire-spider--reorder/);
     const after = await canonicalTexts(directory);
     for (const [path, text] of before) if (path !== 'intent/dome-arena.json') assert.equal(after.get(path), text, `${path} must not change`);
-    const intent = JSON.parse(after.get('intent/dome-arena.json') ?? '{}') as { allowed_divergences: { divergence?: string; decided_by: string }[] };
+    const intent = await readJson<Intent>(intentPath);
+    assert.deepEqual(intent.intended, intended);
     assert.deepEqual(intent.allowed_divergences.map((entry) => [entry.divergence, entry.decided_by]), [[alt.id, 'neco']]);
     assert.equal(after.get('tactics/kite-wire-spider.json'), before.get('tactics/kite-wire-spider.json'), 'promotion is reported, not applied');
 

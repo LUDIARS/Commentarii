@@ -111,9 +111,20 @@
       "required": ["id", "kind", "tactic"],
       "properties": {
         "kind": { "const": "teach" },
-        "tactic": { "$ref": "id.schema.json#/$defs/tacticId" }
+        "tactic": { "$ref": "id.schema.json#/$defs/tacticId" },
+        "hints": { "type": "array", "items": { "$ref": "#/$defs/hint" } }
       },
       "unevaluatedProperties": false
+    },
+    "hint": {
+      "type": "object",
+      "required": ["when", "kind", "target"],
+      "properties": {
+        "when": { "$ref": "id.schema.json#/$defs/expression" },
+        "kind": { "enum": ["rule", "solution"] },
+        "target": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
     },
     "time": {
       "type": "object",

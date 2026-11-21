@@ -3,6 +3,8 @@
 // review P1-6). It is a live balance result of the sim (evidence: sim): a statement about the
 // engine on the simulated game, not about people and not about the real build.
 
+import type { CurriculumKind } from '../replay/replay-record.ts';
+
 export const BENCH_RESULT_FORMAT = 'bench-result/1';
 
 /**
@@ -27,8 +29,8 @@ export interface BenchCompatibility {
   readonly decider?: string;
   readonly engine_version?: string;
   readonly sdk_version?: string;
-  /** Ingenium R2 (SDK 0.4.0): the initial knowledge kind and its hash; results of different curricula are not compared. */
-  readonly curriculum?: 'approved-guide' | 'fresh-player';
+  /** Initial knowledge kind and its hash; results of different curricula are not compared. */
+  readonly curriculum?: CurriculumKind;
   readonly curriculum_hash?: string;
 }
 

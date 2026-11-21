@@ -2,7 +2,8 @@
 // map graph, the designer's intent and the time limit. Built once per mode from the bundle
 // (player mode from the masked-free player view, principle 2).
 
-import type { IntendedItem, Tactic } from '../../domain/documents.ts';
+import type { Tactic } from '../../domain/documents.ts';
+import type { DecisionIntentItem } from '../../domain/intent-view.ts';
 import type { ObservationMode } from '../../replay/observation-frame.ts';
 
 export interface MetricWeights {
@@ -19,7 +20,7 @@ export interface StageView {
   readonly adjacency: ReadonlyMap<string, readonly string[]>;
   /** Nodes annotated as resource spots. */
   readonly resourceNodes: readonly string[];
-  readonly intents: readonly IntendedItem[];
+  readonly intents: readonly DecisionIntentItem[];
   /** Seconds, from the stage's own time limit (a game rule). */
   readonly timeLimit?: number;
   /** The intent's upper time bound: the designer's expectation, used only in the intent-assisted test. */

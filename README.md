@@ -116,7 +116,7 @@ npm run build            # SDK → dist/ (guide CLI) の順に build
 
 ## SDK (`@ludiars/commentarii-sdk`)
 
-`packages/sdk/` は Commentarii が所有する形式とそれを読む部品のパッケージ (版 0.2.0)。オートプレイヤーは別リポ Ingenium (Ig) に分離し、依存は Ingenium → SDK の一方向 (設計: [spec/plan/2026-10-11-ingenium-integrated-design.md](spec/plan/2026-10-11-ingenium-integrated-design.md) §4)。Ingenium は `packages/sdk` を `npm pack` した tarball を自分の `vendor/` に置き、`file:` 依存で読む (npm の git 依存はサブディレクトリを扱えないため。取り出し元 commit と sha256 は Ingenium の `vendor/commentarii-sdk.json`)。版の対応は [COMPAT.md](COMPAT.md)。
+`packages/sdk/` は Commentarii が所有する形式とそれを読む部品のパッケージ。オートプレイヤーは別リポ Ingenium (Ig) に分離し、依存は Ingenium → SDK の一方向 (設計: [spec/plan/2026-10-11-ingenium-integrated-design.md](spec/plan/2026-10-11-ingenium-integrated-design.md) §4)。Ingenium は `packages/sdk` を `npm pack` した tarball を自分の `vendor/` に置き、`file:` 依存で読む (npm の git 依存はサブディレクトリを扱えないため。取り出し元 commit と sha256 は Ingenium の `vendor/commentarii-sdk.json`)。版の対応は [COMPAT.md](COMPAT.md)、変更履歴は [packages/sdk/CHANGELOG.md](packages/sdk/CHANGELOG.md)。
 
 | 入口 | 中身 |
 |---|---|

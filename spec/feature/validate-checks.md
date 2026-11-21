@@ -19,7 +19,7 @@
 | V09 | 単位の整合 | error | 同じ stat 名の単位が (masked 付随ファイルを含め) バンドル全体で一致する |
 | V10 | 定石の knowledge が参照先の最も厳しい値と一致 | error | `when` / `do` / `expect` / `because` の参照先の knowledge のうち最も厳しいものと定石の `knowledge` が一致する。素のエンティティ ID は制約を加えず、フィールドパス・ルール・状態機械・地図ノードが制約を加える |
 | V11 | カバレッジ | warning | 状態機械 (`behavior`) の無い敵、意図 (`intent/`) の無いステージ |
-| V12 | intent の参照が存在する | error | `teach.tactic` が定石に、`forbid.area` と `route.path` の各ノードが当該ステージの地図にある |
+| V12 | intent の参照とヒントの述語が正しい | error | `teach.tactic` が定石に、`forbid.area` と `route.path` の各ノードが当該ステージの地図にある。`teach.hints[].when` が `expr/2` として構文解析できる |
 | V13 | ルールブックの式が構文どおり | error | `mechanics/` の全ての式 (変数の `range` / `init` / `derive`、集合の `where`、行動と masked 上書きの `pre` / `duration` / `cooldown` / `cost` / `motion` / 効果の `when` と `assign`、過程、挙動モデル、目標、状態機械の遷移の `when` / `hold`) が `expr/2` として構文解析できる (`spec/feature/rulebook.md` §1) |
 | V14 | ルールブックの参照が解決する | error | 式の中の関数・変数・集合・`$param`・ID が既知で、所有者を取る引数が `self` / `actor` / `$param` / 個体 ID (`hp(node:center)` は誤り)、引数の数が合う。式以外の参照も: `assign` の変数が宣言済みで所有者の有無が宣言と合う、`assign.of` / `motion.goal` / `motion.of` が `self` / `actor` / 宣言済み `$param` / 存在する ID、過程の `rate` の変数、`targeting.var`、変数の `machine` |
 | V15 | 効果の確率の合計が 1 | error | 行動と masked 上書きの各効果で `outcomes[].p` の和が 1 (誤差 1e-9)。和が 1 に満たない見える定義は隠れた分岐の余地を残すので「不明」ではなく誤り |

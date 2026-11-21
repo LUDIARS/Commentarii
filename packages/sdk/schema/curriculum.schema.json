@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "curriculum.schema.json",
+  "title": "Initial knowledge kind used by replay and bench",
+  "enum": ["approved-guide", "fresh-player", "staged"]
+}

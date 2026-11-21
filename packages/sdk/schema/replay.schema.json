@@ -60,11 +60,11 @@
       "additionalProperties": false
     },
     "curriculum": {
-      "description": "Optional (SDK 0.4.0, Ingenium R2): the initial knowledge the decider started from. approved-guide = the player rulebook with the approved learning (overlay, effect hypotheses); fresh-player = the player rulebook alone. Runs of different curricula are never compared.",
+      "description": "Initial knowledge: approved-guide uses approved learning; fresh-player uses the player rulebook alone; staged varies initial knowledge by stage. Runs of different curricula are never compared.",
       "type": "object",
       "required": ["kind", "hash"],
       "properties": {
-        "kind": { "enum": ["approved-guide", "fresh-player"] },
+        "kind": { "$ref": "curriculum.schema.json" },
         "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
       },
       "additionalProperties": false

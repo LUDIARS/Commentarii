@@ -5,6 +5,7 @@
 import type { Bundle, StageFiles } from '../../bundle/bundle.ts';
 import { toPlayerView } from '../../bundle/player-view.ts';
 import type { GuideMap, Intent, Tactic } from '../../domain/documents.ts';
+import { withoutIntentHints } from '../../domain/intent-view.ts';
 import { isJsonObject } from '../../domain/value-node.ts';
 import type { ObservationMode } from '../../replay/observation-frame.ts';
 import type { EngineWorld, MetricWeights, StageView } from './engine-world.ts';
@@ -51,7 +52,7 @@ function stageView(stage: StageFiles, intents: readonly Intent[]): StageView | u
     nodes: (map?.nodes ?? []).map((node) => node.id),
     adjacency: adjacencyOf(map),
     resourceNodes: (map?.annotations ?? []).filter((note) => note.kind === 'resource').map((note) => note.target),
-    intents: own.flatMap((intent) => intent.intended),
+    intents: own.flatMap((intent) => intent.intended.map(withoutIntentHints)),
     ...(timeLimit === undefined ? {} : { timeLimit }),
     ...(intendedTimeLimit === undefined ? {} : { intendedTimeLimit }),
   };

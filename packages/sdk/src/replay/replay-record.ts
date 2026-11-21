@@ -57,7 +57,7 @@ export interface ReplayHeader {
 }
 
 /** Initial knowledge kinds (Ingenium R2): runs of different kinds are never compared. */
-export const CURRICULUM_KINDS = ['approved-guide', 'fresh-player'] as const;
+export const CURRICULUM_KINDS = ['approved-guide', 'fresh-player', 'staged'] as const;
 export type CurriculumKind = (typeof CURRICULUM_KINDS)[number];
 
 export interface Curriculum {

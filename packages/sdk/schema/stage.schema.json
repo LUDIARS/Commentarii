@@ -11,6 +11,15 @@
     "objectives": { "type": "array", "minItems": 1, "items": { "$ref": "value.schema.json#/$defs/textValue" } },
     "clear_conditions": { "type": "array", "items": { "$ref": "value.schema.json#/$defs/textValue" } },
     "time_limit": { "$ref": "value.schema.json#/$defs/statValue" },
+    "order": { "type": "integer" },
+    "introduces": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/introducedRule" }
+    },
+    "teaches": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/taughtRule" }
+    },
     "spawns": {
       "type": "array",
       "items": {
@@ -26,5 +35,26 @@
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$defs": {
+    "rulePair": {
+      "type": "object",
+      "required": ["action", "target_kind"],
+      "properties": {
+        "action": { "$ref": "id.schema.json#/$defs/actionId" },
+        "target_kind": { "$ref": "id.schema.json#/$defs/entityId" }
+      }
+    },
+    "introducedRule": {
+      "$ref": "#/$defs/rulePair",
+      "unevaluatedProperties": false
+    },
+    "taughtRule": {
+      "type": "object",
+      "$ref": "#/$defs/rulePair",
+      "required": ["method"],
+      "properties": { "method": { "enum": ["demonstration", "safe-trial", "text"] } },
+      "unevaluatedProperties": false
+    }
+  }
 }

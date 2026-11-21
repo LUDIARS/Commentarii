@@ -497,6 +497,24 @@
       "module": "src/contracts/approved-budget-table.contract.ts",
       "mode": "observe",
       "sample": 1
+    },
+    {
+      "id": "C-108",
+      "criterion": "C-108 withoutIntentHints(item): player ビューと判断器に渡す意図の項目は hints を持たず、元の項目の他の欄を保つ",
+      "symbol": "withoutIntentHints",
+      "file": "packages/sdk/src/domain/intent-view.ts",
+      "module": "packages/sdk/src/contracts/without-intent-hints.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-109",
+      "criterion": "C-109 hintSyntaxIssue(text): expr/2 の構文を満たす述語は通り、構文が壊れた述語は検証所見になる",
+      "symbol": "hintSyntaxIssue",
+      "file": "src/validate/checks/v12-intent-refs.ts",
+      "module": "src/contracts/hint-syntax-issue.contract.ts",
+      "mode": "observe",
+      "sample": 1
     }
   ]
 }

@@ -3,6 +3,7 @@
 // even when a bundle wrongly keeps a masked value outside its .masked.json.
 
 import { isJsonObject } from '../domain/value-node.ts';
+import { withoutIntentHints, type PlayerIntent } from '../domain/intent-view.ts';
 import type { Bundle, Located, RulebookFiles, StageFiles } from './bundle.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:e726a455 */
 import augurContract_a1837d49 from '../contracts/to-player-view.contract.ts'; /* augur-inject:contract-predicate:802ff3b3 */
@@ -60,7 +61,11 @@ function stripRulebook(rulebook: RulebookFiles): RulebookFiles {
   };
 }
 
-export function toPlayerView(bundle: Bundle): Bundle {
+export interface PlayerBundle extends Omit<Bundle, 'intents'> {
+  readonly intents: readonly Located<PlayerIntent>[];
+}
+
+export function toPlayerView(bundle: Bundle): PlayerBundle {
   const manifest = stripLocated(bundle.manifest);
   const glossary = stripLocated(bundle.glossary);
   return {
@@ -72,7 +77,10 @@ export function toPlayerView(bundle: Bundle): Bundle {
     rules: keepPlayerDocuments(bundle.rules),
     states: keepPlayerDocuments(bundle.states),
     tactics: keepPlayerDocuments(bundle.tactics),
-    intents: keepPlayerDocuments(bundle.intents),
+    intents: keepPlayerDocuments(bundle.intents).map(({ path, doc }) => ({
+      path,
+      doc: { ...doc, intended: doc.intended.map(withoutIntentHints) },
+    })),
     rulebook: stripRulebook(bundle.rulebook),
   };
 }

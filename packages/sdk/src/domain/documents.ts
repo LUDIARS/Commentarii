@@ -23,6 +23,13 @@ export interface GuideValue<T = unknown> {
 
 export type StatMap = Readonly<Record<string, GuideValue<number>>>;
 
+export type LevelProfile = 'general' | 'puzzle' | 'strategy' | 'action';
+
+export interface LevelMetadata {
+  readonly profile?: LevelProfile;
+  readonly target_persona?: string;
+}
+
 export interface Manifest {
   readonly game_id: string;
   readonly title: LocalizedText;
@@ -42,6 +49,7 @@ export interface Manifest {
   readonly bench?: { readonly thresholds?: Readonly<Record<string, number>> };
   /** Feasibility band thresholds (spec/feature/intent-verify.md 6.3); defaults when absent. */
   readonly feasibility?: { readonly thresholds?: Readonly<Record<string, number>> };
+  readonly level?: LevelMetadata;
 }
 
 export interface Glossary {
@@ -85,6 +93,16 @@ export interface Spawn {
   readonly wave?: number;
 }
 
+export interface StageRule {
+  readonly action: string;
+  /** Guide entity ID, shared by all observed instances of that entity. */
+  readonly target_kind: string;
+}
+
+export interface StageTeaching extends StageRule {
+  readonly method: 'demonstration' | 'safe-trial' | 'text';
+}
+
 export interface Stage {
   readonly id: string;
   /** Praeforma scene of the stage (spec/feature/praeforma-link.md). */
@@ -94,6 +112,9 @@ export interface Stage {
   readonly clear_conditions?: readonly GuideValue<LocalizedText>[];
   readonly time_limit?: GuideValue<number>;
   readonly spawns?: readonly Spawn[];
+  readonly order?: number;
+  readonly introduces?: readonly StageRule[];
+  readonly teaches?: readonly StageTeaching[];
 }
 
 export type MapKind = 'grid' | 'navgraph' | 'zones';
@@ -221,9 +242,16 @@ interface IntentCommon {
   readonly praeforma?: PraeformaRef;
 }
 
+export interface IntentHint {
+  /** expr/2 predicate evaluated against the observation by the evaluator. */
+  readonly when: string;
+  readonly kind: 'rule' | 'solution';
+  readonly target: string;
+}
+
 export type IntendedItem =
   | (IntentCommon & { readonly kind: 'route'; readonly path: readonly string[] })
-  | (IntentCommon & { readonly kind: 'teach'; readonly tactic: string })
+  | (IntentCommon & { readonly kind: 'teach'; readonly tactic: string; readonly hints?: readonly IntentHint[] })
   | (IntentCommon & { readonly kind: 'time'; readonly range_sec: readonly [number, number] })
   | (IntentCommon & { readonly kind: 'forbid'; readonly area: string });
 
