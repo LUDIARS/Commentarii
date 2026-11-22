@@ -7,6 +7,7 @@
     { "pathPattern": "(^|/)packages/sdk/src/.+\\.ts$" },
     { "pathPattern": "(^|/)packages/sdk/schema/[^/]+\\.schema\\.json$" },
     { "pathPattern": "(^|/)packages/sdk/fixtures/.+$" },
+    { "pathPattern": "(^|/)packages/sdk/principles/[^/]+\\.json$" },
     { "pathPattern": "(^|/)packages/sdk/(package|tsconfig)\\.json$" },
     { "pathPattern": "(^|/)packages/sdk/CHANGELOG\\.md$" },
     { "pathPattern": "(^|/)spec/feature/level-design-formats\\.md$" },

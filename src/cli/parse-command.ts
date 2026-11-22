@@ -12,6 +12,7 @@ import { LEARN_USAGE, parseLearnCommand, type LearnCommand } from '../learn/cli/
 import { parseReportFeasibilityCommand, parseVerifyCommand, VERIFY_USAGE, type VerifyCommand } from '../verify/cli/verify-command.ts';
 import { DELEGATED_USAGE, isDelegatedCommand } from '../delegate/delegated-command.ts';
 import { UsageError } from './usage-error.ts';
+import { LEVEL_USAGE, parseLevelCommand, type LevelCommand } from '../level/level-command.ts';
 
 export { UsageError };
 
@@ -27,6 +28,7 @@ export type Command =
   | LearnCommand
   | PlaysCommand
   | VerifyCommand
+  | LevelCommand
   | { readonly name: 'delegated'; readonly argv: readonly string[] }
   | { readonly name: 'help' };
 
@@ -34,7 +36,7 @@ export const USAGE = `usage:
   guide validate <bundle-dir> [--json]
   guide render <bundle-dir> --out <dir> [--knowledge player|full]
   guide report knowledge <bundle-dir> [--json]
-${EXPORT_USAGE}${DIFF_USAGE}${COMMENTARY_USAGE}${IMPORT_USAGE}${PLAYS_USAGE}${AUDIT_USAGE}${LEARN_USAGE}${VERIFY_USAGE}${DELEGATED_USAGE}`;
+${EXPORT_USAGE}${DIFF_USAGE}${COMMENTARY_USAGE}${IMPORT_USAGE}${PLAYS_USAGE}${AUDIT_USAGE}${LEARN_USAGE}${VERIFY_USAGE}${LEVEL_USAGE}${DELEGATED_USAGE}`;
 
 function single(positionals: readonly string[], what: string): string {
   if (positionals.length !== 1 || positionals[0] === undefined) throw new UsageError(`${what} needs exactly one <bundle-dir>`);
@@ -77,6 +79,7 @@ export function parseCommand(argv: readonly string[]): Command {
     if (name === 'commentary') return parseCommentaryCommand(rest);
     if (name === 'learn') return parseLearnCommand(rest);
     if (name === 'verify') return parseVerifyCommand(rest);
+    if (name === 'level') return parseLevelCommand(rest);
   } catch (cause) {
     if (cause instanceof UsageError) throw cause;
     throw new UsageError((cause as Error).message);

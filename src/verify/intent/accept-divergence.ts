@@ -58,6 +58,7 @@ export function acceptDivergence(input: AcceptInput): AcceptResult {
   if (before === undefined) throw new VerifyError(`no valid intent for ${found.stage}`);
   const entry: StoredDivergence = { ...found, decision: 'allow', decided_by: input.by, ...(input.note === undefined ? {} : { note: input.note }) };
   const store: DivergenceStore = { ...input.store, divergences: input.store.divergences.map((stored) => (stored.id === input.id ? entry : stored)) };
+  if (found.level !== undefined) return { store, entry, before, intent: before, changed: false, promotions: [] };
   // Accepted again under a new guide version: a new entry bound to that version (the old one stays as history).
   const already = before.allowed_divergences.some((allowed) => allowed.divergence === input.id && allowed.manifest_version === input.manifestVersion);
   const intent = already ? before : { ...before, allowed_divergences: [...before.allowed_divergences, allowedEntry(entry, input.by, input.manifestVersion)] };

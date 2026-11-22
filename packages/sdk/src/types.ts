@@ -4,6 +4,7 @@
 // the small helpers that belong to those shapes.
 
 export * from './domain/documents.ts';
+export * from './domain/level-intent.ts';
 export * from './domain/rulebook-documents.ts';
 export * from './domain/id.ts';
 export * from './domain/knowledge.ts';

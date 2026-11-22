@@ -3,8 +3,9 @@ import { contract } from '#contract-runtime'; /* augur-inject:import:801ca0d1 */
 import augurContract_4e375a78 from '../contracts/without-intent-hints.contract.ts'; /* augur-inject:contract-predicate:90c6b293 */
 
 type TeachItem = Extract<IntendedItem, { readonly kind: 'teach' }>;
+type RouteItem = Extract<IntendedItem, { readonly kind: 'route' }>;
 
-export type DecisionIntentItem = Exclude<IntendedItem, TeachItem> | Omit<TeachItem, 'hints'>;
+export type DecisionIntentItem = Exclude<IntendedItem, TeachItem | RouteItem> | Omit<TeachItem, 'hints' | 'level'> | Omit<RouteItem, 'level'>;
 
 export interface PlayerIntent extends Omit<Intent, 'intended'> {
   readonly intended: readonly DecisionIntentItem[];
@@ -12,8 +13,12 @@ export interface PlayerIntent extends Omit<Intent, 'intended'> {
 
 /** Keep authored intent usable by existing intent-assisted modes without evaluator hints. */
 export function withoutIntentHints(item: IntendedItem): DecisionIntentItem {
+  if (item.kind === 'route') {
+    const { level: _level, ...visible } = item;
+    return visible;
+  }
   if (item.kind !== 'teach') return item;
-  const { hints: _hints, ...visible } = item;
+  const { hints: _hints, level: _level, ...visible } = item;
   return visible;
 }
 // @ts-expect-error augur-inject

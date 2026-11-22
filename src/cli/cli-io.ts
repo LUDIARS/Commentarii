@@ -28,6 +28,7 @@ export interface CliIo {
   readonly playsIo?: PlaysIo;
   /** guide verify intent / guide report feasibility, and the verification report guide render embeds. */
   readonly verifyIo?: VerifyIo;
+  readonly writeNewLevelCopy?: (source: string, destination: string, files: ReadonlyMap<string, string>) => Promise<void>;
 }
 
 export const EXIT_OK = 0;

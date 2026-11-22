@@ -250,12 +250,12 @@ export interface IntentHint {
 }
 
 export type IntendedItem =
-  | (IntentCommon & { readonly kind: 'route'; readonly path: readonly string[] })
-  | (IntentCommon & { readonly kind: 'teach'; readonly tactic: string; readonly hints?: readonly IntentHint[] })
+  | (IntentCommon & { readonly kind: 'route'; readonly path: readonly string[]; readonly level?: import('./level-intent.ts').LevelIntent })
+  | (IntentCommon & { readonly kind: 'teach'; readonly tactic: string; readonly hints?: readonly IntentHint[]; readonly level?: import('./level-intent.ts').LevelIntent })
   | (IntentCommon & { readonly kind: 'time'; readonly range_sec: readonly [number, number] })
   | (IntentCommon & { readonly kind: 'forbid'; readonly area: string });
 
-export type DivergenceReason = 'alt-route' | 'shortcut' | 'teach-skipped' | 'over-time' | 'forbid-entered';
+export type DivergenceReason = 'alt-route' | 'shortcut' | 'teach-skipped' | 'over-time' | 'forbid-entered' | import('./level-intent.ts').LevelDivergenceReason;
 
 /** Tactic sequence + map node route of the runs a divergence groups (spec/feature/intent-verify.md 4.1). */
 export interface DivergenceSignature {

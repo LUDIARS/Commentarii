@@ -1,0 +1,218 @@
+{
+  "schema": "level-principles/1",
+  "principles": [
+    {
+      "id": "P1",
+      "statement": "課題に対して解法が単一ではない。前提として選択肢がある"
+    },
+    {
+      "id": "P2",
+      "statement": "難易度やプレイスタイルに合わせた解法を選択できる"
+    },
+    {
+      "id": "P3",
+      "statement": "遊びの評価は「わかった (やってやった)」＞「わからされた」＞＞「わからない (やらされている)」"
+    },
+    {
+      "id": "P4",
+      "statement": "選択肢には適切な数がある。人間の認知限界と、選ばなければならない組み合わせの数による"
+    },
+    {
+      "id": "P5",
+      "statement": "ランダムを含む物理による創発的な挙動は下振れてはならない。想像より上をいく必要があり、下振れるなら納得のいく理由が要る"
+    },
+    {
+      "id": "P6",
+      "statement": "ルールの一貫性"
+    },
+    {
+      "id": "P7",
+      "statement": "日常生活で知っているルールを使う (アフォーダンス)"
+    },
+    {
+      "id": "P8",
+      "statement": "予測可能性: 予測とのズレの大きさと、コントロールできる幅。ズレが小さいと単調、大きくコントロール不可能だと大味。コントロール不可能なら上振れが前提"
+    },
+    {
+      "id": "P9",
+      "statement": "ランダムの二乗は、どちらかを管理された乱数にしない限りやめる"
+    },
+    {
+      "id": "P10",
+      "statement": "同じ考え方でレベルデザインそのものをできるようにする"
+    }
+  ],
+  "measure": {
+    "delta": 0.1,
+    "mastery_hits": 3,
+    "choice": {
+      "epsilon": 0.1,
+      "distinct": 0.05,
+      "bands": {
+        "calm": {
+          "warning": 6,
+          "overload": 8,
+          "bits": 4.6
+        },
+        "threat": {
+          "warning": 5,
+          "overload": 6,
+          "bits": 3
+        },
+        "critical": {
+          "warning": 4,
+          "overload": 5,
+          "bits": 2
+        }
+      }
+    },
+    "solutions": {
+      "distance": 0.25,
+      "epsilon": 0.1,
+      "z": 1.959963984540054,
+      "viability": 0.5,
+      "confirmation_runs": 40,
+      "classes": 6,
+      "searches": 16,
+      "depth": 24,
+      "stalled_searches": 2,
+      "funnel_samples": 10
+    },
+    "outcome": {
+      "delta": 0.1,
+      "chosen_probability": 0.1,
+      "minimum_samples": 3,
+      "control": 0.4,
+      "wild": 0.3,
+      "streak_window": 10,
+      "worst_grade": 3
+    },
+    "random_trials": {"min_samples": 30, "max_samples": 4096, "window": 8, "permutations": 2047, "alpha": 0.05},
+    "budgets": {
+      "runs": 5,
+      "ticks": 240,
+      "stage_steps": 15000000,
+      "plan_samples": 64,
+      "stratum": 8,
+      "slack_ticks": 20,
+      "goap_nodes": 2000
+    },
+    "fit": {
+      "ladder_improvement": 0.1,
+      "style_split": 0.2,
+      "complexity_jump": 3
+    },
+    "findings": {
+      "dominance": 0.9,
+      "learned_dominance_rise": 0.2,
+      "devised": 0.5,
+      "bottom": 0.2,
+      "fit": 0.7,
+      "choice_bad": 0.3,
+      "emergence_bad": 0.02,
+      "downside_bad": 0.05,
+      "flat_run": 3,
+      "streak_g3": 0.1,
+      "streak_g0": 0.9,
+      "recovery": 0.3,
+      "consistency": 0.98,
+      "reuse": 0.5
+    },
+    "consistency": {"baseline_samples": 10, "expand": 0.5, "tolerance": 0.000001},
+    "gate": {
+      "new_single_solution": 1,
+      "new_unsolvable": 1,
+      "skill_coverage_drop": 1,
+      "bottom_share_increase": 0.1,
+      "devised_share_drop": 0.15,
+      "fit_choice_drop": 0.15,
+      "unfair_or_unexplained_increase": 0.03,
+      "streak_g3_increase": 0.05,
+      "flat_run_increase": 2,
+      "new_unmanaged_compound": 1,
+      "new_unsignalled_exception": 1,
+      "transfer_rate_drop": 0.1,
+      "consistency_rate_drop": 0.02
+    }
+  },
+  "findings": {
+    "multi-solution": "good",
+    "single-solution": "bad",
+    "dominant-solution": "bad",
+    "unsolvable": "bad",
+    "skill-ladder": "good",
+    "style-split": "good",
+    "skill-gap": "bad",
+    "one-way-for-all": "bad",
+    "complexity-jump": "bad",
+    "devised-play": "good",
+    "play-loop": "good",
+    "no-play-idea": "bad",
+    "mid-funnel": "bad",
+    "rule-taught": "good",
+    "late-hint": "good",
+    "forced-play": "bad",
+    "lost-play": "bad",
+    "fit-choices": "good",
+    "no-choice": "bad",
+    "false-choice": "bad",
+    "overload": "bad",
+    "upside-emergence": "good",
+    "unfair-downside": "bad",
+    "unexplained-downside": "bad",
+    "responsive-outcomes": "good",
+    "flat-run": "bad",
+    "downside-streak": "bad",
+    "upside-random": "good",
+    "no-recovery": "bad",
+    "managed-random": "good",
+    "random-squared": "bad",
+    "consistent-rules": "good",
+    "rule-reuse": "good",
+    "unsignalled-exception": "bad",
+    "verb-overload": "bad",
+    "everyday-rules": "good",
+    "contrary-to-everyday": "bad",
+    "false-signifier": "bad",
+    "untaught-rule": "bad"
+  },
+  "moves": {
+    "single-solution": "別の行動・資源・経路で同じ目標に届く道を足す。支配している解法の費用を上げるか、他に利点を足す",
+    "dominant-solution": "別の行動・資源・経路で同じ目標に届く道を足す。支配している解法の費用を上げるか、他に利点を足す",
+    "unsolvable": "別の行動・資源・経路で同じ目標に届く道を足す。支配している解法の費用を上げるか、他に利点を足す",
+    "skill-gap": "低い腕前で通る、遅いが安全な道を足す。スタイルで得になる道を分ける",
+    "one-way-for-all": "低い腕前で通る、遅いが安全な道を足す。スタイルで得になる道を分ける",
+    "complexity-jump": "新しいルールを別のステージに分け、1 つずつ出す",
+    "forced-play": "判断の場面に意味のある選択肢を足す。示す時期を、試した後へ遅らせる",
+    "lost-play": "原因として並んだ作りの手を使う。効果を観測に映し、やり直せるようにする",
+    "no-choice": "選択肢を足す。支配される選択肢に固有の利点を付ける",
+    "false-choice": "選択肢を足す。支配される選択肢に固有の利点を付ける",
+    "overload": "階層に分け、間に結果を見せる。選択肢を減らす",
+    "unfair-downside": "原因を先に見せる。2 回目に避けられる手段を置く。下限を上げる",
+    "unexplained-downside": "原因を先に見せる。2 回目に避けられる手段を置く。下限を上げる",
+    "flat-run": "動かせるズレを足す (読む深さが効く場面、選択で変わる結果)",
+    "downside-streak": "連続を止める (天井・山札)。選択か腕前で動かせる入力を足す。幅を狭める",
+    "random-squared": "片方を管理された乱数にする。2 段の間に判断を挟む",
+    "no-recovery": "外れた後に取れる手を残す",
+    "unsignalled-exception": "ルールや操作を揃える。見た目を変えて、別のルールだと分かるようにする",
+    "verb-overload": "ルールや操作を揃える。見た目を変えて、別のルールだと分かるようにする",
+    "contrary-to-everyday": "日常どおりに働かせる。見た目を変える",
+    "false-signifier": "日常どおりに働かせる。見た目を変える",
+    "untaught-rule": "失敗しても損をしない場面で、先に試させる"
+  },
+  "profiles": {
+    "general": [],
+    "puzzle": [
+      "single-solution",
+      "dominant-solution",
+      "one-way-for-all"
+    ],
+    "strategy": [
+      "crowded"
+    ],
+    "action": [
+      "flat-run"
+    ]
+  },
+  "play_ideas": []
+}

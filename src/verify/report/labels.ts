@@ -21,6 +21,12 @@ export const REASON_LABEL: Readonly<Record<DivergenceReason, string>> = {
   'teach-skipped': '学習意図の飛ばし',
   'over-time': '時間超過',
   'forbid-entered': 'forbid 侵入',
+  'blocked-solution': '想定の解法が不成立',
+  'unexpected-solution': '想定外の解法',
+  'skill-mismatch': '腕前のズレ',
+  'disclosure-mismatch': '開示のズレ',
+  'choice-count-mismatch': '選択肢の数のズレ',
+  'feel-mismatch': '手触りのズレ',
 };
 
 export const DECISION_LABEL: Readonly<Record<DivergenceDecision, string>> = {

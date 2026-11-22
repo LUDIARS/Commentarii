@@ -39,7 +39,7 @@ export async function runVerifyAccept(command: VerifyAcceptCommand, io: VerifyCl
       ? `${JSON.stringify(summary, null, 2)}\n`
       : document([
           `# ズレの許容: ${command.id}`,
-          `- 判定者: ${command.by}\n- ${result.changed ? `${located.path} の allowed_divergences に追加した` : `${located.path} は既にこのズレを許容している (変更なし)`}\n- 内容: ${result.entry.summary}`,
+          `- 判定者: ${command.by}\n- ${result.entry.level !== undefined ? '観測記録に許容を記録した' : result.changed ? `${located.path} の allowed_divergences に追加した` : `${located.path} は既にこのズレを許容している (変更なし)`}\n- 内容: ${result.entry.summary}`,
           result.promotions.length === 0
             ? 'learned → authored の昇格候補はありません。'
             : `## learned → authored の昇格候補 (自動では昇格しない)\n\n${table(['定石', '由来'], result.promotions.map((promotion) => [promotion.tactic, promotion.origin === 'bundle' ? '攻略本の learned 定石' : '探索の変種']))}`,

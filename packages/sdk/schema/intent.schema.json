@@ -75,7 +75,8 @@
     "properties": { "draft": { "const": true } }
   },
   "$defs": {
-    "divergenceReason": { "enum": ["alt-route", "shortcut", "teach-skipped", "over-time", "forbid-entered"] },
+    "divergenceReason": { "enum": ["alt-route", "shortcut", "teach-skipped", "over-time", "forbid-entered", "blocked-solution", "unexpected-solution", "skill-mismatch", "disclosure-mismatch", "choice-count-mismatch", "feel-mismatch"] },
+    "levelDivergenceReason": {"enum":["blocked-solution","unexpected-solution","skill-mismatch","disclosure-mismatch","choice-count-mismatch","feel-mismatch"]},
     "divergenceId": { "type": "string", "pattern": "^div-[0-9a-f]{12}$" },
     "signature": {
       "description": "Tactic sequence + map node route of the runs a divergence groups (spec/feature/intent-verify.md 4.1).",
@@ -101,7 +102,8 @@
       "required": ["id", "kind", "path"],
       "properties": {
         "kind": { "const": "route" },
-        "path": { "type": "array", "minItems": 2, "items": { "$ref": "id.schema.json#/$defs/nodeId" } }
+        "path": { "type": "array", "minItems": 2, "items": { "$ref": "id.schema.json#/$defs/nodeId" } },
+        "level": { "$ref": "#/$defs/level" }
       },
       "unevaluatedProperties": false
     },
@@ -112,9 +114,172 @@
       "properties": {
         "kind": { "const": "teach" },
         "tactic": { "$ref": "id.schema.json#/$defs/tacticId" },
-        "hints": { "type": "array", "items": { "$ref": "#/$defs/hint" } }
+        "hints": { "type": "array", "items": { "$ref": "#/$defs/hint" } },
+        "level": { "$ref": "#/$defs/level" }
       },
       "unevaluatedProperties": false
+    },
+    "levelEvidence": {"type":"object","required":["challenge","subject"],"properties":{"challenge":{"type":"string","pattern":"^ch:[a-z0-9][a-z0-9:_-]*$"},"subject":{"type":"string","minLength":1}},"additionalProperties":false},
+    "level": {
+      "type": "object",
+      "required": [
+        "challenge"
+      ],
+      "properties": {
+        "challenge": {
+          "type": "string",
+          "pattern": "^ch:[a-z0-9][a-z0-9:_-]*$"
+        },
+        "solutions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/solution"
+          }
+        },
+        "decisions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/decision"
+          }
+        },
+        "random": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/randomSource"
+          }
+        },
+        "feel": {
+          "enum": [
+            "flat",
+            "responsive",
+            "uncontrolled"
+          ]
+        },
+        "disclosure": {
+          "enum": [
+            "rule-taught",
+            "late",
+            "discovery"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "solution": {
+      "type": "object",
+      "required": [
+        "id",
+        "rules",
+        "skills",
+        "styles"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "id.schema.json#/$defs/slug"
+        },
+        "rules": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+          "required": ["action", "targets", "conditions"],
+            "properties": {
+              "action": {
+                "$ref": "id.schema.json#/$defs/actionId"
+              },
+            "targets": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "conditions": { "type": "string", "pattern": "^[01?]+$" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "skills": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          }
+        },
+        "styles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "id.schema.json#/$defs/slug"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "decision": {
+      "type": "object",
+      "required": [
+        "id",
+        "options",
+        "regime"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "id.schema.json#/$defs/slug"
+        },
+        "options": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "regime": {
+          "enum": [
+            "calm",
+            "threat",
+            "critical"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "randomSource": {
+      "type": "object",
+      "required": [
+        "id",
+        "management"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "id.schema.json#/$defs/slug"
+        },
+        "management": {
+          "enum": [
+            "bounded",
+            "bag",
+            "previewed",
+            "narrow",
+            "unmanaged"
+          ]
+        },
+        "overlaps": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "id.schema.json#/$defs/slug"
+          }
+        }
+      },
+      "additionalProperties": false
     },
     "hint": {
       "type": "object",

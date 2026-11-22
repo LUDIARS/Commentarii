@@ -17,6 +17,7 @@ import { runImportCommand } from './run-import-command.ts';
 import { runDelegation } from '../delegate/run-delegation.ts';
 import { runVerifyCommand } from '../verify/cli/run-verify-command.ts';
 import { readStageExtras } from '../verify/cli/read-stage-extras.ts';
+import { runLevelCommand } from '../level/run-level-command.ts';
 
 async function execute(command: Command, io: CliIo): Promise<number> {
   switch (command.name) {
@@ -74,6 +75,8 @@ async function execute(command: Command, io: CliIo): Promise<number> {
     case 'verify-reject':
     case 'report-feasibility':
       return runVerifyCommand(command, io);
+    case 'level':
+      return runLevelCommand(command, io);
   }
 }
 

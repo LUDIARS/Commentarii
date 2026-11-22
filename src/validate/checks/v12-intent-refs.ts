@@ -3,6 +3,7 @@
 
 import { ExpressionError, parseExpression } from '@ludiars/commentarii-sdk/expression';
 import { error, type Check, type Finding } from '../check.ts';
+import { levelIntentRefs } from './level-intent-refs.ts';
 import { contract } from '#contract-runtime'; /* augur-inject:import:fc03e46b */
 import augurContract_9e0835bf from '../../contracts/hint-syntax-issue.contract.ts'; /* augur-inject:contract-predicate:8fe8bb0f */
 
@@ -24,6 +25,7 @@ export const v12IntentRefs: Check = {
   run: ({ load, index }) => {
     const findings: Finding[] = [];
     const tactics = new Set(load.bundle.tactics.map(({ doc }) => doc.id));
+    const actions = new Set(load.bundle.rulebook.actions.map(({ doc }) => doc.id));
     for (const { path, doc } of load.bundle.intents) {
       const nodes = index.stageNodes.get(doc.stage);
       const requireNode = (pointer: string, node: string): void => {
@@ -41,6 +43,9 @@ export const v12IntentRefs: Check = {
         }
         if (item.kind === 'forbid') requireNode(`${pointer}/area`, item.area);
         if (item.kind === 'route') item.path.forEach((node, step) => requireNode(`${pointer}/path/${step}`, node));
+        if ((item.kind === 'route' || item.kind === 'teach') && item.level !== undefined) {
+          findings.push(...levelIntentRefs(item.level, actions, path, `${pointer}/level`));
+        }
       });
     }
     return findings;

@@ -25,6 +25,7 @@ import { learningPolicyOf } from '../policy/learning-policy.ts';
 import type { SchemaRegistry } from '@ludiars/commentarii-sdk/schemas';
 import type { LearnApproveCommand, LearnCommand, LearnConsolidateCommand, LearnIngestCommand } from './learn-command.ts';
 import type { LearnIo } from './learn-io.ts';
+import { readLevelProposal } from '../../level/level-proposal-io.ts';
 
 type LearnCliIo = Pick<CliIo, 'stdout' | 'stderr' | 'openBundle' | 'writeFiles' | 'learnIo'>;
 
@@ -110,16 +111,31 @@ async function consolidate(command: LearnConsolidateCommand, io: LearnCliIo, lea
 }
 
 async function approve(command: LearnApproveCommand, io: LearnCliIo, learnIo: LearnIo): Promise<number> {
-  const { gameId, approvals, result } = await planFor(command.gameDir, false, io, learnIo);
+  const isLevel = command.proposal.startsWith('level-design:');
+  const { gameId, approvals, proposals } = isLevel
+    ? await levelApprovalInput(command, io, learnIo)
+    : await planFor(command.gameDir, false, io, learnIo).then(({ gameId, approvals, result }) =>
+      ({ gameId, approvals, proposals: result.proposals }));
   const now = learnIo.now?.() ?? new Date();
-  const { file, approval } = approveProposal({ proposals: result.proposals, current: approvals, gameId, proposal: command.proposal, by: command.by, rationale: command.reason, now });
+  const { file, approval } = approveProposal({ proposals, current: approvals, gameId, proposal: command.proposal, by: command.by, rationale: command.reason, now });
   const registry = await learnIo.schemaRegistry();
   const violations = registry.validate('approvals', file);
   if (violations.length > 0) throw new Error(`approve produced an invalid approvals file: ${violations.map((v) => `${v.pointer} ${v.message}`).join('; ')}`);
   await io.writeFiles(command.gameDir, new Map([[APPROVALS_PATH, `${JSON.stringify(file, null, 2)}\n`]]));
   io.stdout(`${JSON.stringify(approval, null, 2)}\n`);
-  io.stderr(`guide learn approve: ${approval.proposal} approved by ${approval.approved_by} (${approval.content_hash}); run guide learn consolidate --apply to write it\n`);
+  const next = isLevel ? 'guide level prepare to create a trial copy' : 'guide learn consolidate --apply to write it';
+  io.stderr(`guide learn approve: ${approval.proposal} approved by ${approval.approved_by} (${approval.content_hash}); run ${next}\n`);
   return EXIT_OK;
+}
+
+async function levelApprovalInput(command: LearnApproveCommand, io: LearnCliIo, learnIo: LearnIo) {
+  try {
+    const { proposal } = await readLevelProposal(learnIo, command.gameDir, await io.openBundle(command.gameDir), command.proposal);
+    const gameId = proposal.basis.game_id;
+    return { gameId, approvals: await readApprovals(learnIo, command.gameDir, gameId), proposals: [proposal] };
+  } catch (cause) {
+    throw new LearnError((cause as Error).message);
+  }
 }
 
 function dispatch(command: LearnCommand, io: LearnCliIo, learnIo: LearnIo): Promise<number> {

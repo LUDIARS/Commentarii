@@ -9,6 +9,7 @@ import { readSchemaDocuments } from '../adapters/fs/read-schema-documents.ts';
 import { removeBundleFiles } from '../adapters/fs/remove-bundle-files.ts';
 import { openReplayFile, replaySchema } from '../adapters/fs/replay-open-file.ts';
 import { writeOutputFiles } from '../adapters/fs/write-output-files.ts';
+import { writeLevelCopy } from '../adapters/fs/write-level-copy.ts';
 import { createClaudeCliLlm } from '../adapters/llm/claude-cli-llm.ts';
 import { findOnPath } from '../delegate/find-on-path.ts';
 import { spawnInherited } from '../delegate/spawn-inherited.ts';
@@ -49,5 +50,6 @@ export function createMainIo(output: Pick<CliIo, 'stdout' | 'stderr'>): CliIo {
       now: () => new Date(),
     },
     verifyIo: createFsVerifyIo(),
+    writeNewLevelCopy: writeLevelCopy,
   };
 }

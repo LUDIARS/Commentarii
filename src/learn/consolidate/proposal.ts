@@ -7,7 +7,7 @@
 import type { BudgetProposal, TacticMetrics } from '@ludiars/commentarii-sdk/types';
 import type { JsonPatchOperation } from '../patch/json-patch.ts';
 
-export type ProposalKind = 'rewrite' | 'promotion' | 'entity-draft' | 'human-tactic' | 'budget-table';
+export type ProposalKind = 'rewrite' | 'promotion' | 'entity-draft' | 'human-tactic' | 'budget-table' | 'level-design';
 export type ProposalStatus = 'auto' | 'pending';
 
 export interface FilePatch {

@@ -3,7 +3,7 @@
 // signature only, so it stays the same however many runs show it.
 
 import { createHash } from 'node:crypto';
-import type { DivergenceReason, DivergenceSignature } from '@ludiars/commentarii-sdk/types';
+import type { DivergenceReason, DivergenceSignature, LevelDivergenceEvidence } from '@ludiars/commentarii-sdk/types';
 
 export type DivergenceKind = 'interesting' | 'undesirable';
 
@@ -13,6 +13,12 @@ export const KIND_OF_REASON: Readonly<Record<DivergenceReason, DivergenceKind>> 
   'teach-skipped': 'undesirable',
   'over-time': 'undesirable',
   'forbid-entered': 'undesirable',
+  'blocked-solution': 'undesirable',
+  'unexpected-solution': 'interesting',
+  'skill-mismatch': 'undesirable',
+  'disclosure-mismatch': 'undesirable',
+  'choice-count-mismatch': 'undesirable',
+  'feel-mismatch': 'undesirable',
 };
 
 export interface Divergence {
@@ -25,12 +31,14 @@ export interface Divergence {
   readonly runs: readonly string[];
   readonly personas: readonly string[];
   readonly signature: DivergenceSignature;
+  readonly level?: LevelDivergenceEvidence;
   /** Set when an acceptance exists but no longer binds (loose entry or another guide version): re-evaluate. */
   readonly recheck?: string;
 }
 
-export function divergenceId(intent: string, reason: DivergenceReason, signature: DivergenceSignature): string {
-  const digest = createHash('sha256').update(JSON.stringify([intent, reason, signature.tactics, signature.route])).digest('hex');
+export function divergenceId(intent: string, reason: DivergenceReason, signature: DivergenceSignature, level?: LevelDivergenceEvidence): string {
+  const identity = [intent, reason, signature.tactics, signature.route];
+  const digest = createHash('sha256').update(JSON.stringify(level === undefined ? identity : [...identity, level.challenge, level.subject])).digest('hex');
   return `div-${digest.slice(0, 12)}`;
 }
 
@@ -44,6 +52,12 @@ const SUMMARY: Readonly<Record<DivergenceReason, string>> = {
   'teach-skipped': '覚えてほしい定石を使わずに到達した (学習意図の飛ばし)',
   'over-time': '想定より時間がかかった',
   'forbid-entered': '入ってほしくない場所に入った',
+  'blocked-solution': '想定の解法が通らない',
+  'unexpected-solution': '想定外の解法が通った',
+  'skill-mismatch': '想定の腕前と食い違う',
+  'disclosure-mismatch': '想定の開示と食い違う',
+  'choice-count-mismatch': '想定の選択肢の数と食い違う',
+  'feel-mismatch': '想定の手触りと食い違う',
 };
 
 export function summaryOf(reason: DivergenceReason, signature: DivergenceSignature): string {

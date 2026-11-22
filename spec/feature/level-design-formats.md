@@ -16,3 +16,5 @@ Actio `actio:76e14970-0b9e-4c63-a116-8ba10668f6fa`。Ingenium のレベルデザ
 ステージの宣言は player view と full export の両方に残る。`hints` は正本と full export で保持し、player view およびどのモードの判断器入力からも除く。既存の `teach.tactic` や intent-assisted 用の意図の項目は従来どおり扱う。`guide verify intent --accept` は `allowed_divergences` を更新するときもヒントを保持する。
 
 新しく追加した欄を持たない文書には SDK 0.5.0 と同じ読み込み規則を適用する。bundle と replay の形式番号は 2、bench の形式は `bench-result/1` のまま。SDK 0.5.0 で同じ文書を読む必要がある場合は、今回の任意欄を付けず、0.5.0 が対応する初期知識を使う。
+
+作成側の骨格、検査、提案の詳細は [レベルデザインの作成と反証](level-design-authoring.md) を参照。

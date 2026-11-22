@@ -500,7 +500,7 @@
     },
     {
       "id": "C-108",
-      "criterion": "C-108 withoutIntentHints(item): player ビューと判断器に渡す意図の項目は hints を持たず、元の項目の他の欄を保つ",
+      "criterion": "C-108 withoutIntentHints(item): player ビューと判断器に渡す意図の項目は hints と level を持たず、元の項目の他の欄を保つ",
       "symbol": "withoutIntentHints",
       "file": "packages/sdk/src/domain/intent-view.ts",
       "module": "packages/sdk/src/contracts/without-intent-hints.contract.ts",
@@ -513,6 +513,51 @@
       "symbol": "hintSyntaxIssue",
       "file": "src/validate/checks/v12-intent-refs.ts",
       "module": "src/contracts/hint-syntax-issue.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-110",
+      "criterion": "C-110 isLevelIntent(data, registry): SDK は正しい intent の骨格を受け入れ、型違いを拒む",
+      "symbol": "isLevelIntent",
+      "file": "src/level/validate-level-intent.ts",
+      "module": "src/contracts/level-authoring-110.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-111",
+      "criterion": "C-111 checkLevelSkeleton(intents, principles): 原則に反する骨格には対象の意図と原則 ID が付く",
+      "symbol": "checkLevelSkeleton",
+      "file": "src/level/check-level-skeleton.ts",
+      "module": "src/contracts/level-authoring-111.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-112",
+      "criterion": "C-112 compareLevelIntent(intents, report): 測定された意図と実物の差を既存の食い違いへ分類する",
+      "symbol": "compareLevelIntent",
+      "file": "src/level/compare-level-intent.ts",
+      "module": "src/contracts/level-authoring-112.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-113",
+      "criterion": "C-113 buildLevelProposal(bundle, finding, edits, load): finding の直し方を承認待ちの差分へ封じる",
+      "symbol": "buildLevelProposal",
+      "file": "src/level/build-level-proposal.ts",
+      "module": "src/contracts/level-authoring-113.contract.ts",
+      "mode": "observe",
+      "sample": 1
+    },
+    {
+      "id": "C-114",
+      "criterion": "C-114 reviewLevelTrial(trial, base, head, gate): 同じ計測条件の写しで対象 finding が解消し、回帰候補がないときだけ採用する",
+      "symbol": "reviewLevelTrial",
+      "file": "src/level/review-level-trial.ts",
+      "module": "src/contracts/level-authoring-114.contract.ts",
       "mode": "observe",
       "sample": 1
     }

@@ -13,6 +13,12 @@ import type { Proposal } from './proposal.ts';
 
 function documentsByPath(bundle: Bundle): Map<string, unknown> {
   const located: Located<unknown>[] = [
+    ...[bundle.rulebook.variables, bundle.rulebook.objectives].filter((entry) => entry !== undefined),
+    ...bundle.rulebook.actions,
+    ...bundle.rulebook.maskedActions,
+    ...bundle.rulebook.processes,
+    ...bundle.rulebook.behaviors,
+    ...bundle.stages.flatMap(({ stage, map, events }) => [stage, map, events].filter((entry) => entry !== undefined)),
     ...bundle.entities,
     ...bundle.maskedEntities,
     ...bundle.tactics,

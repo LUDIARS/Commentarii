@@ -1,13 +1,13 @@
 {
   "name": "@ludiars/commentarii-sdk",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "description": "Commentarii SDK: guide bundle and run-time data formats, invariants, mask checks, expression language and the parts that read what a guide makes possible",
   "type": "module",
   "engines": {
     "node": ">=24"
   },
-  "files": ["dist/", "src/", "schema/", "fixtures/", "contract-runtime.mjs", "contract-runtime.d.mts", "tsconfig.json", "CHANGELOG.md"],
+  "files": ["dist/", "src/", "schema/", "fixtures/", "principles/", "contract-runtime.mjs", "contract-runtime.d.mts", "tsconfig.json", "CHANGELOG.md"],
   "exports": {
     ".": { "types": "./src/index.ts", "default": "./dist/index.js" },
     "./schemas": { "types": "./src/schemas.ts", "default": "./dist/schemas.js" },
